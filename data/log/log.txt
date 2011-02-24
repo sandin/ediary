@@ -1,0 +1,1 @@
+2011-02-24T15:43:31+08:00 INFO (6): en translation file is missing : /home/lds/workspace/php/yiriji/application/../data/languages/en.mos

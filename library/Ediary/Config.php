@@ -41,10 +41,15 @@ class Ediary_Config
 	/**
 	 * Get Config about Database
 	 * 
-	 * @return stdClass {host, username, password, dbname}
+	 * @return stdClass {host, username, password, dbname} or null
 	 */
-	public function getDbConfig() {
-		$db_config = $this->config->resources->db->params;
+	public static function getDbConfig() {
+		$config = self::getConfig();
+		$db_config = null;
+		
+		if (null != $config) {
+			$db_config = $config->resources->db->params;
+		}
 		
 		return $db_config;
 	}

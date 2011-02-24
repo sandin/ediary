@@ -27,7 +27,9 @@
           </controllersDirectory>
           <formsDirectory enabled="false"/>
           <layoutsDirectory enabled="false"/>
-          <modelsDirectory/>
+          <modelsDirectory>
+            <modelFile modelName="Name"/>
+          </modelsDirectory>
           <viewsDirectory>
             <viewScriptsDirectory>
               <viewControllerScriptsDirectory forControllerName="Index">

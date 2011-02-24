@@ -10,11 +10,8 @@ class IndexController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        // action body
-        $db = Ediary_Database_Db::getInstance();
-        $db->connect();
+    	$db = Ediary_Database_Db::getDb();
         
-        var_dump($db->connection);
     }
 
 
