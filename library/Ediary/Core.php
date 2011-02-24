@@ -9,10 +9,11 @@ class Ediary_Core
 	 * @param String $msg 结束原因
 	 */
 	public static function exitApp($msg = '') {
-		self::goUrl('/error/error/');
+		self::gotoUrl('/error/' . urlencode($msg));
 	}
 
-	public static function goUrl($url) {
+	public static function gotoUrl($url) {
+		//TODO: add application base url
 		header("location: " . $url);
 	}
 

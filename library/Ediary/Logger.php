@@ -40,7 +40,7 @@ class Ediary_Logger
 	 */
 	private static function getStreamWriter() {
 		$writer = null;
-		$logfile = Ediary_Config::getConfig()->ediary->logger->path;
+		$logfile = Ediary_Config::getAppConfig()->logger->path;
 		
 		if (! file_exists($logfile)) {
 	    	// create the log file if has the premission
@@ -60,7 +60,7 @@ class Ediary_Logger
 	 */
 	private static function initLogger() {
 		if (null == self::$logger) {
-			$type = intval(Ediary_Config::getConfig()->ediary->logger->type);
+			$type = intval(Ediary_Config::getAppConfig()->logger->type);
 			self::getLogger($type);
 		}
 	}

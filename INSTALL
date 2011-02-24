@@ -1,0 +1,13 @@
+= 安装说明 =
+lds <lds2012[at]gmail.com>
+
+
+== WEB安装 ==
+
+1. 复制 `/application/configs/application-sample.ini` 到 `/application/configs/application.ini` , 并确保此文件可读可写(by php).
+2. 访问 `/install.php` , 按提示完成安装过程.
+
+== 手动安装 ==
+
+1. 复制 `/application/configs/application-sample.ini` 到 `/application/configs/application.ini` , 并确保此文件可读可写(by php).
+2. 填写 `application.ini` 中 数据库信息( `server database` )部分.

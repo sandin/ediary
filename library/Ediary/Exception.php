@@ -25,7 +25,7 @@ class Ediary_Exception extends Exception {
 	 * IN OTHER MODE : Redirect to the error page, and show a message to user.
 	 */
 	public static function handleException() {
-		if (! Ediary_Config::getConfig()->ediary->app->debug) {
+		if (! Ediary_Config::getAppConfig()->debug) {
 			set_exception_handler(array(__CLASS__, 'exceptionHandler'));
 		}
 	}
@@ -39,18 +39,19 @@ class Ediary_Exception extends Exception {
 	 */
 	public static function exceptionHandler( $exception ) {
 
-		if (Ediary_Config::getConfig()->ediary->logger->enable) {
-			Ediary_Logger::log($message);
+		if (Ediary_Config::getAppConfig()->logger->enable) {
+			Ediary_Logger::log($exception->getMessage());
 		}
 		
+		$msg = '';
+		
 		if ($exception instanceof Ediary_Database_Exception) {
-			echo _t('主页');
-			echo _t('HOME');
+			$msg = _t('暂时无法连接数据库, 请稍后再试.');
 		} else {
-			echo 'Other ERROR';
+			$msg = _t('网站遇到未知问题, 请稍后再试.');
 		}
 
-		//Ediary_Core::exitApp($exception->getMessage());
+		Ediary_Core::exitApp($msg);
 	}
 
 

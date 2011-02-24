@@ -29,16 +29,18 @@ class Ediary_Database_Db
 	 * @var Zend_Db_Adapter_Abstracta
 	 */
 	public static $conn = null;
-
+	
     public function __construct($conn = null) {
-    	$db_config = Ediary_Config::getDbConfig();
+    	if (null == self::$conn) {
+    		$db_config = Ediary_Config::getDbConfig();
     	
-    	if (null != $db_config && isset($db_config->prefix)) {
-	    	$this->_prefix = $db_config->prefix;
-   		}
+    		if (null != $db_config && isset($db_config->prefix)) {
+	    		$this->_prefix = $db_config->prefix;
+   			}
     	
-    	if (null !== $conn) {
-    		self::$conn = $conn;
+    		if (null !== $conn) {
+    			self::$conn = $conn;
+    		}
     	}
     }
     

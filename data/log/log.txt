@@ -1,1 +1,6 @@
 2011-02-24T15:43:31+08:00 INFO (6): en translation file is missing : /home/lds/workspace/php/yiriji/application/../data/languages/en.mos
+2011-02-24T16:28:08+08:00 INFO (6): SQLSTATE[28000] [1045] Access denied for user 'lds'@'localhost' (using password: YES)
+2011-02-24T16:28:29+08:00 INFO (6): SQLSTATE[28000] [1045] Access denied for user 'lds'@'localhost' (using password: YES)
+2011-02-24T16:29:55+08:00 INFO (6): SQLSTATE[28000] [1045] Access denied for user 'lds'@'localhost' (using password: YES)
+2011-02-24T17:23:21+08:00 INFO (6): Could not write to file "/home/lds/workspace/php/yiriji/application/configs/application.ini"
+2011-02-24T17:23:46+08:00 INFO (6): Could not write to file "/home/lds/workspace/php/yiriji/application/configs/application.ini"

@@ -1,6 +1,6 @@
 <?php
 
-class IndexController extends Zend_Controller_Action
+class Admin_InstallController extends Zend_Controller_Action
 {
 
     public function init()
@@ -10,7 +10,8 @@ class IndexController extends Zend_Controller_Action
 
     public function indexAction()
     {
-    	//$db = Ediary_Database_Db::getDb();
+        // action body
+        Ediary_Config::updateConfig('install', 'installed', 1);
     }
 
 

@@ -21,6 +21,15 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		include 'Ediary/Utility/functions.php';
 	}
 	
+	protected function _initInstallChecker() {
+		$isInstalled = Ediary_Config::isInstalled();
+		var_dump($isInstalled);
+		if (null == $isInstalled || !$isInstalled ) {
+			//Ediary_Core::gotoUrl('/admin/install');
+			exit;
+		}
+	}
+	
 	protected function _initControllers() {
 		$this->bootstrap('FrontController');
 		$front = $this->frontController;
@@ -39,14 +48,33 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 			//->registerPlugin(new Lds_Controller_Plugin_Filter())
 	}
 	
+	protected function _initRoute() {
+		$front = $this->frontController;
+		$router = $front->getRouter();
+		
+		// Error
+		$router->addRoute(
+			'error',
+			new Zend_Controller_Router_Route(
+				'error/:message',
+				array(
+				    'module' => 'default',
+				    'controller' => 'error',
+				    'action' => 'error',
+				)
+			)
+		);
+	}
+	
 	protected function _initView() {
 		
 	}
 
 	protected function _initDatebase() {
 		$resources = $this->getPluginResource('db');
-		$conn = $resources->getDbAdapter();
-		$db = new Ediary_Database_Db($conn);
+		//TODO: 单例
+		//$conn = $resources->getDbAdapter();
+		//$db = new Ediary_Database_Db($conn); 
 	}
 
 	protected function _initTranslate() {
