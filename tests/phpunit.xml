@@ -3,6 +3,7 @@
 	  <!--  <directory>./</directory> -->	  	
       <!--   <directory>./application/models</directory>--> 	  	
       <!--<directory>./application/ONE</directory> 	  	-->
+     <!-- directory>./library/Ediary/Database</directory--> 	  	
       <directory>./library</directory> 	  	
 	</testsuite>
     <filter>

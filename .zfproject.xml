@@ -46,9 +46,12 @@
           <controllersDirectory>
             <controllerFile controllerName="Index">
               <actionMethod actionName="index"/>
+              <actionMethod actionName="step2"/>
             </controllerFile>
             <controllerFile controllerName="Install">
               <actionMethod actionName="index"/>
+              <actionMethod actionName="step2"/>
+              <actionMethod actionName="step1"/>
             </controllerFile>
           </controllersDirectory>
           <formsDirectory enabled="false"/>
@@ -61,6 +64,15 @@
               </viewControllerScriptsDirectory>
               <viewControllerScriptsDirectory forControllerName="Install">
                 <viewScriptFile forActionName="index"/>
+              </viewControllerScriptsDirectory>
+              <viewControllerScriptsDirectory forControllerName="Index">
+                <viewScriptFile forActionName="step2"/>
+              </viewControllerScriptsDirectory>
+              <viewControllerScriptsDirectory forControllerName="Install">
+                <viewScriptFile forActionName="step2"/>
+              </viewControllerScriptsDirectory>
+              <viewControllerScriptsDirectory forControllerName="Install">
+                <viewScriptFile forActionName="step1"/>
               </viewControllerScriptsDirectory>
             </viewScriptsDirectory>
             <viewHelpersDirectory/>

@@ -1,0 +1,3 @@
+DROP DATABASE IF EXISTS `ediary`;
+
+CREATE DATABASE `ediary`;

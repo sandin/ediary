@@ -25,3 +25,14 @@ msgstr "HOME"
 msgid "HOME"
 msgstr "主页"
 
+#: 
+msgid "Value is required and can't be empty"
+msgstr "输入值不可以为空"
+
+#:
+msgid "'%value%' has not only alphabetic and digit characters"
+msgstr "'%value%'不是字母或数字"
+
+#: 
+msgid "'%value%' is an empty string"  
+msgstr "输入值不可以为空"

@@ -60,8 +60,13 @@ class Ediary_Logger
 	 */
 	private static function initLogger() {
 		if (null == self::$logger) {
-			$type = intval(Ediary_Config::getAppConfig()->logger->type);
-			self::getLogger($type);
+			$config = Ediary_Config::getAppConfig();
+			
+			$logType = self::LOGGER_TYPE_FILE;
+			if (NULL != $config && isset($config->logger->type) ) {
+				$logType = intval($config->logger->type);
+			}
+			self::getLogger($logType);
 		}
 	}
 	

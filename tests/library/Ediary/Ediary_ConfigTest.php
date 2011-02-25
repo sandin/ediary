@@ -40,6 +40,7 @@ class Ediary_ConfigTest extends ControllerTestCase
      */
     protected function tearDown()
     {
+    	//Ediary_Config::flushCache(); // fluch cache, Case's section is [install] 
     }
 
     /**
@@ -47,10 +48,25 @@ class Ediary_ConfigTest extends ControllerTestCase
      */
     public function testGetConfig()
     {
-    	$config = Ediary_Config::getConfig();
     	
-    	$this->assertNotNull($config);
+    	$config = Ediary_Config::getConfig();
+    	$this->assertTrue(Ediary_Config::hasCache()); // has cache now
+    	$this->assertTrue(Ediary_Config::$useCache);
+    	$this->assertNotNull($config); // config not null
     	$this->assertEquals($this->config_from_file->resources, $config->resources);
+    	
+    	// test flush cache 
+    	Ediary_Config::flushCache();
+    	$this->assertFalse(Ediary_Config::hasCache()); // no cache now
+    	
+    	// test get config's cache
+    	$config = Ediary_Config::getConfig(false);
+    	$this->assertFalse(Ediary_Config::$useCache); // did not use cache
+    	
+    	// Test section
+    	$config = Ediary_Config::getConfig(false, 'install');
+    	$this->assertFalse(Ediary_Config::hasCache()); // has cache now
+    	$this->assertNotNull($config->ediary->config->installed);
     }
     
     public function testGetDbConfig() {
@@ -66,6 +82,23 @@ class Ediary_ConfigTest extends ControllerTestCase
     public function testGetDbType() {
     	$expect_type = $this->config_from_file->resources->db->adapter;
     	$this->assertEquals($expect_type, $this->object->getDbType());
+    }
+    
+    public function testUpdateConfig() {
+    	$expected = rand(0, 1);
+    	
+    	Ediary_Config::updateConfig('install', 'installed', $expected);
+    	$isInstalled = Ediary_Config::isInstalled();
+    	
+    	$this->assertEquals(( ($expected) ? true : false ), $isInstalled);
+    }
+    
+    public function testSetInstalled() {
+    	Ediary_Config::setInstalled(true);
+    	$this->assertTrue(Ediary_Config::isInstalled());
+    	
+    	Ediary_Config::setInstalled(false);
+    	$this->assertFalse(Ediary_Config::isInstalled());
     }
 }
 ?>

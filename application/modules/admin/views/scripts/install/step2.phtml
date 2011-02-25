@@ -1,0 +1,7 @@
+<h1><?php echo _t("安装数据库"); ?></h1>
+<div class="error"><?php echo $this->error?></div>
+
+<?php if (isset($this->ok)):?>
+<div class="message">数据库安装成功.</div>
+<a href="<?php echo $this->baseUrl('/');?>">返回主页</a>
+<?php endif;?>

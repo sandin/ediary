@@ -19,8 +19,11 @@ class Ediary_Database_DbTest extends ControllerTestCase
     public function setUp()
     {
     	parent::setUp();
-        $this->object = Ediary_Database_Db::getInstance();
-    	$this->object->connect();
+    	$conn = Zend_Db_Table::getDefaultAdapter();
+    	$this->assertNotNull($conn);
+    	
+        $this->object = Ediary_Database_Db::getInstance()->setConnection($conn);
+    	$this->assertTrue( $this->object->connect() );
     }
 
     /**
@@ -29,7 +32,10 @@ class Ediary_Database_DbTest extends ControllerTestCase
      */
     protected function tearDown()
     {
+    	if (NULL !== $this->object)
+    		$this->object->close();
     }
+    
     
     public function testConnect() {
     	$db = $this->object;
@@ -40,19 +46,17 @@ class Ediary_Database_DbTest extends ControllerTestCase
     	$this->assertNotNull($db_config['password']);
     	$this->assertNotNull($db_config['dbname']);
     	
-    	$db->query("SHOW TABLES");
     }
 
     /**
-     * @todo Implement testCreate().
      */
     public function testCreate()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+    	$this->object->create();
+    	
+    	$this->assertTrue( $this->object->isInstalled() );
     }
+    
 
     /**
      * @todo Implement testUpgrade().
@@ -75,5 +79,7 @@ class Ediary_Database_DbTest extends ControllerTestCase
           'This test has not been implemented yet.'
         );
     }
+    
+    
 }
 ?>
