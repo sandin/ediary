@@ -1,17 +1,17 @@
 <?php
 
 /* DEBUG MOCK
-$imdb = new stdClass();
-$imdb->dbname = 'ediary';
-$imdb->users = 'user';
-$imdb->diarys = 'diary';
-$imdb->books = 'book';
+ $imdb = new stdClass();
+ $imdb->dbname = 'ediary';
+ $imdb->users = 'user';
+ $imdb->diarys = 'diary';
+ $imdb->books = 'book';
 
-$imdb->charset_name = 'utf8';
-$imdb->collation_name = 'utf8_general_ci';
-$imdb->tableSet = ' CHARACTER SET ' . $imdb->charset_name 
-                . ' COLLATE ' . $imdb->collation_name;
-*/
+ $imdb->charset_name = 'utf8';
+ $imdb->collation_name = 'utf8_general_ci';
+ $imdb->tableSet = ' CHARACTER SET ' . $imdb->charset_name
+ . ' COLLATE ' . $imdb->collation_name;
+ */
 
 //global $imdb;
 

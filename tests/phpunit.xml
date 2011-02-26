@@ -1,27 +1,24 @@
-  <phpunit bootstrap="./bootstrap.php"  colors="true">         
-	<testsuite name="MyApp">
-	  <!--  <directory>./</directory> -->	  	
-      <!--   <directory>./application/models</directory>--> 	  	
-      <!--<directory>./application/ONE</directory> 	  	-->
-     <!-- directory>./library/Ediary/Database</directory--> 	  	
-      <directory>./library</directory> 	  	
-	</testsuite>
-    <filter>
-        <whitelist>
-            <directory suffix=".php">../application/</directory>
-            <exclude>
-            	<file>../application/Bootstrap.php</file>
-                <directory suffix=".tpl">../application/</directory>
-                <directory suffix=".tpl.php">../application/</directory>
-            </exclude>
-        </whitelist>
-    </filter>
 
-	<!--
-    <logging>
-        <log type="coverage-html" target="./log/report" charset="UTF-8"
-            yui="true" highlight="true" lowUpperBound="50" highLowerBound="80"/>
-        <log type="testdox-html" target="./log/testdox.html" />
-	</logging>
-	-->		 
+<phpunit bootstrap="./bootstrap.php" colors="true">
+	<testsuite name="MyApp">
+		<!-- <directory>./</directory> -->
+		<!-- <directory>./application/models</directory> -->
+		<!--<directory>./application/ONE</directory> -->
+		<!-- directory>./library/Ediary/Database</directory -->
+		<directory>./library</directory>
+	</testsuite>
+	<filter>
+		<whitelist>
+			<directory suffix=".php">../application/</directory>
+			<exclude>
+				<file>../application/Bootstrap.php</file>
+				<directory suffix=".tpl">../application/</directory>
+				<directory suffix=".tpl.php">../application/</directory>
+			</exclude>
+		</whitelist>
+	</filter>
+
+	<!-- <logging> <log type="coverage-html" target="./log/report" charset="UTF-8" 
+		yui="true" highlight="true" lowUpperBound="50" highLowerBound="80"/> <log 
+		type="testdox-html" target="./log/testdox.html" /> </logging> -->
 </phpunit>

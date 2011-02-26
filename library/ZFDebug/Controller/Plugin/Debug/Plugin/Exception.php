@@ -63,15 +63,15 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Exception implements ZFDebug_Contro
         $response = Zend_Controller_Front::getInstance()->getResponse();
         $errorCount = count(self::$errors);
         if (! $response->isException() && ! $errorCount)
-            return '';
+        return '';
         $error = '';
         $exception = '';
         if ($errorCount)
-            $error = ($errorCount == 1 ? '1 Error' : $errorCount . ' Errors');
+        $error = ($errorCount == 1 ? '1 Error' : $errorCount . ' Errors');
         $count = count($response->getException());
         //if ($this->_options['show_exceptions'] && $count)
         if ($count)
-            $exception = ($count == 1) ? '1 Exception' : $count . ' Exceptions';
+        $exception = ($count == 1) ? '1 Exception' : $count . ' Exceptions';
         $text = $exception . ($exception == '' || $error == '' ? '' : ' - ') . $error;
         return $text;
     }
@@ -86,7 +86,7 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Exception implements ZFDebug_Contro
         $response = Zend_Controller_Front::getInstance()->getResponse();
         $errorCount = count(self::$errors);
         if (! $response->isException() && ! $errorCount)
-            return '';
+        return '';
         $html = '';
 
         foreach ($response->getException() as $e) {
@@ -95,11 +95,11 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Exception implements ZFDebug_Contro
             foreach ($e->getTrace() as $t) {
                 $func = $t['function'] . '()';
                 if (isset($t['class']))
-                    $func = $t['class'] . $t['type'] . $func;
+                $func = $t['class'] . $t['type'] . $func;
                 if (! isset($t['file']))
-                    $t['file'] = 'unknown';
+                $t['file'] = 'unknown';
                 if (! isset($t['line']))
-                    $t['line'] = 'n/a';
+                $t['line'] = 'n/a';
                 $html .= '<li>' . $func . '<br>in ' . str_replace($_SERVER['DOCUMENT_ROOT'], '', $t['file']) . ' on line ' . $t['line'] . '</li>';
             }
             $html .= '</ol>';
@@ -127,7 +127,7 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Exception implements ZFDebug_Contro
     public static function errorHandler ($level, $message, $file, $line)
     {
         if (! ($level & error_reporting()))
-            return false;
+        return false;
         switch ($level) {
             case E_NOTICE:
             case E_USER_NOTICE:
@@ -147,7 +147,7 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Exception implements ZFDebug_Contro
         }
         self::$errors[] = array('type' => $type , 'message' => $message , 'file' => $file , 'line' => $line);
         if (ini_get('log_errors'))
-            error_log(sprintf("%s: %s in %s on line %d", $type, $message, $file, $line));
+        error_log(sprintf("%s: %s in %s on line %d", $type, $message, $file, $line));
         return true;
     }
 }

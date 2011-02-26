@@ -28,7 +28,7 @@ class ZFDebug_Controller_Plugin_Debug_Plugin
     protected function _cleanData($values)
     {
         if (is_array($values))
-            ksort($values);
+        ksort($values);
 
         $retVal = '<div class="pre">';
         foreach ($values as $key => $value)

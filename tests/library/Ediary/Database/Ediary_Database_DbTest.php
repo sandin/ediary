@@ -18,12 +18,12 @@ class Ediary_Database_DbTest extends ControllerTestCase
      */
     public function setUp()
     {
-    	parent::setUp();
-    	$conn = Zend_Db_Table::getDefaultAdapter();
-    	$this->assertNotNull($conn);
-    	
+        parent::setUp();
+        $conn = Zend_Db_Table::getDefaultAdapter();
+        $this->assertNotNull($conn);
+         
         $this->object = Ediary_Database_Db::getInstance()->setConnection($conn);
-    	$this->assertTrue( $this->object->connect() );
+        $this->assertTrue( $this->object->connect() );
     }
 
     /**
@@ -32,28 +32,28 @@ class Ediary_Database_DbTest extends ControllerTestCase
      */
     protected function tearDown()
     {
-    	if (NULL !== $this->object)
-    		$this->object->close();
+        if (NULL !== $this->object)
+        $this->object->close();
     }
-    
-    
+
+
     public function testGetConfig() {
-    	$db = $this->object;
-    	
-    	$db_config = $db->getConfig();
-    	$this->assertNotNull($db_config->username);
-    	$this->assertNotNull($db_config->dbname);
+        $db = $this->object;
+         
+        $db_config = $db->getConfig();
+        $this->assertNotNull($db_config->username);
+        $this->assertNotNull($db_config->dbname);
     }
 
     /**
      */
     public function testCreate()
     {
-    	$this->object->create();
-    	
-    	$this->assertTrue( $this->object->isInstalled() );
+        $this->object->create();
+         
+        $this->assertTrue( $this->object->isInstalled() );
     }
-    
+
 
     /**
      * @todo Implement testUpgrade().
@@ -63,7 +63,7 @@ class Ediary_Database_DbTest extends ControllerTestCase
         // Remove the following lines when you implement this test.
         $this->markTestIncomplete(
           'This test has not been implemented yet.'
-        );
+          );
     }
 
     /**
@@ -74,21 +74,21 @@ class Ediary_Database_DbTest extends ControllerTestCase
         // Remove the following lines when you implement this test.
         $this->markTestIncomplete(
           'This test has not been implemented yet.'
-        );
+          );
     }
-    
+
     public function testSetPrefix() {
-    	$prefix = 'prefix_';
-    	$this->object->setPrefix($prefix);
-    	
-    	$this->assertEquals($prefix . 'users', $this->object->users);
-    	$this->assertEquals($prefix . 'diarys', $this->object->diarys);
-    	$this->assertEquals($prefix . 'books', $this->object->books);
+        $prefix = 'prefix_';
+        $this->object->setPrefix($prefix);
+         
+        $this->assertEquals($prefix . 'users', $this->object->users);
+        $this->assertEquals($prefix . 'diarys', $this->object->diarys);
+        $this->assertEquals($prefix . 'books', $this->object->books);
     }
-    
+
     public function testGetDbName() {
-    	$this->assertNotNull( $this->object->getConfig()->dbname );
+        $this->assertNotNull( $this->object->getConfig()->dbname );
     }
-    
+
 }
 ?>

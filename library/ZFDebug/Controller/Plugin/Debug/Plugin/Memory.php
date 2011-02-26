@@ -79,7 +79,7 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Memory extends Zend_Controller_Plug
         }
         return $panel;
     }
-    
+
     /**
      * Sets a memory mark identified with $name
      *
@@ -90,12 +90,12 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Memory extends Zend_Controller_Plug
             return;
         }
         if (isset($this->_memory['user'][$name]))
-            $this->_memory['user'][$name] = memory_get_peak_usage()-$this->_memory['user'][$name];
+        $this->_memory['user'][$name] = memory_get_peak_usage()-$this->_memory['user'][$name];
         else
-            $this->_memory['user'][$name] = memory_get_peak_usage();
+        $this->_memory['user'][$name] = memory_get_peak_usage();
     }
-    
-    
+
+
     /**
      * Defined by Zend_Controller_Plugin_Abstract
      *
@@ -121,5 +121,5 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Memory extends Zend_Controller_Plug
             $this->_memory['postDispatch'] = memory_get_peak_usage();
         }
     }
-    
+
 }
