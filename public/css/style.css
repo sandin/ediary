@@ -1,0 +1,246 @@
+/** 
+* style.css
+* 
+* @author lds <lds2012@gmail.com>
+* @version %Id%
+* @date 2010-00-00
+*/
+/*{{{ reset */
+body,h1,h2,h3,h4,h5,h6,hr,p,blockquote,dl,dt,dd,ul,ol,li,pre,form,fieldset,legend,button,input,textarea,th,td,div{margin:0;padding:0;}body,button,input,select,textarea{font:12px/1.5 tahoma,arial,\5b8b\4f53,sans-serif;}h1,h2,h3,h4,h5,h6{font-size:100%;}address,cite,dfn,em,var{font-style:normal;}code,kbd,pre,samp{font-family:courier new,courier,monospace;}small{font-size:12px;}ul,ol{list-style:none;}a{text-decoration:none;}a:hover{text-decoration:underline;}sup{vertical-align:text-top;}sub{vertical-align:text-bottom;}legend{color:#000;}fieldset,img{border:0;}button,input,select,textarea{font-size:100%;}table{border-collapse:collapse;border-spacing:0;}
+/*}}}*/
+
+/* grid {{{  
+------------------*/
+.grid_5x { float: left; width: 185px; }
+.grid_19x { float: right; width: 752px; }
+
+.grid_6x { float: left; width: 230px; }
+.grid_18x { float: right; width: 720px; }
+
+.grid_11x { float: left; width: 454px; }
+.grid_13x { float: right; width: 488px; }
+
+.grid_9x { float: right; width: 352px; }
+.grid_15x { float: left; width: 595px; }
+
+.grid_8x { float: left; width: 311px; }
+.grid_16x { float: right; width: 625px; }
+
+.grid_5x, .grid_19x, .grid_11x, .grid_13x,
+.grid_9x, .grid_15x, .grid_8x, .grid_16x
+{
+    /*overflow: hidden;*/
+}
+/*}}}*/
+
+/* base {{{ 
+------------------*/
+body {
+    color: #666;
+}
+
+/* TODO: 链接颜色和文字颜色区别不大,建议更改 */
+a:link { color: #6699cc; text-decoration: none; }
+a:visited { color: #6699cc;/*change it*/ text-decoration: none; }
+a:hover { color: #d93939; text-decoration: none; }
+a:active { color: #d93939; text-decoration: none;}
+
+h1,h2,h3,h4,h5,h6 {}
+h3 {font-size: 12px;}
+
+em {color:red;}
+
+/* clear both */
+.clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden }
+.clearfix { zoom: 1; display: inline-block; _height: 1px }
+*html .clearfix { height: 1% }
+*+html .clearfix { height: 1% }
+.clearfix { display: block }
+/*}}}*/
+
+/* Helper {{{ 
+-----------------*/
+.m0 { margin: 0; }
+.mr0 { margin-right: 0; }
+.mr2 { margin-right: 2px; }
+.mr5 { margin-right: 5px; }
+.ml5 { margin-left: 5px; }
+.mb5 { margin-bottom: 5px; }
+.mt5 { margin-top: 5px; }
+.mt10 { margin-top: 10px; }
+.ml10 { margin-left: 10px; }
+.mb10 { margin-bottom: 10px; }
+.mt10 { margin-top: 10px; }
+
+.fright { float: right; }
+.fleft { float: left; }
+
+.pRelative { position: relative; }
+.pRight { position: absolute; right: 5px; top:0; }
+
+.aRight { text-align: right; }
+.aCenter { text-align: center; }
+
+.getMore { float: right; padding-right: 5px; }
+
+.hide { display: none; }
+/*}}}*/
+
+/* Share style {{{ 
+-------------------------*/
+.strong_1 { color: #649ac8; }
+.strong_2 { color: #ff3402; }
+.strong_3 { color: #33cc00; }
+
+/* button */
+.btn { display: inline-block; background-image: url("../images/sprites.gif"); background-repeat: no-repeat; vertical-align: text-top; }
+
+/* newBtns */
+.newBtns { display: inline-block; background: #fff url("../images/bg_btns_1x20.gif") repeat-x; border: 1px solid #cecece; cursor: pointer; font-size: 12px; }
+.newBtns:link, .newBtns:visited { color: #000; }
+.newBtns:hover { background-image: url("../images/bg_btns_1x20_hover.gif"); }
+.newBtns:active { color: #000; } 
+.newBtns span { display: block; _display: inline-block; height: 20px; _height: 18px; line-height: 20px; overflow: hidden; border: 1px solid #fff; padding: 0 5px; _padding-top: 2px; }
+.newBtns img { vertical-align: middle; margin-right: 2px; }
+/*}}}*/
+
+/* Link {{{
+-------------------*/
+/*}}}*/
+
+/* Layout {{{ 
+-------------------------*/
+#wrapper {
+    width: 990px; /* 页面宽 */
+    margin: 0 auto;
+}
+.aside, .article {
+    margin-top: 28px;
+    _height: 500px;
+}
+#content {
+    min-height: 500px;
+    _height: 500px;
+}
+/*}}}*/
+
+/* header + footer {{{
+--------------------------*/
+/* header */
+#header {
+    background: url("../images/bg_nav.gif") no-repeat 0 bottom;
+    height: 100px;
+    padding-bottom: 20px;
+}
+.logo {
+    float: left;
+    display: inline;
+    width: 217px;
+    margin-top: 40px;
+}
+.logo img {
+    margin-left: 70px;
+}
+.logo span {
+    display: none;
+}
+
+/* nav */
+#nav {
+}
+
+/* footer */
+#footer {
+    background: url("../images/bg_footer_1x68.gif") repeat-x;
+    padding: 15px 20px 0;
+    zoom: 1;
+}
+#footer .copyright {
+    float: left;
+    height: 68px;
+    width: 49%;
+}
+#footer .links {
+    float: right;
+    width: 49%;
+    text-align: right;
+}
+#footer .links a {
+    margin: 5px;
+}
+/*}}}*/
+
+/* Module {{{
+-------------------*/
+/* mod */
+.mod {
+    margin-bottom: 10px;
+}
+.mod h3 {
+    font-size: 12px;
+}
+.mod h3 .title {
+    float: left;
+    padding-left: 15px;
+}
+.mod .content {
+    /*padding: 5px;*/
+}
+/*}}}*/
+
+/* List {{{ 
+-----------------*/
+/* 基本列表样式 */
+.List {
+    padding: 5px;
+}
+.List li {
+    padding: 3px 2px 3px 10px;
+}
+/*}}}*/
+
+/* Table {{{
+-------------------*/
+.Table {}
+.Table th, .Table td {
+    padding: 2px;
+}
+.Table {}
+/*}}}*/
+
+/* Form {{{
+--------------------------*/
+.Form {}
+.Form input.text {
+    padding-left: 5px;
+}
+.Form p {
+    margin-bottom: 8px;
+}
+
+/* labelForm */
+.labelForm label {
+    display: inline-block;
+    width: 80px;
+    text-align: right;
+    margin-right: 5px;
+}
+
+/*}}}*/
+
+/* Debug {{{ 
+-----------------*/
+#wrapper,
+#header,
+#nav,
+#content,
+.search,
+#footer,
+.section,
+.article,
+.aside,
+.toplink {
+    border: 1px red solid;
+}
+/*}}}*/
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 enc=utf-8 :*/

@@ -34,7 +34,7 @@ class Ediary_User
     }
 
     /**
-     * Get this user's name
+     * Get the user's name
      *
      * @return string
      */
@@ -43,7 +43,7 @@ class Ediary_User
     }
 
     /**
-     * Get this user's ID
+     * Get the user's ID
      *
      * @return int
      */
@@ -52,7 +52,7 @@ class Ediary_User
     }
 
     /**
-     * New a new from one row data
+     * New a User from one row data
      *
      * @param Array $row
      * @return Ediary_User
@@ -99,9 +99,8 @@ class Ediary_User
      * @return int The number of affected rows. | return -1 on fail.
      */
     public function create($email, $name, $password) {
-        if ( self::isValidUserName($name)
-        && self::isValidEmail($email)
-        && self::isValidPassword($password) ) {
+        if ( self::isValidUserName($name) && self::isValidEmail($email)
+                && self::isValidPassword($password) ) {
             return $this->insert($email, $name, $password);
         }
         return -1;
@@ -159,7 +158,7 @@ class Ediary_User
      * @return string
      */
     public static function makeSecurityCode($keyword) {
-        return md5($keyword . microtime() . rand(0,99) . 'LDS');
+        return md5($keyword . microtime() . 'lds');
     }
 
     /**
@@ -187,12 +186,12 @@ class Ediary_User
         $encodedPassword = self::encryptPassword($password, $securityCode);
          
         $data = array(
-        self::EMAIL => $email,
-        self::NAME  => $name,
-        self::PASSWORD => $encodedPassword,
-        self::SECURITY_CODE => $securityCode,
-        self::CREATED => $now,
-        self::LAST_TIME => $now
+            self::EMAIL => $email,
+            self::NAME  => $name,
+            self::PASSWORD => $encodedPassword,
+            self::SECURITY_CODE => $securityCode,
+            self::CREATED => $now,
+            self::LAST_TIME => $now
         );
          
         return self::$table->insert($data);

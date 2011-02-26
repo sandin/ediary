@@ -12,7 +12,7 @@ class Admin_InstallController extends Zend_Controller_Action
      	$this->mSession = new Zend_Session_Namespace('form-token');
      	$this->mSession->setExpirationSeconds(10);
      	
-        $installer = new Ediary_Installer();
+        //$installer = new Ediary_Installer();
         
     	if (Ediary_Config::isInstalled() && !Ediary_Config::isInstalling()) {
 			Ediary_Core::exitApp('The appliction has already benn installed.');
@@ -106,6 +106,8 @@ class Admin_InstallController extends Zend_Controller_Action
         	$this->view->error = $db_e->getMessage();
         }
         
+        Ediary_Config::setInstalling(false);
+        Ediary_Config::setInstalled(true);
         $this->view->ok = true;
     }
     

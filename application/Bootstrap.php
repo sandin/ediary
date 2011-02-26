@@ -131,11 +131,15 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
     protected function _initView() {
         Zend_Layout::startMvc();
-        $view = new Zend_View();
+        $view = Zend_Layout::getMvcInstance()->getView();
 
         // SETUP THE HEAD TITLE
-        $view->headTitle(_t("宜日记"));
-        $view->headTitle()->setSeparator(' - ');
+        $view->headTitle(_t("宜日记"))
+             ->setSeparator(' - ')
+             ->setDefaultAttachOrder('PREPEND');
+        
+        // Register Helpers
+        $view->addHelperPath(APPLICATION_PATH. '/../library/Ediary/View/Helper', 'Ediary_View_Helper');
 
         return $view;
     }
