@@ -37,15 +37,12 @@ class Ediary_Database_DbTest extends ControllerTestCase
     }
     
     
-    public function testConnect() {
+    public function testGetConfig() {
     	$db = $this->object;
     	
     	$db_config = $db->getConfig();
-    	$this->assertNotNull($db_config['username']);
-    	$this->assertNotNull($db_config['host']);
-    	$this->assertNotNull($db_config['password']);
-    	$this->assertNotNull($db_config['dbname']);
-    	
+    	$this->assertNotNull($db_config->username);
+    	$this->assertNotNull($db_config->dbname);
     }
 
     /**
@@ -80,6 +77,18 @@ class Ediary_Database_DbTest extends ControllerTestCase
         );
     }
     
+    public function testSetPrefix() {
+    	$prefix = 'prefix_';
+    	$this->object->setPrefix($prefix);
+    	
+    	$this->assertEquals($prefix . 'users', $this->object->users);
+    	$this->assertEquals($prefix . 'diarys', $this->object->diarys);
+    	$this->assertEquals($prefix . 'books', $this->object->books);
+    }
+    
+    public function testGetDbName() {
+    	$this->assertNotNull( $this->object->getConfig()->dbname );
+    }
     
 }
 ?>

@@ -128,6 +128,16 @@ class Ediary_Config
 		$appSession = new Zend_Session_Namespace(Ediary_Application::SESSION_APP);
 		$appSession->{Ediary_Application::INSTALLING} = $isIntalling;
 	}
+	
+	public static function getPerfix() {
+		$perfix = '';
+		$db_config = Ediary_Config::getDbConfig();
+
+		if (null != $db_config && isset($db_config->prefix)) {
+			 $perfix = $db_config->prefix;
+		}
+		return $perfix;
+	}
 
 	/**
 	 * Update a config value

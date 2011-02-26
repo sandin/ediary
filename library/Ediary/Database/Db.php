@@ -23,13 +23,38 @@ class Ediary_Database_Db
 	 */
 	private $prefix = '';
 	
+	private $tableSet = '';
+	
+	/**
+	 * Tables name
+	 * @var Array<String>
+	 */
+	private $tables = array('users', 'diarys', 'books');
+	
+	/**
+	 * Table Name - users
+	 * @var String
+	 */
+	public $users;
+	
+	/**
+	 * Table Name - diarys
+	 * @var String
+	 */
+	public $diarys;
+	
+	/**
+	 * Table Name - books
+	 * @var String
+	 */
+	public $books;
+	
 	/**
 	 * Database Connection
 	 * 
 	 * @var Zend_Db_Adapter_Abstracta
 	 */
 	private $conn = null;
-	
 	
 	// Singleton 
 
@@ -44,7 +69,6 @@ class Ediary_Database_Db
      * PRIVATE, use Ediary_Database_Db::getInstance()
      */
     private function __construct() {
-    	return;
     }
     
     /**
@@ -66,21 +90,21 @@ class Ediary_Database_Db
     
     
     // METHODS
-	
+    
     /**
      * Set Tables prefix
      * 
      * @param String $prefix
+     * @throws Ediary_Exception invalid prefix 
      */
-    public function setPrefix($prefix = null) {
-    	if (NULL == $prefix) {
-    		$db_config = Ediary_Config::getDbConfig();
-    		
-    		if (null != $db_config && isset($db_config->prefix)) {
-	    		$this->_prefix = $db_config->prefix;
-   			}
-    	} else {
-    		$this->_prefix = $prefix;
+    public function setPrefix($prefix) {
+    	if ( preg_match( '|[^a-z0-9_]|i', $prefix ) ) {
+    		throw new Ediary_Exception(_t("数据库前缀不能允许数字字母和下划线."));
+    	}
+    	
+    	$this->_prefix = $prefix;
+    	foreach ($this->tables as $table) {
+    		$this->$table = $this->_prefix . $table ;
     	}
     }
     
@@ -140,42 +164,65 @@ class Ediary_Database_Db
     }
 	
 	/**
-	 * CREATE TABLES
-	 * 
-	 * @param String $sql
-	 * @throws Ediary_Database_Exception sql file is missing or Zend_Db_Exception 
-	 * @return boolean Is succeed
+	 * Create Tables
+	 * NOTE: Class setPrefix() first
 	 */
-	public function create($sql = null) {
+	public function create() {
+		$this->drop();
+		
+		// Setup charset and collation
+		$charset_name = $this->getConfig()->charset ;
+		$collation_name = 'utf8_general_ci';
+		
+		$this->dbname = $this->getConfig()->dbname;
+		$this->tableSet = ' CHARACTER SET ' . $charset_name 
+                		. ' COLLATE ' . $collation_name;
+                
+		$imdb = $this; 
+		include 'schema.php'; //defined $query
+		
+		var_dump($query);
+		$this->query($query);
+			
 		if (! $this->isInstalled() ) {
 			
-			// READ SQL QUERY IN THE FILE
-			if (NULL == $sql) {
-				$file =  APPLICATION_PATH . '/data/sql/install.sql';
-				if (file_exists($file)) {
-					$sql = file_get_contents($file);
-				} else {
-					$msg = 'Database Install FILE is missing : ' . $file;
-					throw new Ediary_Database_Exception($msg);
-				}
-			} 
 			
-			// QUERY
+		} // already installed
+	}
+	
+	/**
+	 * Execute a sql query file
+	 * 
+	 * @param String $sqlfile sql file name
+	 * @throws Ediary_Database_Exception sql file is missing or cann't execute the query
+	 * @return boolean Is succeed
+	 */
+	public function queryFile($sqlfile) {
+		$result = false;
+		if (file_exists($sqlfile)) {
 			try {
+				// READ SQL QUERY IN THE FILE
+				$sql = file_get_contents($sqlfile);
 				$result = $this->query($sql);
 			} catch (Zend_Db_Exception $db_e) {
 				throw new Ediary_Database_Exception(
-					$db_e->getMessage(), $db_e->getCode(), $db_e);
+				$db_e->getMessage(), $db_e->getCode(), $db_e);
 			}
-			
-			return ( $result->rowCount() > 0 );
+			$result = ( $result->rowCount() > 0 );
+		} else {
+			throw new Ediary_Database_Exception('SQL FILE is missing : ' . $sqlfile);
 		}
 		
-		return false; // alreay installed
+		return $result;
 	}
 	
-	private function dump() {
-		
+	/**
+	 * @deprecated ONLY FOR DEBUG
+	 */
+	private function drop() {
+		foreach ($this->tables as $table) {
+			$this->query('DROP TABLE IF EXISTS '. $table );
+		}
 	}
 	
 	public function upgrade() {
@@ -197,14 +244,22 @@ class Ediary_Database_Db
 	}
 	
 	/**
-	 * Get database config, such as username, password, host, dbname
+	 * Get database config, such as username, host, dbname
 	 * 
-	 * @return Zend_Config or NULL
+	 * @return stdClass {username, dbname, host, charset}
 	 */
 	public function getConfig() {
+		$config = new stdClass();
+		
 		if (NULL !== $this->conn) {
-			return $this->conn->getConfig();
+			$c = $this->conn->getConfig();
+			$config->username = $c['username'];
+			$config->dbname = $c['dbname'];
+			$config->host = $c['host'];
+			$config->charset =$c['charset'];
 		}
+		
+		return $config;
 	}
 	
 	/**
