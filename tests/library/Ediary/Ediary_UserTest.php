@@ -11,6 +11,8 @@ class Ediary_UserTest extends ControllerTestCase
      * @var Ediary_User
      */
     protected $object;
+    
+    protected $data = array();
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -20,6 +22,10 @@ class Ediary_UserTest extends ControllerTestCase
     {
         parent::setUp();
         $this->object = new Ediary_User();
+        
+        $this->data['email'] = 'lds2012@gmail.com' . microtime();
+        $this->data['name'] = "lds' or 1=1";
+        $this->data['password'] = 'asdfzf34sdfa';
     }
 
     /**
@@ -66,34 +72,58 @@ class Ediary_UserTest extends ControllerTestCase
     /**
      * @todo Implement testLoadFromRow().
      */
-    public function testLoadFromRow()
+    public function testLoadFromArray()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-          );
+        $mockRow = array(
+            Ediary_User::ID => '1234',
+            Ediary_User::NAME => 'lds',
+            Ediary_User::EMAIL => 'lds2012@gmail.com',
+            Ediary_User::ACCOUNT => '100000000',
+            Ediary_User::CREATED => '2010-12-21 12:12:12',
+            Ediary_User::LAST_TIME => '2011-12-23 12:12:12',
+            Ediary_User::PIC => 'dsafas421423',
+            Ediary_User::PASSWORD => 'dsafas13421423',
+            Ediary_User::SECURITY_CODE => 'dsafadsfs13421423',
+        );
+        $user = $this->object->loadFromArray($mockRow);
+        
+        $this->assertEquals($mockRow[Ediary_User::ID], $user->getId());
+        $this->assertEquals($mockRow[Ediary_User::EMAIL], $user->mEmail);
+        $this->assertEquals($mockRow[Ediary_User::NAME], $user->mName);
+        $this->assertEquals($mockRow[Ediary_User::ACCOUNT], $user->mAccount);
+        $this->assertEquals($mockRow[Ediary_User::CREATED], $user->mCreated);
+        $this->assertEquals($mockRow[Ediary_User::LAST_TIME], $user->mLastTime);
+        $this->assertEquals($mockRow[Ediary_User::PIC], $user->mPic);
+        
+        $this->assertTrue($user->isLoad());
     }
 
     /**
-     * @todo Implement testFindById().
+     * depend User#create()
      */
-    public function testFindById()
+    public function testLoadById()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-          );
+        // create a user and load it by id
+        $userId = $this->_insertUser();
+        $user = $this->object->loadById($userId);
+        
+        $this->assertEquals($userId, $user->getId());
+        $this->assertEquals($this->data['email'], $user->mEmail);
+        $this->assertEquals($this->data['name'], $user->mName);
     }
-
+    
     /**
-     * @todo Implement testFindByName().
+     * depend User#create()
      */
-    public function testFindByName()
+    public function testLoadByEmail()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-          );
+        // create a user and load it by email
+        $userId = $this->_insertUser();
+        $user = $this->object->loadByEmail($this->data['email']);
+        
+        $this->assertEquals($userId, $user->getId());
+        $this->assertEquals($this->data['email'], $user->mEmail);
+        $this->assertEquals($this->data['name'], $user->mName);
     }
 
     /**
@@ -101,17 +131,16 @@ class Ediary_UserTest extends ControllerTestCase
      */
     public function testInsert()
     {
-        $result = $this->_insertUser();
-        $this->assertTrue($result > 0);
+        $userId = $this->_insertUser();
+        $this->assertTrue($userId > 0);
     }
 
     private function _insertUser() {
-        $user = $this->object;
-        $email = 'lds2012@gmail.com' . microtime();
-        $name = "l' or 1=1 ds";
-        $password = '123';
-
-        return $user->create($email, $name, $password);
+        return $userId = $this->object->create(
+            $this->data['email'],
+            $this->data['password'],
+            $this->data['name']
+        );
     }
 
     /**
@@ -137,19 +166,14 @@ class Ediary_UserTest extends ControllerTestCase
     }
 
     public function testIsExistsEmail() {
-        $user = $this->object;
-        $email = 'lds2012@g\'mail.com' . time();
-        $name = 'lds\' or 1=1';
-        $password = '123';
-
         // pre check
-        $this->assertFalse($this->object->isExistsEmail($email));
+        $this->assertFalse($this->object->isExistsEmail($this->data['email']));
 
-        $user->create($email, $name, $password);
-        $this->object->isExistsEmail($email);
+        $userId = $this->_insertUser();
+        $this->object->isExistsEmail($this->data['email']);
 
         // post check
-        $this->assertTrue($this->object->isExistsEmail($email));
+        $this->assertTrue($this->object->isExistsEmail($this->data['email']));
     }
 }
 ?>

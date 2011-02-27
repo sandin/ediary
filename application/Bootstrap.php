@@ -35,7 +35,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
     protected function _initInstallChecker() {
         $isInstalled =  Ediary_Config::isInstalled();
-
+        //var_dump($isInstalled); //TODO: 有时误报?
+        
         if ( !$isInstalled ) {
             Ediary_Config::setInstalling(true);
             Ediary_Config::setInstalled(true);
@@ -43,25 +44,35 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             //exit;
         }
     }
+    
+    protected function _initAuth() {
+        $auth = Zend_Auth::getInstance();
+        $storage = new Zend_Auth_Storage_Session();
+        $auth->setStorage($storage);
+        $user = $auth->getIdentity();
+        //TODO: loadUser
+        //var_dump($user);
+        Zend_Registry::set('user', $user);
+    }
 
     protected function _initDatebase() {
         $resources = $this->getPluginResource('db');
         $dbAdapter = $resources->getDbAdapter();
-
-        Zend_Db_Table::setDefaultAdapter($dbAdapter);
-
+        
         $db = Ediary_Database_Db::getInstance()->setConnection($dbAdapter);
         $db->setPrefix(Ediary_Config::getPerfix());
+
+        Zend_Db_Table::setDefaultAdapter($dbAdapter);
     }
 
     protected function _initTranslate() {
 
         // Support Languages
         $i18n = array(
-        array( 'adapter' => 'gettext',
+            array( 'adapter' => 'gettext',
 			 	   'locale'  => 'zh',
 			 	   'content' => APPLICATION_PATH . '/data/languages/zh.mo' ),
-        array( 'adpater' => 'gettext',
+            array( 'adpater' => 'gettext',
 				   'locale'  => 'en',
 				   'content' => APPLICATION_PATH . '/data/languages/en.mo')
         );
@@ -102,7 +113,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         ->setErrorHandlerController('error')
         ->setErrorHandlerAction('error');
         	
-        $front->throwExceptions(true); // 手工捕捉异常
+        $front->throwExceptions(true); // 人工捕捉异常
         // ->registerPlugin($error_plugin);
         //->registerPlugin(new Lds_Controller_Plugin_Smarty())
         //->registerPlugin(new Lds_Controller_Plugin_Modules())
@@ -123,6 +134,45 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 				    'action' => 'error')
             )
         );
+        
+        // Login
+		$router->addRoute(
+			'login',
+			new Zend_Controller_Router_Route(
+				'login/*',
+				array(
+				    'module' => 'user',
+				    'controller' => 'account',
+				    'action' => 'login',
+				)
+			)
+		);
+
+		// Logout
+		$router->addRoute(
+			'logout',
+			new Zend_Controller_Router_Route(
+				'logout/*',
+				array(
+				    'module' => 'user',
+				    'controller' => 'account',
+				    'action' => 'logout',
+				)
+			)
+		);
+
+		// Register
+		$router->addRoute(
+			'register',
+			new Zend_Controller_Router_Route(
+				'register/*',
+				array(
+				    'module' => 'user',
+				    'controller' => 'account',
+				    'action' => 'register',
+				)
+			)
+		);
     }
 
     protected function _initExceptionHandler() {

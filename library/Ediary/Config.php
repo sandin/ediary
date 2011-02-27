@@ -95,7 +95,7 @@ class Ediary_Config
         if (null != $config && isset($config->ediary->config)) {
             return ($config->ediary->config->installed) ? true :false;
         }
-        return false;
+        return true; // default
     }
 
     /**
