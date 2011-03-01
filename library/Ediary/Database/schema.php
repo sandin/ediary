@@ -37,20 +37,20 @@ CREATE TABLE $imdb->users (
 
 DROP TABLE IF EXISTS $imdb->diarys;
 CREATE TABLE $imdb->diarys (
-  diary_id		bigint(20)      unsigned NOT NULL auto_increment,
-  diary_date	datetime        NOT NULL default '0000-00-00 00:00:00',
-  diary_weather varchar(255)    NOT NULL default '',
-  diary_mood    varchar(11)     NOT NULL default '',
-  diary_title   text            NOT NULL,
-  diary_content longtext        NOT NULL,
-  diary_status  varchar(20)     NOT NULL default 'archive',
+  id		bigint(20)      unsigned NOT NULL auto_increment,
+  date		datetime        NOT NULL default '0000-00-00 00:00:00',
+  weather 	varchar(255)    NOT NULL default '',
+  feeling	varchar(11)     NOT NULL default '',
+  title	    text            NOT NULL,
+  content	longtext        NOT NULL,
+  status	varchar(20)     NOT NULL default 'archive',
 
-  diary_author	bigint(20)      unsigned NOT NULL default '0',
-  diary_book    bigint(20)      unsigned NOT NULL default '0',
+  user_id	bigint(20)      unsigned NOT NULL default '0',
+  book_id   bigint(20)      unsigned NOT NULL default '0',
 
-  PRIMARY KEY (diary_id),
-  KEY diary_author (diary_author),
-  KEY diary_book (diary_book)
+  PRIMARY KEY (id),
+  KEY diary_author (user_id),
+  KEY diary_book (book_id)
 ) $imdb->tableSet;
 
 DROP TABLE IF EXISTS $imdb->books;

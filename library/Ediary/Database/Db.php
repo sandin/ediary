@@ -222,7 +222,7 @@ class Ediary_Database_Db
     }
 
     public function upgrade() {
-        if (! $this->isInstalled() ) {
+        if ($this->isInstalled() ) {
             	
         }
     }

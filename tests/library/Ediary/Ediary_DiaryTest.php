@@ -24,7 +24,7 @@ class Ediary_DiaryTest extends ControllerTestCase
         
         $this->data = array(
             'id' => '123',
-            'title' => 'new title'
+            'title' => 'new title13123'
         );
         
         $this->object = new Ediary_Diary($this->data);
@@ -38,12 +38,29 @@ class Ediary_DiaryTest extends ControllerTestCase
     {
     }
     
-    public function testGetProp() {
+    public function testInsert() {
+        // insert
         $diary = $this->object;
-        var_dump($this->object);
-        $diary->insert();
-        var_dump($diary->title);
+        $this->assertTrue( $diary->insert() );
     }
-
+    
+    public function testCreate() {
+        $title = 'lds';
+        
+        // create 
+        $diary = Ediary_Diary::create( array('title' => $title ) );
+        $this->assertEquals($title, $diary->title);
+    }
+    
+    public function testDeleteById() {
+        $diary = Ediary_Diary::create( $this->data );
+        $this->assertTrue($diary->id > 0);
+        
+        // delete
+        $result = $diary->delete();
+        $this->assertTrue($result);
+        
+        
+    }
 }
 ?>
