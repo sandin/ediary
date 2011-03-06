@@ -2,15 +2,15 @@
 class Ediary_User
 {
     // Table Field
-    const ID = 'user_id';
-    const NAME = 'user_name';
-    const EMAIL = 'user_email';
-    const PASSWORD = 'user_pass';
-    const SECURITY_CODE = 'user_security';
-    const CREATED = 'user_created';
-    const LAST_TIME = 'user_lasttime';
-    const ACCOUNT = 'user_account';
-    const PIC = 'user_pic';
+    const ID = 'id';
+    const NAME = 'username';
+    const EMAIL = 'email';
+    const PASSWORD = 'password';
+    const SECURITY_CODE = 'security_code';
+    const CREATED = 'created_at';
+    const LAST_TIME = 'last_logined';
+    const ACCOUNT = 'account';
+    const PIC = 'photo';
 
     // Zend_Db_Table
     private static $table = null;
@@ -209,7 +209,7 @@ class Ediary_User
      */
     public function isExistsEmail($email) {
         $sql = $this->db->quoteInto(
-        	'SELECT count(*) FROM users where user_email= ?', $email);
+        	'SELECT count(*) FROM {users} where email= ?', $email);
         $result = $this->db->fetchOne($sql);
         return ($result > 0) ? true : false;
     }
@@ -221,28 +221,26 @@ class Ediary_User
      * @return string
      */
     public static function makeSecurityCode($keyword) {
-        return md5($keyword . microtime() . 'lds');
+        return substr(md5($keyword . microtime() . 'lds'), 0, 10);
     }
     
     /**
      * Get a particular user's securtiy code
      * 
      * @param String $email
+     * @return String user's securtiy code from db
      */
     private static function getSecurtiyCode($email) {
-        $select = self::$table->select()
-                       ->from($this->table->getName(), array(self::SECURITY_CODE))
-                       ->where(self::EMAIL . ' = :email ')
-                       ->bind(array('email' => $email))
-                       ->limit(1, 0);
-        return self::$table->fetchOne($select);
+        $db = Ediary_Database_Db::getInstance();
+        return $db->fetchOne(
+        	'SELECT security_code FROM {users} WHERE email=?', $email);
     }
 
     /**
      * Use MD5 to encrypt the password
      *
-     * @param unknown_type $password
-     * @param unknown_type $securityCode
+     * @param String $password
+     * @param String $securityCode
      * @return string
      */
     public static function encryptPassword($password, $securityCode) {
@@ -306,51 +304,14 @@ class Ediary_User
      * 
      * @param String $email
      * @param String $password
-     * @return Zend_Auth_Result stdClass { boolean result, String message }
+     * @return stdClass auth result { boolean result, String message }
      */
-    public function login($email, $password) {
-        $result = new stdClass();
-        $result->result  = false;
-        $result->message = '';
+    public static function login($email, $password) {
+        $securityCode = self::getSecurtiyCode($email);
+        $encodedPassword = self::encryptPassword($password, $securityCode);
         
-        $password = self::getSecurityCode($email);
-        
-        $auth = Zend_Auth::getInstance();
-        
-        $storage = new Zend_Auth_Storage_Session();
-        $namespace = $storage->getNamespace();
-        //$storage->setExpirationHops(5);
-        //$storage->setExpirationSeconds(3);
-        
-        $auth->setStorage($storage);
-        $authAdapter = new Zend_Auth_Adapter_DbTable($$this->db);
-        $authAdapter->setTableName($this->db->users)
-                    ->setIdentityColumn(self::EMAIL)
-                    ->setCredentialColumn(self::PASSWORD)
-                    ->setIdentity($email)
-                    ->setCredential($password);
-
-        // 执行认证查询，并保存结果
-        $result = $auth->authenticate($authAdapter);
-        if (!$result->isValid()) {
-            // Authentication failed; print the reasons why
-            $result->result =  false;
-            $result->message = $result->getMessages() ;
-        } else {
-            $identity = $result->getIdentity();
-            //Zend_Debug::dump($identity);
-
-            $storage = $auth->getStorage();
-            $storage->write($authAdapter->getResultRowObject(
-                                array(self::EMAIL,self::NAME, self::ID)));
-
-            // set a cookie to save user info
-            setcookie('ue', $user, time() + 2592000, '/', false);
-            //TODO
-            Zend_Session::rememberMe(2592000);
-            $result->result = true;
-        }
-
+        // auth user
+        $result = Ediary_Auth_Database::authenticate($email, $encodedPassword);
         return $result;
     }
 

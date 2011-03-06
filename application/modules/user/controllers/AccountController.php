@@ -15,7 +15,31 @@ class User_AccountController extends Zend_Controller_Action
 
     public function loginAction()
     {
-        // action body
+        //TODO: already logined
+		if (false) $this->_redirect('/');
+		
+		$form = $this->getLoginForm();
+		
+	    // Not a Post or Post data invalid, redisplay form
+		if ( !$this->getRequest()->isPost() || !$form->isValid($_POST) ) {
+       	    foreach ($form->getErrorMessages() as $e) {
+       	        $this->view->error .= $e . '<br />';
+       	    }
+            return $this->view->form = $form;
+		}
+		
+		$auth_result = Ediary_User::login($_POST['email'], $_POST['password']);
+		
+		if (! $auth_result->result ) {
+		    // Auth fail, email/password wrong
+		    $this->view->error = _t("用户名或密码错误.");
+		    return $this->view->form = $form;
+		}
+		
+	    // OK, register this user
+	    
+		$this->view->form = _t("登录成功");
+	    $form->saveToken(); // in case reSubmit
     }
 
     public function logoutAction()
@@ -25,10 +49,10 @@ class User_AccountController extends Zend_Controller_Action
 
     public function registerAction()
     {
-        // already logined
+        //TODO: already logined
 		if (false) $this->_redirect('/');
 		
-		$form = $this->getFormRegister();
+		$form = $this->getRegisterForm();
 		
 	    // Not a Post or Post data invalid, redisplay form
 		if ( !$this->getRequest()->isPost() || !$form->isValid($_POST) ) {
@@ -40,6 +64,7 @@ class User_AccountController extends Zend_Controller_Action
 		
 	    // OK, register this user
 	    
+		$this->view->form = _t("注册成功");
 	    $form->saveToken(); // in case reSubmit
 	    
 	    // Create the user into database
@@ -52,30 +77,65 @@ class User_AccountController extends Zend_Controller_Action
 	    }
     }
     
-  private function getFormRegister() {
-    	$form = new Ediary_Form(array('name' => 'form_register'));
+  private function getRegisterForm() {
+    	$form = new Ediary_Form(array('name' => 'form_register', 'class' => "labelForm registerForm"));
         $form->setAction('/register')
      		 ->setMethod('post');
      		 
     	$validator = new Zend_Validate_Alnum();
+    	$textElement = new Ediary_Form_Decorator_Text();
      		 
      	$username = new Zend_Form_Element_Text('email');
      	$username->setLabel(_t("邮箱"))
      			 ->setRequired(true)
-     			 ->addValidator(new Zend_Validate_EmailAddress());
+     			 ->addValidator(new Zend_Validate_EmailAddress())
+     	         ->setAttrib('class', 'text')
+     			 ->setDecorators(array($textElement));
      	
      	$password = new Zend_Form_Element_Password('password');
      	$password->setLabel(_t("密码"))
      			 ->setRequired(true)
-	     		 ->addValidator($validator);
+	     		 ->addValidator($validator)
+     	         ->setAttrib('class', 'text')
+     			 ->setDecorators(array($textElement));
 	     		 
 	    $rePassword = new Zend_Form_Element_Password('rePassword');
      	$rePassword->setLabel(_t("确认密码"))
      			   ->setRequired(true)
-	     		   ->addValidator($validator);
+	     		   ->addValidator($validator)
+     	         ->setAttrib('class', 'text')
+     			   ->setDecorators(array($textElement));
         
      	$form->addElements(array($username, $password, $rePassword));
-     	$form->addElement('submit', 'op', array('label' => _t('提交')));
+     	$form->addElement('submit', 'op', array('label' => _t('立即注册'), 'class' => 'nolabel button'));
+     	
+     	return $form;
+    }
+    
+    private function getLoginForm() {
+    	$form = new Ediary_Form(array('name' => 'form_login', 'class' => "labelForm registerForm"));
+        $form->setAction('/login')
+     		 ->setMethod('post');
+     		 
+    	$validator = new Zend_Validate_Alnum();
+    	$textElement = new Ediary_Form_Decorator_Text();
+     		 
+     	$username = new Zend_Form_Element_Text('email');
+     	$username->setLabel(_t("邮箱"))
+     			 ->setRequired(true)
+     			 ->addValidator(new Zend_Validate_EmailAddress())
+     	         ->setAttrib('class', 'text')
+     			 ->setDecorators(array($textElement));
+     	
+     	$password = new Zend_Form_Element_Password('password');
+     	$password->setLabel(_t("密码"))
+     			 ->setRequired(true)
+	     		 ->addValidator($validator)
+     	         ->setAttrib('class', 'text')
+     			 ->setDecorators(array($textElement));
+	     		 
+     	$form->addElements(array($username, $password));
+     	$form->addElement('submit', 'op', array('label' => _t('登录'), 'class' => 'nolabel button'));
      	
      	return $form;
     }

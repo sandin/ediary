@@ -10,9 +10,9 @@ class Ediary_Form_Decorator_Text extends Zend_Form_Decorator_Abstract
             $label = $translator->translate($label);
         }
         if ($element->isRequired()) {
-            $label .= '*';
+            //$label .= '*';
         }
-        $label .= ':';
+        $label .= ' : ';
         return $element->getView()
                        ->formLabel($element->getName(), $label);
     }

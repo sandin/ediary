@@ -104,7 +104,7 @@ class Ediary_UserTest extends ControllerTestCase
     public function testLoadById()
     {
         // create a user and load it by id
-        $userId = $this->_insertUser();
+        $userId = $this->_createUser();
         $user = $this->object->loadById($userId);
         
         $this->assertEquals($userId, $user->getId());
@@ -118,7 +118,7 @@ class Ediary_UserTest extends ControllerTestCase
     public function testLoadByEmail()
     {
         // create a user and load it by email
-        $userId = $this->_insertUser();
+        $userId = $this->_createUser();
         $user = $this->object->loadByEmail($this->data['email']);
         
         $this->assertEquals($userId, $user->getId());
@@ -129,13 +129,26 @@ class Ediary_UserTest extends ControllerTestCase
     /**
      * @todo Implement testInsert().
      */
-    public function testInsert()
+    public function testCreate()
     {
-        $userId = $this->_insertUser();
+        $userId = $this->_createUser();
         $this->assertTrue($userId > 0);
     }
+    
+    public function testLogin() {
+        $userId = $this->_createUser();
+        $email = $this->data['email'];
+        $password = $this->data['password'];
+        
+        $result_fail = Ediary_User::login($email, 'wrong password');
+        $result_ok = Ediary_User::login($email, $password);
+        
+        $this->assertFalse($result_fail->result);
+        $this->assertNotNull($result_fail->message); // has a message on fail
+        $this->assertTrue($result_ok->result);
+    }
 
-    private function _insertUser() {
+    private function _createUser() {
         return $userId = $this->object->create(
             $this->data['email'],
             $this->data['password'],
@@ -169,7 +182,7 @@ class Ediary_UserTest extends ControllerTestCase
         // pre check
         $this->assertFalse($this->object->isExistsEmail($this->data['email']));
 
-        $userId = $this->_insertUser();
+        $userId = $this->_createUser();
         $this->object->isExistsEmail($this->data['email']);
 
         // post check

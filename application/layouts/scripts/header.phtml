@@ -1,0 +1,15 @@
+    <div id="stripe"></div>
+    <div class="inner">
+        <a class="title" href="/"><span>宜日记</span></a>
+        <ul class="user_info">
+        <?php if (isset($this->user)): ?>
+            <li><a href="<?php echo $this->baseUrl("user/") . $this->user->id ?>"><?php echo $this->user->email?></a></li>
+            &nbsp;&nbsp;|&nbsp;&nbsp;
+            <li><a class="" href=<?php echo $this->baseUrl("logout") ?>>退出</a></li>
+        <?php else: ?>
+            <li><a href="<?php echo $this->baseUrl("login") ?>">登录</a></li>
+            &nbsp;&nbsp;|&nbsp;&nbsp;
+            <li><a class="" href=<?php echo $this->baseUrl("register") ?>>注册</a></li>
+        <?php endif;?>
+        </ul>
+    </div>

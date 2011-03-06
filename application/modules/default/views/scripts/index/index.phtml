@@ -1,13 +1,56 @@
-<div id="welcome">
-    <h1>Welcome to the <span id="zf-name">Zend Framework!</span></h1>
+<div class="content">
+    <div class="content_box">
+        <div class="index_introModel">
+            <img class="index_introModel_pic" src="images/index_introModel_pic.png">
+            <img class="index_introModel_logo" src="images/index_introModel_logo.png">
+            <div class="index_introModel_text">
+                尊重每一个生命  <br />
+                敬畏自然  <br />
+                守候每一份回忆  --   《宜日记》 <br /><br />              
+                宜日记提供绝对保密的网络日记本；<br />
+                宜日记努力为每个用户创造一个写日记的心情； <br />
+                宜日记用心记录您人生的点点滴滴，为您默默守候；<br />
+            </div>
+            <div class="clearfix"></div>
+        </div>
 
-    <h3>This is your project's main page</h3>
-
-    <div id="more-information">
-        <p>
-            Helpful Links: <br />
-            <a href="http://framework.zend.com/">Zend Framework Website</a> |
-            <a href="http://framework.zend.com/manual/en/">Zend Framework Manual</a>
-        </p>
     </div>
-</div>
+</div><!-- /content -->
+
+<div class="sidebar">
+    <div class="content_box index_loginModel">
+        <div class="index_loginModel_header">
+            <h3>用户登录</h3>
+            <a href="password.html">忘记密码</a>
+        </div>
+        <div class="index_loginfrom">
+            <form action="<?php echo $this->baseUrl("login") ?>" method="post" class="index_loginModel_middle">
+                <p class="index_loginModel_email">
+                <span class="userlogin">用户名：</span><input type="text" id="email" name="email" gtbfieldid="13">
+                </p>
+                <p class="index_loginModel_password">
+                <span class="userlogin">密码：</span><input type="password" id="password" name="password">
+                </p>
+                <label class="index_loginModel_remember">
+                    <input type="checkbox" value="1" name="remember"><span class="index_loginModel_rememberme">下次自动登陆</span>
+                </label>
+                <input type="submit" class="button index_loginModel_submit" value="登 录">
+            </form>
+        </div>
+        <div class="index_loginModel_footer">
+            <a class="index_loginModel_footer_link" href="zhuce.html">还没有帐号？来注册一下吧～</a>
+        </div>
+    </div>
+    <div class="content_box blog_post_list">
+        <h3>使用帮助</h3>
+        <ul>
+            <li><a href="#">号外～摆摆特刊新鲜出炉～</a></li>
+            <li><a href="#">新功能：小组藏书</a></li>
+            <li><a href="#">书籍页面改版了！</a></li>
+            <li><a href="#">非Chrome用户们，油猴脚本来了</a></li>
+            <li><a href="#">低调的，Chrome扩展发布</a></li>
+        </ul>
+    </div>
+</div><!-- /sidebar -->
+
+<div class="clearfix"></div>

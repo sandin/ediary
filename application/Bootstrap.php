@@ -47,7 +47,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     
     protected function _initAuth() {
         $auth = Zend_Auth::getInstance();
-        $storage = new Zend_Auth_Storage_Session();
+        $storage = new Zend_Auth_Storage_Session('ediary_auth');
         $auth->setStorage($storage);
         $user = $auth->getIdentity();
         //TODO: loadUser
@@ -190,6 +190,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         // Register Helpers
         $view->addHelperPath(APPLICATION_PATH. '/../library/Ediary/View/Helper', 'Ediary_View_Helper');
+        
+        $view->user = Zend_Registry::get('user');
 
         return $view;
     }

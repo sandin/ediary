@@ -94,7 +94,8 @@ class Admin_InstallController extends Zend_Controller_Action
         $db = Ediary_Database_Db::getInstance(); 
         try {
         	$db->connect();
-        } catch (Ediary_Database_Exception $db_e) {
+        } catch (Exception $db_e) {
+            // wrong username/password/host/dbname
         	$msg = _t($db_e->getMessage());
             return $this->_forward('index', null, null, array('error' => $msg));
         }
@@ -102,13 +103,14 @@ class Admin_InstallController extends Zend_Controller_Action
         // Create tables
         try {
         	$db->create();
-        } catch (Ediary_Database_Exception $db_e) {
-        	$this->view->error = $db_e->getMessage();
+        } catch (Exception $e) {
+        	return $this->view->error = $e->getMessage();
         }
         
         Ediary_Config::setInstalling(false);
         Ediary_Config::setInstalled(true);
         $this->view->ok = true;
+     	//$this->_redirect('/');
     }
     
     private function getFormDb() {

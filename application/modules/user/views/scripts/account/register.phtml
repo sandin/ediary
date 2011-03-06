@@ -1,2 +1,13 @@
-<?php echo $this->error; ?>
-<?php echo $this->form; ?>
+
+<div class="content_box" id="login">
+    <div class="login_main">
+        <h2>注册帐号</h2>
+        <p class="formTitle">宜日记提供绝对保密的个人网络日记本，欢迎注册使用！</p>
+        <?php echo $this->error; ?>
+        <?php echo $this->form; ?>
+    </div>
+    <div class="login_side">
+        <p><a href="<?php echo $this->baseUrl("login") ?>">已有帐户，点此登陆</a></p>
+    </div>
+    <div class="clearfix"></div>
+</div>

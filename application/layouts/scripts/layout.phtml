@@ -12,10 +12,18 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 </head>
 <body>
 <div id="wrapper" <?php if(isset($this->pageClass)) echo 'class="'.$this->pageClass.'"'; ?>">
-    <div id="header"><?php echo $this->render('header.phtml') ?></div><!-- /header -->
-    <div id="nav"><?php echo $this->placeholder('nav') ?></div><!-- /nav -->
-    <div id="content"><?php echo $this->layout()->content ?></div><!-- /content -->
-    <div id="footer" class="clearfix"><?php echo $this->render('footer.phtml') ?></div><!-- /footer -->
+
+<div id="header"><?php echo $this->render('header.phtml') ?></div><!-- /header -->
+<div id="nav"><?php echo $this->placeholder('nav') ?></div><!-- /nav -->
+
+<div id="content">
+<div class="inner clearfix">
+<?php echo $this->layout()->content ?>
+</div><!-- /innerContent -->
+</div><!-- /content -->
+
+<div id="footer"><div class="inner clearfix"><?php echo $this->render('footer.phtml') ?></div></div><!-- /footer -->
+
 </div><!-- /wrapper -->
 </body>
 </html>

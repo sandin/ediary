@@ -92,6 +92,7 @@ class Ediary_Config
      */
     public static function isInstalled() {
         $config = self::getConfig(false, 'install');
+        //var_dump(($config->ediary->config->installed) ? true : false);
         if (null != $config && isset($config->ediary->config)) {
             return ($config->ediary->config->installed) ? true :false;
         }

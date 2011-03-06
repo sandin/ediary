@@ -17,33 +17,32 @@
 
 $query = <<<EOF
 
-use $imdb->dbname;
-
 DROP TABLE IF EXISTS $imdb->users;
 CREATE TABLE $imdb->users (
-  user_id		bigint(20)      unsigned NOT NULL auto_increment,
-  user_email    varchar(100)    NOT NULL default '', 
-  user_name 	varchar(50)     NOT NULL default '',
-  user_pass		varchar(64)     NOT NULL default '',
-  user_security	varchar(32)     NOT NULL default '',
-  user_created 	datetime        NOT NULL default '0000-00-00 00:00:00',
-  user_lasttime	datetime        NOT NULL default '0000-00-00 00:00:00',
-  user_account  int(11)         NOT NULL default '0',
-  user_pic      varchar(100)    NOT NULL default '',
+  id		bigint(20)       unsigned NOT NULL auto_increment,
+  email     varchar(100)     NOT NULL default '', 
+  username 	varchar(50)      NOT NULL default '',
+  password	varchar(64)      NOT NULL default '',
+  security_code	varchar(32)  NOT NULL default '',
+  created_at 	datetime     NOT NULL default '0000-00-00 00:00:00',
+  last_logined	datetime     NOT NULL default '0000-00-00 00:00:00',
+  account  	 int(11)         NOT NULL default '0',
+  photo      varchar(100)    NOT NULL default '',
 
-  PRIMARY KEY (user_id),
-  KEY user_email (user_email)
+  PRIMARY KEY (id),
+  KEY user_email (email)
 ) $imdb->tableSet;
 
 DROP TABLE IF EXISTS $imdb->diarys;
 CREATE TABLE $imdb->diarys (
   id		bigint(20)      unsigned NOT NULL auto_increment,
-  date		datetime        NOT NULL default '0000-00-00 00:00:00',
-  weather 	varchar(255)    NOT NULL default '',
-  feeling	varchar(11)     NOT NULL default '',
   title	    text            NOT NULL,
   content	longtext        NOT NULL,
+  weather 	varchar(255)    NOT NULL default '',
+  mood		varchar(11)     NOT NULL default '',
   status	varchar(20)     NOT NULL default 'archive',
+  created_at datetime       NOT NULL default '0000-00-00 00:00:00',
+  saved_at	datetime        NOT NULL default '0000-00-00 00:00:00',
 
   user_id	bigint(20)      unsigned NOT NULL default '0',
   book_id   bigint(20)      unsigned NOT NULL default '0',

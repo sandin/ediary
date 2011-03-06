@@ -165,11 +165,13 @@ class Ediary_Database_Db
 
     /**
      * Create Tables
-     * NOTE: Class setPrefix() first
+     * NOTE: use create(), must setPrefix() first
      */
     public function create() {
-        if ( $this->isInstalled() )
-        return; // already installed
+        if ( $this->isInstalled() ) { 
+            //throw new Exception('already installed');
+            return; // already installed
+        }
 
         // Setup charset and collation
         $charset_name = $this->getConfig()->charset ;
@@ -177,13 +179,12 @@ class Ediary_Database_Db
 
         $this->dbname = $this->getConfig()->dbname;
         $this->tableSet = ' CHARACTER SET ' . $charset_name
-        . ' COLLATE ' . $collation_name;
+                        . ' COLLATE ' . $collation_name;
 
         $imdb = $this;
         include 'schema.php'; //defined $query
 
-        //var_dump($query);
-        return $this->query($query);
+        return $this->conn->query($query);
     }
 
     /**
@@ -202,7 +203,7 @@ class Ediary_Database_Db
                 $result = $this->query($sql);
             } catch (Zend_Db_Exception $db_e) {
                 throw new Ediary_Database_Exception(
-                $db_e->getMessage(), $db_e->getCode(), $db_e);
+                    $db_e->getMessage(), $db_e->getCode(), $db_e);
             }
             $result = ( $result->rowCount() > 0 );
         } else {
@@ -275,17 +276,23 @@ class Ediary_Database_Db
             try {
                 return call_user_func_array(array($this->conn, $method), $args);
             } catch (Zend_Db_Adapter_Exception $db_e) {
-                throw new Ediary_Database_Exception($db_e->getMessage(), $db_e->getCode(), $db_e);
+                throw new Ediary_Database_Connection_Exception($db_e->getMessage(), $db_e->getCode(), $db_e);
+            } catch (Zend_Db_Statement_Exception $dbs_e) {
+                throw new Ediary_Database_Exception($dbs_e->getMessage(), $dbs_e->getCode(), $dbs_e);
             } catch (Exception $e) {
                 throw new Ediary_Exception($e->getMessage(), $e->getCode(), $e);
             }
         } else {
-            throw new Ediary_Database_Exception('Call Unknown Method : ' . $method );
+            throw new Ediary_Exception('Call Unknown Method : ' . $method );
         }
     }
 
     public static function formator($timestamp) {
         return date('Y-m-d H:i:s');
+    }
+    
+    public static function now() {
+        return self::formator(time());
     }
 
     public function escape($str) {
@@ -295,5 +302,32 @@ class Ediary_Database_Db
             return addslashes($str); // unsafe 0xbf5c
         }
     }
+    
+    public function fetchRow($sql, $bind = array(), $fetchMode = null) {
+        return $this->conn->fetchRow($this->prefixTables($sql), $bind, $fetchMode);
+    }
+    
+    public function fetchAll($sql, $bind = array(), $fetchMode = null) {
+        return $this->conn->fetchAll($this->prefixTables($sql), $bind, $fetchMode);
+    }
+    
+    public function fetchOne($sql, $bind = array()) {
+        return $this->conn->fetchOne($this->prefixTables($sql), $bind);
+    }
+    
+    // TODO: other fetch methods
+    
+    /**
+     * Add table prefix 
+     * like: {user} => $prefix . user
+     * 
+     * @param String $sql
+     * @return string sql
+     */
+    public function prefixTables($sql) {
+        // Then replace remaining tables with the default prefix.
+        return strtr($sql, array('{' => $this->prefix, '}' => ''));
+    }
+    
 
 }

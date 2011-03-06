@@ -35,7 +35,7 @@ class Ediary_Query_Record
      */
     public function insertRow($table) {
         $merge = array_merge($this->fields, $this->newFields);
-        return ( self::getDb()->insert($table, $merge) > 0 ) ? true : false;
+        return ( self::getDb()->insert($table, $merge) > 0 );
     }
     
     /**
@@ -46,7 +46,12 @@ class Ediary_Query_Record
      * @return boolean True on success, false if not
      */
     public function deleteRow($table, $where) {
-        return ( self::getDb()->delete($table, $where) > 0 ) ? true : false;
+        return ( self::getDb()->delete($table, $where) > 0 );
+    }
+    
+    public function updateRow($table, $where) {
+        $merge = array_merge($this->fields, $this->newFields);
+        return ( self::getDb()->update($table, $merge, $where) > 0 );
     }
 
 	/**

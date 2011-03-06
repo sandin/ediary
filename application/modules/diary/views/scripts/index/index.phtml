@@ -1,0 +1,11 @@
+<div id="diary">
+<form id="form_diary" method="post" action="<?php echo $this->baseUrl("/diary/save") ?>">
+	<div>
+		<input id="diary_title" name="diary[title]" type="text" value="title" />
+	</div>
+	<div class="diary_content_wrapper">
+		<textarea id="diary_content" class="" rows="40" cols="60" name="diary[content]">Content</textarea>
+	</div>
+	<div><input type="submit" value="submit" /></div>
+</form>
+</div><!-- /diary -->

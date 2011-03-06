@@ -23,8 +23,9 @@ class Ediary_DiaryTest extends ControllerTestCase
         parent::setUp();
         
         $this->data = array(
-            'id' => '123',
-            'title' => 'new title13123'
+            'title' => 'new title13123',
+            'content' => 'content',
+            'user_id' => 3
         );
         
         $this->object = new Ediary_Diary($this->data);
@@ -45,11 +46,11 @@ class Ediary_DiaryTest extends ControllerTestCase
     }
     
     public function testCreate() {
-        $title = 'lds';
-        
         // create 
-        $diary = Ediary_Diary::create( array('title' => $title ) );
-        $this->assertEquals($title, $diary->title);
+        $diary = Ediary_Diary::create( $this->data ) ;
+        $this->assertEquals($this->data['title'], $diary->title);
+        $this->assertEquals($this->data['content'], $diary->content);
+        $this->assertEquals($this->data['user_id'], $diary->user_id);
     }
     
     public function testDeleteById() {
@@ -59,8 +60,34 @@ class Ediary_DiaryTest extends ControllerTestCase
         // delete
         $result = $diary->delete();
         $this->assertTrue($result);
+    }
+    
+    public function testUpdate() {
+        // create a new diary for this test
+        $newDiary = Ediary_Diary::create( $this->data );
         
+        // find the diary
+        $diary = Ediary_Diary::find($newDiary->id);
+        $this->assertEquals($this->data['content'], $diary->content);
         
+        $old_saved_at = $diary->saved_at;
+        sleep(1); // wait for update saved_at time
+        
+        // set new values
+        $newContent = 'new content new content';
+        $diary->content = $newContent;
+        $diary->update();
+        
+        $this->assertEquals($newContent , $diary->content);
+        $this->assertNotEquals($old_saved_at, $diary->saved_at); // has been touched
+    }
+    
+    public function testFind() {
+        $diary = Ediary_Diary::create( $this->data );
+        $diaryId = $diary->id;
+        
+        $diaryFined = Ediary_Diary::find($diaryId);
+        $this->assertEquals($diaryId, $diaryFined->id);
     }
 }
 ?>
