@@ -200,6 +200,13 @@ class Ediary_User
         //FIXME:
         return true;
     }
+    
+    public function isExists($who) {
+        //FIXME:
+        if ($who instanceof Ediary_User) {
+            return ;
+        }
+    }
 
     /**
      * Check The email is exists or not

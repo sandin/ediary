@@ -169,8 +169,7 @@ class Ediary_Database_Db
      */
     public function create() {
         if ( $this->isInstalled() ) { 
-            //throw new Exception('already installed');
-            return; // already installed
+            return Ediary_Logger::log('The application is already installed');
         }
 
         // Setup charset and collation
@@ -273,14 +272,17 @@ class Ediary_Database_Db
      */
     public function __call($method, $args) {
         if (method_exists($this->conn, $method)) {
+            $caseby = 'Case by : ' . $method . ' : ';
             try {
                 return call_user_func_array(array($this->conn, $method), $args);
             } catch (Zend_Db_Adapter_Exception $db_e) {
-                throw new Ediary_Database_Connection_Exception($db_e->getMessage(), $db_e->getCode(), $db_e);
+                throw new Ediary_Database_Connection_Exception($caseBy . $db_e->getMessage(),
+                     $db_e->getCode(), $db_e);
             } catch (Zend_Db_Statement_Exception $dbs_e) {
-                throw new Ediary_Database_Exception($dbs_e->getMessage(), $dbs_e->getCode(), $dbs_e);
+                throw new Ediary_Database_Exception($caseBy . $dbs_e->getMessage(),
+                     $dbs_e->getCode(), $dbs_e);
             } catch (Exception $e) {
-                throw new Ediary_Exception($e->getMessage(), $e->getCode(), $e);
+                throw new Ediary_Exception($caseBy . $e->getMessage(), $e->getCode(), $e);
             }
         } else {
             throw new Ediary_Exception('Call Unknown Method : ' . $method );

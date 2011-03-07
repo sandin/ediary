@@ -38,6 +38,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         //var_dump($isInstalled); //TODO: 有时误报?
         
         if ( !$isInstalled ) {
+            Ediary_Logger::log('The application is not installed, installing now.');
             Ediary_Config::setInstalling(true);
             Ediary_Config::setInstalled(true);
             Ediary_Core::gotoUrl('/admin/install');
@@ -47,7 +48,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     
     protected function _initAuth() {
         $auth = Zend_Auth::getInstance();
-        $storage = new Zend_Auth_Storage_Session('ediary_auth');
+        $storage = new Zend_Auth_Storage_Session(Ediary_Application::SESSION_AUTH);
         $auth->setStorage($storage);
         $user = $auth->getIdentity();
         //TODO: loadUser
@@ -64,6 +65,13 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         Zend_Db_Table::setDefaultAdapter($dbAdapter);
     }
+    
+    protected function _initCache() {
+        $manager = $this->getPluginResource('cachemanager')
+                        ->getCacheManager();
+        $dbCache = $manager->getCache('database');
+        //var_dump($dbCache);
+    }
 
     protected function _initTranslate() {
 
@@ -79,6 +87,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         $translate = null;
 
+        // Load lanuage files
         for ($i = 0, $l = count($i18n); $i < $l; $i++) {
             $lang = $i18n[$i];
             	
@@ -123,7 +132,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     protected function _initRoute() {
         $front = $this->frontController;
         $router = $front->getRouter();
-
+        
         // Error
         $router->addRoute('error',
             new Zend_Controller_Router_Route(
@@ -196,8 +205,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         return $view;
     }
 
-    protected function _initZFDebug()
-    {
+    protected function _initZFDebug() {
+        if ('development' !== APPLICATION_ENV) return;
+        
         $autoloader = Zend_Loader_Autoloader::getInstance();
         $autoloader->registerNamespace('ZFDebug');
 
@@ -207,7 +217,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                            'Memory', 
                            'Time', 
                            'Registry', 
-                           'Exception',)
+                           'Exception')
         );
 
         # Instantiate the database adapter and setup the plugin.
@@ -219,10 +229,15 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
 
         # Setup the cache plugin
-        if ($this->hasPluginResource('cache')) {
-            $this->bootstrap('cache');
-            $cache = $this-getPluginResource('cache')->getDbAdapter();
+        if ($this->hasPluginResource('cachemanager')) {
+            $manager = $this->getPluginResource('cachemanager')
+                            ->getCacheManager();
+            $cache = $manager->getCache('database');
+
             $options['plugins']['Cache']['backend'] = $cache->getBackend();
+            
+             # set up database meta data cache
+            Zend_Db_Table_Abstract::setDefaultMetadataCache( $cache );
         }
 
         $debug = new ZFDebug_Controller_Plugin_Debug($options);

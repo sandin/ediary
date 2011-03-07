@@ -1,9 +1,9 @@
 <?php
 class Ediary_Logger
 {
-    const LOGGER_TYPE_FILE 		= 1;
-    const LOGGER_TYPE_DATABASE	= 2;
-    const LOGGER_TYPE_FIREBUG	= 3; // Use this in your model, view and controller files
+    const LOGGER_TYPE_FILE 		= 'file';
+    const LOGGER_TYPE_DATABASE	= 'database';
+    const LOGGER_TYPE_FIREBUG	= 'firebug'; // Only Use this in your model, view and controller files
 
     private static $logger = null;
 
@@ -61,9 +61,9 @@ class Ediary_Logger
         if (null == self::$logger) {
             $config = Ediary_Config::getAppConfig();
             	
-            $logType = self::LOGGER_TYPE_FILE;
+            $logType = self::LOGGER_TYPE_FILE; //default
             if (NULL != $config && isset($config->logger->type) ) {
-                $logType = intval($config->logger->type);
+                $logType = $config->logger->type;
             }
             self::getLogger($logType);
         }
@@ -75,7 +75,7 @@ class Ediary_Logger
      * @see Zend_Log#log
      *
      * @param String $message
-     * @param int $priority
+     * @param int $priority [Zend_Log::INFO, ...]
      * @param mixed $extras
      */
     public static function log($message,  $priority = Zend_Log::INFO, $extras = null) {

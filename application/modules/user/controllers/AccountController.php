@@ -40,11 +40,17 @@ class User_AccountController extends Zend_Controller_Action
 	    
 		$this->view->form = _t("登录成功");
 	    $form->saveToken(); // in case reSubmit
+	    
+	    // redirect to front page
+        $this->_redirect(Ediary_Core::redirect('登录成功', '首页', "/"));
     }
 
     public function logoutAction()
     {
         // action body
+        $this->_helper->viewRenderer->setNoRender();
+        Zend_Auth::getInstance()->clearIdentity();
+		$this->_redirect('/');
     }
 
     public function registerAction()

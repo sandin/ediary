@@ -99,6 +99,8 @@ class Ediary_ConfigTest extends ControllerTestCase
          
         Ediary_Config::setInstalled(false);
         $this->assertFalse(Ediary_Config::isInstalled());
+        
+        Ediary_Config::setInstalled(true); //reset
     }
 }
 ?>

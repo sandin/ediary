@@ -792,6 +792,16 @@ form.profile #forget_pw {
     border: 1px #ccc solid;
 }
 
+.redirectBox {
+	padding: 50px;
+	min-height: 100px;
+	_height: 100px;
+}
+.redirectBox h2 {
+	font-size: 14px;
+	margin-bottom: 10px;
+}
+
 /* Debug {{{ 
 -----------------*/
 #wrapper,

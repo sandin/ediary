@@ -16,5 +16,12 @@ class Ediary_Core
         //TODO: add application base url
         header("location: " . $url);
     }
+    
+    public static function redirect($message, $title, $url) {
+        return 'redirect/?goto=' . urlencode($url) 
+               . '&msg=' . urlencode($message)
+               . '&title=' . urlencode($title);
+        
+    }
 
 }

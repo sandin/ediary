@@ -125,6 +125,7 @@
           </viewsDirectory>
         </moduleDirectory>
       </modulesDirectory>
+
       <viewsDirectory>
         <viewScriptsDirectory>
           <viewControllerScriptsDirectory forControllerName="Index">
@@ -137,6 +138,7 @@
         <viewHelpersDirectory/>
         <viewFiltersDirectory enabled="false"/>
       </viewsDirectory>
+
       <bootstrapFile filesystemName="Bootstrap.php"/>
     </applicationDirectory>
     <dataDirectory enabled="false">

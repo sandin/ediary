@@ -94,7 +94,7 @@ class Ediary_Config
         $config = self::getConfig(false, 'install');
         //var_dump(($config->ediary->config->installed) ? true : false);
         if (null != $config && isset($config->ediary->config)) {
-            return ($config->ediary->config->installed) ? true :false;
+            return (1 == $config->ediary->config->installed) ? true :false;
         }
         return true; // default
     }

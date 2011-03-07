@@ -1,0 +1,25 @@
+<div class="content_box">
+<div class="redirectBox">
+<h2><?php echo $this->message; ?></h2>
+<p>
+在 <span id="redirct_limit"> </span> 秒后, 将自动转入 <em><?php echo $this->redirectPage ?></em>.
+或手动转入 <a href="<?php echo $this->redirectTo ?>"><?php echo $this->redirectPage?></a>
+</p>
+</div>
+<script type="text/javascript">
+$(function(){
+    var defaultTime = <?php echo $this->second ?>;
+    var limitTime = window.setInterval(limit, 1000);
+    function limit(){
+        if (defaultTime == 0) { 
+			window.clearInterval(limitTime);
+            return;
+        }
+        defaultTime--;
+        $('#redirct_limit').text(defaultTime);
+        if(0 >= defaultTime){
+            window.location.href = '<?php echo $this->redirectTo ?>';
+        }
+    }
+});
+</script></div>

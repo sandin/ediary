@@ -8,7 +8,7 @@ require_once 'PHPUnit/Framework.php';
 class Ediary_DiaryTest extends ControllerTestCase
 {
     /**
-     * @var Ediary_User
+     * @var Ediary_Diary
      */
     protected $object;
     
@@ -25,7 +25,8 @@ class Ediary_DiaryTest extends ControllerTestCase
         $this->data = array(
             'title' => 'new title13123',
             'content' => 'content',
-            'user_id' => 3
+            'user_id' => 3,
+            'no' => ''
         );
         
         $this->object = new Ediary_Diary($this->data);
@@ -42,7 +43,12 @@ class Ediary_DiaryTest extends ControllerTestCase
     public function testInsert() {
         // insert
         $diary = $this->object;
-        $this->assertTrue( $diary->insert() );
+        
+        throw new Exception("uncatch");
+        
+        //$result = $diary->insert();
+        //$this->assertTrue( $result );
+        
     }
     
     public function testCreate() {

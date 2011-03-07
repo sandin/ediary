@@ -9,7 +9,7 @@ class Ediary_Auth_Database
         
         $db = Ediary_Database_Db::getInstance();
         
-        $storage = new Zend_Auth_Storage_Session('ediary_auth');
+        $storage = new Zend_Auth_Storage_Session(Ediary_Application::SESSION_AUTH);
         $namespace = $storage->getNamespace();
         //$storage->setExpirationHops(5);
         //$storage->setExpirationSeconds(3);
