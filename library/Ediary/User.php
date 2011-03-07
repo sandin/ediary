@@ -1,5 +1,6 @@
 <?php
-class Ediary_User
+// TODO : change it to fix Ediary_Query_Record
+class Ediary_User extends Ediary_Query_Record
 {
     // Table Field
     const ID = 'id';
@@ -129,6 +130,19 @@ class Ediary_User
         $row = self::$table->fetchRow($select);
         $this->loadFromRow($row);
         return $this;
+    }
+    
+    public function find( $who )  {
+		if ( is_numeric( $who ) ) {
+			// Got a User ID
+			$user = $this->loadById( $who );
+		} elseif ( strpos( $who, '@' ) !== FALSE ) {
+			// Got an email address
+			$user = $this->loadByEmail( $who );
+		} else {
+		    //TODO: other case
+		}
+		return $user;
     }
 
     /**
@@ -320,6 +334,12 @@ class Ediary_User
         // auth user
         $result = Ediary_Auth_Database::authenticate($email, $encodedPassword);
         return $result;
+    }
+    
+    public function getJournals() {
+        $db = self::getDb();
+        $db->setFetchMode(Zend_Db::FETCH_OBJ);
+        return $db->fetchAll('SELECT * FROM {journals} WHERE user_id = ?', $this->mId);
     }
 
 }

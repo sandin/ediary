@@ -22,11 +22,16 @@ class Ediary_DiaryTest extends ControllerTestCase
     {
         parent::setUp();
         
+        //Ediary_Database_Db::getInstance()->upgrade();
+        
         $this->data = array(
-            'title' => 'new title13123',
-            'content' => 'content',
-            'user_id' => 3,
-            'no' => ''
+        'title' => 'title',
+        'content' => 'content',
+        'weather' => 'sunshine',
+        'mood' => 'normal',
+    	'status' => Ediary_Diary::STATUS_PRIVATE,
+        'user_id' => '3',
+        'journal_id' => '1'
         );
         
         $this->object = new Ediary_Diary($this->data);
@@ -44,7 +49,6 @@ class Ediary_DiaryTest extends ControllerTestCase
         // insert
         $diary = $this->object;
         
-        throw new Exception("uncatch");
         
         //$result = $diary->insert();
         //$this->assertTrue( $result );

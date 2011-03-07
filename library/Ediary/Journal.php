@@ -1,11 +1,6 @@
 <?php
-class Ediary_Diary extends Ediary_Query_Record
+class Ediary_Journal extends Ediary_Query_Record
 {
-    /** private diary */
-    const STATUS_PRIVATE = 0; 
-    /** public diary */
-    const STATUS_PUBLIC  = 1;
-    
     /**
      * Default fields
      *
@@ -14,14 +9,8 @@ class Ediary_Diary extends Ediary_Query_Record
     private static $defaultFields = array(
         /* id */
         'title' => '',
-        'content' => '',
-        'weather' => '',
         'created_at' => '',
-        'saved_at' => '',
-        'mood' => 'normal',
-    	'status' => self::STATUS_PRIVATE,
-        'user_id' => '',
-        'journal_id' => ''
+        'user_id' => ''
     );
     
     /**
@@ -38,19 +27,19 @@ class Ediary_Diary extends Ediary_Query_Record
     }
     
     /**
-     * Create a Diary
+     * Create a journal
      * 
-     * @param Array $params diary data
-     * @return Ediary_Diary
+     * @param Array $params journal data
+     * @return Ediary_Journal
      */
     public static function create($params = array()) {
-        $diary = new Ediary_Diary($params);
-        $diary->insert();
-        return $diary;
+        $journal = new Ediary_Journal($params);
+        $journal->insert();
+        return $journal;
     }
     
     /**
-     * Insert current Diary into the database
+     * Insert current journal into the database
      * 
      * @return boolean True on Success, false if not 
      */
@@ -60,45 +49,43 @@ class Ediary_Diary extends Ediary_Query_Record
         // default values
         $now = Ediary_Database_Db::now();
         $this->fields['created_at'] = $now;
-        $this->fields['saved_at'] = $now; //touch
         
         // Insert into DB
-        $result = parent::insertRow($this->getDb()->diarys);
+        $result = parent::insertRow($this->getDb()->journals);
         
         // Reset fields
         $this->fields['id'] = self::getDb()->lastInsertId();
-        $this->fields = array_merge($this->fields, $this->newFields);
-        $this->newFields = array();
+        $this->resetNewFields();
         
         return $result;
     }
     
     /**
-     * Get a Diary
+     * Get a journal
      * 
-     * @param String $id diary ID
-     * @return Ediary_Diary Diary Object
+     * @param String $id journal ID
+     * @return Ediary_Journal journal Object
      */
     public static function find($id) {
-        $diary = self::findById($id);
-        return $diary;
+        $journal = self::findById($id);
+        return $journal;
     }
     
     /**
-     * Get a Diary By diary id
+     * Get a journal By journal id
      * 
      * @param String $id
-     * @return Ediary_Diary diary object
+     * @return Ediary_Journal journal object
      */
     public static function findById($id) {
         $row = self::getDb()->fetchRow(
-            'SELECT * FROM {diarys} WHERE id=?', $id);
-        $diary = new Ediary_Diary($row);
-        return $diary;
+            'SELECT * FROM {journals} WHERE id=?', $id);
+        $journal = new Ediary_Journal($row);
+        return $journal;
     }
     
     /**
-     * Delete current diary
+     * Delete current journal
      * 
      * @return boolean success or not
      */
@@ -106,39 +93,37 @@ class Ediary_Diary extends Ediary_Query_Record
         if ( isset($this->fields['id']) ) {
             $db = self::getDb();
             $where = $db->quoteInto('id = ?', $this->fields['id']);
-            return parent::deleteRow($db->diarys, $where);
+            return parent::deleteRow($db->journals, $where);
         }
         return false;
     }
     
     /**
-     * Delete a particular diary by id
+     * Delete a particular journal by id
      * 
-     * @param String diary id
+     * @param String journal id
      * @return boolean success or not
      */
     public static function deleteById($id) {
         $db = self::getDb();
-        return $db->delete($db->diarys,
+        return $db->delete($db->journals,
             $db->quoteInto('id= ?', $this->fields['id']));
     }
     
     /**
-     * Update current diary
+     * Update current journal
      * 
      * @return boolean success or not
      */
     public function update() {
-        $this->fields['saved_at'] = Ediary_Database_Db::now(); //touch
-        
         $where = self::getDb()->quoteInto('id = ?', $this->fields['id']);
-        return parent::updateRow(self::getDb()->diarys, $where);
+        return parent::updateRow(self::getDb()->journals, $where);
     }
     
     /**
-     * Update a particular diary by id
+     * Update a particular journal by id
      * 
-     * @param String $id diary id
+     * @param String $id journal id
      * @param Array $data data need to updated, like array('title' => 'xxx')
      * @deprecated use update() instead
      * 
@@ -152,7 +137,7 @@ class Ediary_Diary extends Ediary_Query_Record
     }
     
     /**
-     * This diary is belong to someone
+     * This journal is belong to someone
      * 
      * @param mixed $who username, email, userId
      * @return boolean is belong or not
@@ -163,7 +148,7 @@ class Ediary_Diary extends Ediary_Query_Record
     }
     
     /**
-     * Check if user has permission to edit diary
+     * Check if user has permission to edit journal
      * 
      * @param String $userId
      * @param String $diaryId
@@ -171,7 +156,9 @@ class Ediary_Diary extends Ediary_Query_Record
      */
     public static function checkAccess($diaryId, $userId) {
         $db = self::getDb();
-        $count = $db->fetchOne('SELECT count(*) FROM {diarys} WHERE user_id = ? AND id = ?', $userId, $diaryId);
+        $count = $db->fetchOne('SELECT count(*) FROM {journals} '
+                             . ' WHERE user_id = ? AND id = ?'
+                             , $userId, $diaryId);
         return ($count > 0);
     }
     
@@ -183,9 +170,16 @@ class Ediary_Diary extends Ediary_Query_Record
     public function toArray() {
         //$data = get_class_vars(__CLASS__);
         $data = array_merge($this->fields, $this->newFields);
-        if (isset($data['content'])) // content is LONGTEXT
-            unset($data['content']);
-        
         return $data;
+    }
+    
+    /**
+     * Get Diarys which belong to this journal
+     * @return Array<stdClass> array( stdClass{ id, title.. }, .. )
+     */
+    public function getDiarys() {
+        $db = self::getDb();
+        $db->setFetchMode(Zend_Db::FETCH_OBJ);
+        return $db->fetchAll('SELECT * FROM {diarys} WHERE journal_id = ?', $this->id);
     }
 }

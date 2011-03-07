@@ -29,7 +29,7 @@ class Ediary_Database_Db
      * Tables name
      * @var Array<String>
      */
-    private $tables = array('users', 'diarys', 'books');
+    private $tables = array('users', 'diarys', 'journals');
 
     /**
      * Table Name - users
@@ -47,7 +47,7 @@ class Ediary_Database_Db
      * Table Name - books
      * @var String
      */
-    public $books;
+    public $journals;
 
     /**
      * Database Connection
@@ -167,8 +167,8 @@ class Ediary_Database_Db
      * Create Tables
      * NOTE: use create(), must setPrefix() first
      */
-    public function create() {
-        if ( $this->isInstalled() ) { 
+    public function create($force = false) {
+        if ( $force || $this->isInstalled() ) { 
             return Ediary_Logger::log('The application is already installed');
         }
 
@@ -223,7 +223,9 @@ class Ediary_Database_Db
 
     public function upgrade() {
         if ($this->isInstalled() ) {
-            	
+            $this->drop();
+            $this->create(true);
+            Ediary_Logger::log("Database has been upgraded.");
         }
     }
 
@@ -272,7 +274,7 @@ class Ediary_Database_Db
      */
     public function __call($method, $args) {
         if (method_exists($this->conn, $method)) {
-            $caseby = 'Case by : ' . $method . ' : ';
+            $caseBy = 'Case by : ' . $method . ' : ';
             try {
                 return call_user_func_array(array($this->conn, $method), $args);
             } catch (Zend_Db_Adapter_Exception $db_e) {

@@ -42,26 +42,26 @@ CREATE TABLE $imdb->diarys (
   mood		varchar(11)     NOT NULL default '',
   status	varchar(20)     NOT NULL default 'archive',
   created_at datetime       NOT NULL default '0000-00-00 00:00:00',
-  saved_at	datetime        NOT NULL default '0000-00-00 00:00:00',
+  saved_at	 datetime        NOT NULL default '0000-00-00 00:00:00',
 
-  user_id	bigint(20)      unsigned NOT NULL default '0',
-  book_id   bigint(20)      unsigned NOT NULL default '0',
+  user_id	   bigint(20)      unsigned NOT NULL default '0',
+  journal_id   bigint(20)      unsigned NOT NULL default '0',
 
   PRIMARY KEY (id),
   KEY diary_author (user_id),
-  KEY diary_book (book_id)
+  KEY journal (journal_id)
 ) $imdb->tableSet;
 
-DROP TABLE IF EXISTS $imdb->books;
-CREATE TABLE $imdb->books (
-  book_id       bigint(20)      unsigned NOT NULL auto_increment,
-  book_name     varchar(200)    NOT NULL default '',
-  book_created  datetime        NOT NULL default '0000-00-00 00:00:00',
+DROP TABLE IF EXISTS $imdb->journals;
+CREATE TABLE $imdb->journals (
+  id      	  bigint(20)      unsigned NOT NULL auto_increment,
+  title       varchar(200)    NOT NULL default '',
+  created_at  datetime        NOT NULL default '0000-00-00 00:00:00',
 
-  book_owner	bigint(20)      unsigned NOT NULL default '0',
+  user_id	  bigint(20)      unsigned NOT NULL default '0',
 
-  PRIMARY KEY (book_id),
-  KEY book_owner (book_owner)
+  PRIMARY KEY (id),
+  KEY journal_owner (user_id)
 ) $imdb->tableSet;
 
 EOF;

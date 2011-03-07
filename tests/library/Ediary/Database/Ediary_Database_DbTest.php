@@ -83,7 +83,7 @@ class Ediary_Database_DbTest extends ControllerTestCase
          
         $this->assertEquals($prefix . 'users', $this->object->users);
         $this->assertEquals($prefix . 'diarys', $this->object->diarys);
-        $this->assertEquals($prefix . 'books', $this->object->books);
+        $this->assertEquals($prefix . 'journals', $this->object->journals);
     }
 
     public function testGetDbName() {

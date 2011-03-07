@@ -124,6 +124,11 @@ class Ediary_Query_Record
 	public static function getDb() {
 	    return Ediary_Database_Db::getInstance();
 	}
+	
+	protected function resetNewFields() {
+	    $this->fields = array_merge($this->fields, $this->newFields);
+        $this->newFields = array();
+	}
 }
 
 ?>

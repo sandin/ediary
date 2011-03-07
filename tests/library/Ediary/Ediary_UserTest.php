@@ -188,5 +188,29 @@ class Ediary_UserTest extends ControllerTestCase
         // post check
         $this->assertTrue($this->object->isExistsEmail($this->data['email']));
     }
+    
+    // depends : Ediary_Journal::create()
+    public function testGetJournals() {
+        // create a user
+        $userId = $this->_createUser();
+        
+        // create a journal for this test 
+        $journal_data = array( 'title' => 'title', 'user_id' => $userId);
+        $journal = Ediary_Journal::create($journal_data);
+        $this->assertNotNull($journal->id);
+        
+        // find the user who just created
+        $user = new Ediary_User();
+        $user->find($userId);
+        $this->assertEquals($userId, $user->getId());
+        
+        // get this user's journals
+        $journals_from_db = $user->getJournals();
+        //var_dump($journals_from_db);
+        
+        // the user is a new guy, so he only has one journal 
+        $this->assertEquals(1, count($journals_from_db));
+        $this->assertEquals($journal->id, $journals_from_db[0]->id);
+    }
 }
 ?>
