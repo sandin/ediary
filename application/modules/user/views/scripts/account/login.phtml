@@ -1,4 +1,55 @@
-<div class="content_box" id="login">
+<?php
+$this->loadJquery();
+$this->headScript()->appendFile("/js/jquery.validate.js");
+$this->inlineScript()->appendScript('
+$(document).ready(function(){
+    var i18n = {
+        EMAIL_IS_NULL : "请输入您的邮箱地址",
+        EMAIL_INVALID : "请输入正确的邮箱格式",
+        PASSWORD_IS_NULL : "请输入您的密码",
+        PASSWORD_INVALID : "密码只允许数字,字母和下划线",
+        PASSWORD_MIN_HEIGHT: "密码至少8位数"
+    };
+
+    // Allow [0-9a-zA-Z_]
+    jQuery.validator.addMethod("alnum", function(value, element) { 
+        return this.optional(element) || /^[\u0391-\uFFE5\w]+$/.test(value); 
+    });
+
+    $("#form_login").validate({
+        //debug : true, 	// do not submit the form
+
+        errorElement: "span",
+        rules : {
+            email : {
+                required: true,
+                email: true
+            },
+            password : {
+                required: true,
+                minlength: 8,
+                alnum : true
+            }
+        },
+        messages : {
+            email : {
+                required : i18n.EMAIL_IS_NULL,
+                email    : i18n.EMAIL_INVALID
+            },
+            password : {
+                required  : i18n.PASSWORD_IS_NULL,
+                minlength : i18n.PASSWORD_INVALID,
+                alnum 	  : i18n.PASSWORD_MIN_HEIGHT
+            }
+        },
+        success: function(label) {
+            label.html("Ok!").addClass("valid");
+        }
+    }); //end of validate
+});
+');
+?>
+<div id="login" class="content_box">
     <div class="login_main">
         <h2>登录</h2>
         <?php echo $this->error; ?>

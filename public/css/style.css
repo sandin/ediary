@@ -757,7 +757,7 @@ form.profile #forget_pw {
 }
 .registerForm label,
 .registerForm #op-label {
-	 width: 140px;
+	 width: 90px;
 }
 .registerForm .text {
     height: 25px;
@@ -766,9 +766,19 @@ form.profile #forget_pw {
     width: 220px;
     border: 1px solid #E0E0E0;
 }
-.registerForm div.errors {
-	padding-left: 140px;
+.registerForm input.error {
+	border: 1px solid red;
+}
+.registerForm span.error,
+.registerForm .errors {
+	margin-left: 5px;
+	display: inline-block;
 	color: red;
+}
+.registerForm span.valid {
+	text-indent: -9000px;
+	background: url("../images/icon_checked.gif") no-repeat;
+	width: 14px;
 }
 /*}}}*/
 
