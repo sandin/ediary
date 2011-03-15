@@ -29,6 +29,7 @@
               <actionMethod actionName="login"/>
               <actionMethod actionName="logout"/>
               <actionMethod actionName="register"/>
+              <actionMethod actionName="settings"/>
             </controllerFile>
             <controllerFile controllerName="Login">
               <actionMethod actionName="index"/>
@@ -58,6 +59,9 @@
               </viewControllerScriptsDirectory>
               <viewControllerScriptsDirectory forControllerName="Account">
                 <viewScriptFile forActionName="register"/>
+              </viewControllerScriptsDirectory>
+              <viewControllerScriptsDirectory forControllerName="Account">
+                <viewScriptFile forActionName="settings"/>
               </viewControllerScriptsDirectory>
             </viewScriptsDirectory>
             <viewHelpersDirectory/>
@@ -125,7 +129,6 @@
           </viewsDirectory>
         </moduleDirectory>
       </modulesDirectory>
-
       <viewsDirectory>
         <viewScriptsDirectory>
           <viewControllerScriptsDirectory forControllerName="Index">
@@ -138,7 +141,6 @@
         <viewHelpersDirectory/>
         <viewFiltersDirectory enabled="false"/>
       </viewsDirectory>
-
       <bootstrapFile filesystemName="Bootstrap.php"/>
     </applicationDirectory>
     <dataDirectory enabled="false">

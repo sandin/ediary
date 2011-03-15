@@ -199,12 +199,23 @@ class Ediary_User extends Ediary_Query_Record
      * @return boolean
      */
     public static function isValidUserName($name) {
-        $validator = new Zend_Validate();
-        $validator->addValidator(new Zend_Validate_Alnum(array('allowWhiteSpace' => true)))
-                  ->addValidator(new Zend_Validate_NotEmpty());
-        
+        $validator = self::getUserNameValidate();
         //var_dump('username valid :' . $validator->isValid($name));
         return $validator->isValid($name);
+    }
+    
+    public static function getUserNameValidate() {
+        $alnum = new Zend_Validate_Alnum(array('allowWhiteSpace' => true));
+        $alnum->setMessage(_t("用户名只能为数字, 字符或空格."));
+        
+        $noEmpty = new Zend_Validate_NotEmpty();
+        $noEmpty->setMessage(_t("用户名不能为空"));
+        
+        $validator = new Zend_Validate();
+        $validator->addValidator($noEmpty, true)
+                  ->addValidator($alnum, false);
+                  
+        return $validator;
     }
 
     /**
@@ -239,26 +250,34 @@ class Ediary_User extends Ediary_Query_Record
     
     /**
      * Is a Exists User
-     * 
+     *
      * @param mixed $who userId or email
      * @return boolean true if exists
      */
     public function isExists($who) {
         if ( is_numeric( $who ) ) {
-			// Got a User ID
-			return self::isExistsId($who);
-		} elseif ( strpos( $who, '@' ) !== FALSE ) {
-			// Got an email address
-			return self::isExistsEmail($who );
-		} else {
-		    return false;
-		}
+            // Got a User ID
+            return self::isExistsId($who);
+        } elseif ( strpos( $who, '@' ) !== FALSE ) {
+            // Got an email address
+            return self::isExistsEmail($who );
+        } else {
+            return false;
+        }
     }
     
+    /**
+     * @param String $id
+     * @return boolean
+     */
     public static function isExistsId($id) {
         return self::isExistsRow('id', $id);
     }
     
+    /**
+     * @param String $email
+     * @return boolean
+     */
     public static function isExistsEmail($email) {
         return self::isExistsRow('email', $email);
     }
@@ -269,7 +288,7 @@ class Ediary_User extends Ediary_Query_Record
      * @param String $email
      * @return boolean
      */
-    public static function isExistsRow($field, $value) {
+    private static function isExistsRow($field, $value) {
         $db = self::getDb();
         
         $sql = $db->quoteInto(

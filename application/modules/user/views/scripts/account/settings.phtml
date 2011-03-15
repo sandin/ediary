@@ -1,35 +1,22 @@
 <?php
 $this->loadJquery();
 $this->headScript()->appendFile("/js/jquery.validate.js");
-$this->headScript()->appendFile("/js/ediary.js?v=1");
+$this->headScript()->appendFile("/js/ediary.js");
 $this->inlineScript()->appendScript('
 $(document).ready(function(){
     var i18n = Ediary.i18n;
 
-    $("#form_login").validate({
+    $("#form_setttings").validate({
         //debug : true, 	// do not submit the form
-
         errorElement: "span",
         rules : {
-            email : {
-                required: true,
-                email: true
-            },
-            password : {
-                required: true,
-                minlength: 8,
-                alnum : true
+            username : {
+                regex: /^[\w\ ]+$/
             }
         },
         messages : {
-            email : {
-                required : i18n.EMAIL_IS_NULL,
-                email    : i18n.EMAIL_INVALID
-            },
-            password : {
-                required  : i18n.PASSWORD_IS_NULL,
-                alnum 	  : i18n.PASSWORD_INVALID,
-                minlength : i18n.PASSWORD_TOO_SHORT
+        	username : {
+        		regex: i18n.USERNAME_INVALID
             }
         },
         success: function(label) {
@@ -41,9 +28,19 @@ $(document).ready(function(){
 ?>
 <div id="login" class="content_box">
     <div class="login_main">
-        <h2>登录</h2>
+        <h2>修改设置</h2>
         <?php echo $this->error; ?>
-        <?php echo $this->form; ?>
+        <form id="form_setttings" action="#" method="post" class="labelForm sForm">
+        	<div class="element">
+        		<label for="username">您的姓名 :</label>
+        		<input name="username" type="text" class="text" value="" />
+        		<?php echo $this->partial('form_error.phtml', array('form' => $this->form,'element' => 'username')); ?>
+        	</div>
+        	<div class="element">
+        		<label>&nbsp;</label>
+        		<input class="button" type="submit" value="确定" />
+        	</div>
+        </form>
     </div>
     <div class="login_side">
         <p><a href="<?php echo $this->baseUrl("register") ?>">还没有帐户，点此注册</a></p>

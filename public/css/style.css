@@ -748,34 +748,34 @@ form.profile #forget_pw {
 }
 
 
-.registerForm {
+.sForm {
 	color: #6F6F6F;
     font-size: 14px;
 }
-.registerForm .element {
+.sForm .element {
     margin-bottom: 20px;
 }
-.registerForm label,
-.registerForm #op-label {
+.sForm label,
+.sForm #op-label {
 	 width: 90px;
 }
-.registerForm .text {
+.sForm .text {
     height: 25px;
     line-height: 25px;
     padding: 0 4px;
     width: 220px;
     border: 1px solid #E0E0E0;
 }
-.registerForm input.error {
+.sForm input.error {
 	border: 1px solid red;
 }
-.registerForm span.error,
-.registerForm .errors {
+.sForm span.error,
+.sForm .errors {
 	margin-left: 5px;
 	display: inline-block;
 	color: red;
 }
-.registerForm span.valid {
+.sForm span.valid {
 	text-indent: -9000px;
 	background: url("../images/icon_checked.gif") no-repeat;
 	width: 14px;

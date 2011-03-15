@@ -1,0 +1,11 @@
+<?php
+$messages = $this->form->getMessages();
+//var_dump($messages);
+if( null !== $messages ) {
+    foreach ( $messages as $filed => $errors ) {
+        foreach ( $errors as $key => $message ) {
+            echo $message . "<br />";
+        }
+    }
+}
+?>

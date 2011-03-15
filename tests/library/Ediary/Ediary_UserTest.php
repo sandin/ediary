@@ -263,7 +263,7 @@ class Ediary_UserTest extends ControllerTestCase
     // for testIsValidUser
     public function usernameDataProvider() {
         return array(
-        	array('lastname', true),
+            array('lastname', true),
             array('firstname lastname',true),    // white space is allowed
             array('firstname_lastname', false),  // "_" is not allowed
             array('firstname-lastname', false),  // "-" is not allowed

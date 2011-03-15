@@ -1,0 +1,9 @@
+<?php if( null !== $this->form->getMessages($this->element) ):?>
+<span class="error">
+<?php 
+foreach ( $this->form->getMessages($this->element) as $msg ) {
+    echo $msg;
+}
+?>
+</span>
+<?php endif?>

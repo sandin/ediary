@@ -197,6 +197,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
              ->setSeparator(' - ')
              ->setDefaultAttachOrder('PREPEND');
         
+        // 'views/script' has some share templates
+        $view->addBasePath(APPLICATION_PATH . '/views');
+        
         // Register Helpers
         $view->addHelperPath(APPLICATION_PATH. '/../library/Ediary/View/Helper', 'Ediary_View_Helper');
         

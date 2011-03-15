@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @author lds
+ *
+ */
 class User_AccountController extends Zend_Controller_Action
 {
 
@@ -81,10 +85,18 @@ class User_AccountController extends Zend_Controller_Action
 	    if ($userId > 0) {
 	        //$user->login($_POST['email'], $_POST['password']);
 	    }
+	    
     }
-    
-  private function getRegisterForm() {
-    	$form = new Ediary_Form(array('name' => 'form_register', 'class' => "labelForm registerForm"));
+
+    /**
+     * @return Ediary_Form
+     */
+    private function getRegisterForm()
+    {
+    	$form = new Ediary_Form(array(
+    					'name' => 'form_register',
+    	                'class' => "labelForm sForm"));
+    	
         $form->setAction('/register')
      		 ->setMethod('post');
      		 
@@ -113,13 +125,22 @@ class User_AccountController extends Zend_Controller_Action
      			   ->setDecorators(array($textElement));
         
      	$form->addElements(array($username, $password, $rePassword));
-     	$form->addElement('submit', 'op', array('label' => _t('立即注册'), 'class' => 'nolabel button'));
+     	$form->addElement('submit', 'op', array(
+     							'label' => _t('立即注册'),
+     	                        'class' => 'nolabel button'));
      	
      	return $form;
     }
-    
-    private function getLoginForm() {
-    	$form = new Ediary_Form(array('name' => 'form_login', 'class' => "labelForm registerForm"));
+
+    /**
+     * @return Ediary_Form
+     */
+    private function getLoginForm()
+    {
+    	$form = new Ediary_Form(array(
+    					'name' => 'form_login',
+    	                'class' => "labelForm sForm"));
+    	
         $form->setAction('/login')
      		 ->setMethod('post');
      		 
@@ -143,11 +164,44 @@ class User_AccountController extends Zend_Controller_Action
      	$form->addElements(array($username, $password));
      	$form->addElement('submit', 'op', array('label' => _t('登录'), 'class' => 'nolabel button'));
      	
+     	$form->getErrorMessages();
      	return $form;
+    }
+    
+    /**
+     * @return Ediary_Form
+     */
+    private function getSettingsForm() {
+        $form = new Zend_Form();
+         
+     	$username = new Zend_Form_Element_Text('username');
+     	$username->setRequired(true)
+     	         ->addValidator(Ediary_User::getUserNameValidate())
+     			 //->addValidator(new Zend_Validate_Alnum(), false, array("messages" => '只能输入数字和字符'))
+     			 ->addFilter('StringTrim');
+     			 
+        $form->addElement($username);
+        return $form;
+    }
+
+    public function settingsAction()
+    {
+        // action body
+        $form = $this->view->form = $this->getSettingsForm();
+        
+        if ( !$this->getRequest()->isPost() || !$form->isValid($_POST) ) {
+            var_dump($form->getMessages());
+            return $form;
+        } else {
+            var_dump('Your name : ' . $form->getElement("username")->getValue());
+            var_dump("OK");
+        }
     }
 
 
 }
+
+
 
 
 
