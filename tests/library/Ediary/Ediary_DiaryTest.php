@@ -22,8 +22,6 @@ class Ediary_DiaryTest extends ControllerTestCase
     {
         parent::setUp();
         
-        //Ediary_Database_Db::getInstance()->upgrade();
-        
         $this->data = array(
         'title' => 'title',
         'content' => 'content',

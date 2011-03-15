@@ -13,6 +13,12 @@ class Ediary_UserTest extends ControllerTestCase
     protected $object;
     
     protected $data = array();
+    
+    public function dataProvider() {
+        return array(
+            array('lds2012@gmail.com', 'password', 'username', true),
+        );
+    }
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -23,8 +29,9 @@ class Ediary_UserTest extends ControllerTestCase
         parent::setUp();
         $this->object = new Ediary_User();
         
-        $this->data['email'] = 'lds2012@gmail.com' . microtime();
-        $this->data['name'] = "lds' or 1=1";
+        $r = substr(microtime(), 3, 7); // random string
+        $this->data['email'] = $r . 'lds2012@gmail.com';
+        $this->data['name'] = "username";
         $this->data['password'] = 'asdfzf34sdfa';
     }
 
@@ -105,6 +112,7 @@ class Ediary_UserTest extends ControllerTestCase
     {
         // create a user and load it by id
         $userId = $this->_createUser();
+        $this->assertTrue($userId > 0);
         $user = $this->object->loadById($userId);
         
         $this->assertEquals($userId, $user->getId());
@@ -135,6 +143,20 @@ class Ediary_UserTest extends ControllerTestCase
         $this->assertTrue($userId > 0);
     }
     
+    /**
+     * @dataProvider dataProvider
+     */
+    public function testCreate2($email, $password, $name, $valid) {
+        /*
+        $userId = $this->_createUser2($email, $password, $name);
+        if ($valid) {
+            $this->assertTrue($userId > 0);
+        } else {
+            $this->assertEquals(-1, $userId); // return -1 on fail
+        }
+        */
+    } 
+    
     public function testLogin() {
         $userId = $this->_createUser();
         $email = $this->data['email'];
@@ -153,6 +175,12 @@ class Ediary_UserTest extends ControllerTestCase
             $this->data['email'],
             $this->data['password'],
             $this->data['name']
+        );
+    }
+    
+    private function _createUser2($email, $password, $name) {
+        return $userId = $this->object->create(
+            $email, $password, $name
         );
     }
 
@@ -180,13 +208,17 @@ class Ediary_UserTest extends ControllerTestCase
 
     public function testIsExistsEmail() {
         // pre check
-        $this->assertFalse($this->object->isExistsEmail($this->data['email']));
+        $this->assertFalse(Ediary_User::isExistsEmail($this->data['email']));
 
+        // create user
         $userId = $this->_createUser();
-        $this->object->isExistsEmail($this->data['email']);
-
+        
         // post check
-        $this->assertTrue($this->object->isExistsEmail($this->data['email']));
+        $this->assertTrue(Ediary_user::isExistsEmail($this->data['email']));
+        
+        // test isExistsId()
+        $this->assertTrue(Ediary_user::isExistsId($userId));
+        $this->assertFalse(Ediary_user::isExistsId('unExistsUserId'));
     }
     
     // depends : Ediary_Journal::create()
@@ -212,5 +244,66 @@ class Ediary_UserTest extends ControllerTestCase
         $this->assertEquals(1, count($journals_from_db));
         $this->assertEquals($journal->id, $journals_from_db[0]->id);
     }
+    
+    public function testIsValidEmail() {
+        $data = array( 
+            'lds2012@gmail.com' => true,
+            'lds2012gmail.com'  => false,
+            'lds2012@gmailcom'  => false,
+            'asdfajjklsdfaoihosdfa' => false
+        );
+        
+        foreach ( $data as $email => $isValid ) {
+            if( $isValid !== Ediary_User::isValidEmail($email)) {
+                $this->fail($email . ' is invalid.');
+            }
+        }
+    }
+    
+    // for testIsValidUser
+    public function usernameDataProvider() {
+        return array(
+        	array('lastname', true),
+            array('firstname lastname',true),    // white space is allowed
+            array('firstname_lastname', false),  // "_" is not allowed
+            array('firstname-lastname', false),  // "-" is not allowed
+            array('323423lastname', true),       // start with num
+            array('lastname1234', true),         // end with num
+            array('1234234234234', true),        // all num
+            array('中文名', false)
+        );
+    }
+        
+    /**
+     * @dataProvider usernameDataProvider
+     */
+    public function testIsValidUser($name, $isValid) {
+        if ($isValid !== Ediary_user::isValidUserName($name)) {
+            $this->fail($name . ' is invalid.');
+        }
+    }
+    
+    // for testIsValidPassword
+    public function passwordDataProvider() {
+        return array(
+            array('123456', false),    // too short
+            array('12345678901234567890', false), // too long
+            array('abcdefgh', true),   
+            array('a2345678', true),   
+            array('12345678', true),  
+            array('1234567c', true),   
+            array('asdf1234214sDFSF', true) // prefect password
+        );
+    }
+    
+    /**
+     * @dataProvider passwordDataProvider
+     */
+    public function testIsValidPassword($password, $isValid) {
+        if ($isValid !== Ediary_user::isValidPassword($password)) {
+            $this->fail($password . ' is invalid.');
+        }
+    }
+    
 }
 ?>

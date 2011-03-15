@@ -30,7 +30,7 @@ CREATE TABLE $imdb->users (
   photo      varchar(100)    NOT NULL default '',
 
   PRIMARY KEY (id),
-  KEY user_email (email)
+  UNIQUE KEY user_email (email)
 ) $imdb->tableSet;
 
 DROP TABLE IF EXISTS $imdb->diarys;

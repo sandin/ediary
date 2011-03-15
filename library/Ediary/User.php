@@ -12,6 +12,9 @@ class Ediary_User extends Ediary_Query_Record
     const LAST_TIME = 'last_logined';
     const ACCOUNT = 'account';
     const PIC = 'photo';
+    
+    const PASSWORD_MIN_LENGTH = 8;
+    const PASSWORD_MAX_LENGTH = 18;
 
     // Zend_Db_Table
     private static $table = null;
@@ -98,8 +101,11 @@ class Ediary_User extends Ediary_Query_Record
      * @throws Ediary_Exception $row is not a Zend_Db_Table_Row
      */
     public function loadFromRow( $row ) {
-        if (! $row instanceof Zend_Db_Table_Row) 
-            throw new Ediary_Exception('$row must be a Zend_Db_Table_Row');
+        if (null == $row) {
+            return false; // $row is from Db, would be null
+        } else if (! $row instanceof Zend_Db_Table_Row) { 
+            throw new Ediary_Exception(__METHOD__ . ' expect Zend_Db_Table_Row');
+        }
             
         $userData = $row->toArray();
         $this->loadFromArray($userData);
@@ -153,9 +159,12 @@ class Ediary_User extends Ediary_Query_Record
      * @param String $password
      * @return int new user'id (last insert id) | return -1 on fail.
      */
-    public function create( $email, $password, $name = '' ) {
-        if ( self::isValidUserName($name) && self::isValidEmail($email)
-                && self::isValidPassword($password) ) {
+    public function create( $email, $password, $name ) {
+        if ( self::isValidUserName($name) 
+            && self::isValidEmail($email)
+            && !self::isExists($email)
+            && self::isValidPassword($password) ) 
+        {
             return $this->insert($email, $password, $name);
         }
         return -1;
@@ -190,8 +199,12 @@ class Ediary_User extends Ediary_Query_Record
      * @return boolean
      */
     public static function isValidUserName($name) {
-        //FIXME:
-        return true;
+        $validator = new Zend_Validate();
+        $validator->addValidator(new Zend_Validate_Alnum(array('allowWhiteSpace' => true)))
+                  ->addValidator(new Zend_Validate_NotEmpty());
+        
+        //var_dump('username valid :' . $validator->isValid($name));
+        return $validator->isValid($name);
     }
 
     /**
@@ -201,8 +214,12 @@ class Ediary_User extends Ediary_Query_Record
      * @return boolean
      */
     public static function isValidEmail($email) {
-        //FIXME:
-        return true;
+        $validator = new Zend_Validate();
+        $validator->addValidator(new Zend_Validate_EmailAddress())
+                  ->addValidator(new zend_validate_NotEmpty());
+        
+        //var_dump('email valid :' . $validator->isValid($email));
+        return $validator->isValid($email);
     }
     /**
      * Check Password
@@ -211,35 +228,61 @@ class Ediary_User extends Ediary_Query_Record
      * @return boolean
      */
     public static function isValidPassword($password) {
-        //FIXME:
-        return true;
+        $validator = new Zend_Validate();
+        $validator->addValidator(new Zend_Validate_NotEmpty())
+                  ->addvalidator(new Zend_Validate_StringLength(
+                      self::PASSWORD_MIN_LENGTH, self::PASSWORD_MAX_LENGTH));
+                  
+        //var_dump('password : ' . $password . ' | ' . 'valid :' . $validator->isValid($password));
+        return $validator->isValid($password);
     }
     
-    public function isExists($who) {
-        //FIXME:
-        if ($who instanceof Ediary_User) {
-            return ;
-        }
-    }
-
     /**
-     * Check The email is exists or not
+     * Is a Exists User
+     * 
+     * @param mixed $who userId or email
+     * @return boolean true if exists
+     */
+    public function isExists($who) {
+        if ( is_numeric( $who ) ) {
+			// Got a User ID
+			return self::isExistsId($who);
+		} elseif ( strpos( $who, '@' ) !== FALSE ) {
+			// Got an email address
+			return self::isExistsEmail($who );
+		} else {
+		    return false;
+		}
+    }
+    
+    public static function isExistsId($id) {
+        return self::isExistsRow('id', $id);
+    }
+    
+    public static function isExistsEmail($email) {
+        return self::isExistsRow('email', $email);
+    }
+    
+    /**
+     * Row is exists or not
      *
      * @param String $email
      * @return boolean
      */
-    public function isExistsEmail($email) {
-        $sql = $this->db->quoteInto(
-        	'SELECT count(*) FROM {users} where email= ?', $email);
-        $result = $this->db->fetchOne($sql);
+    public static function isExistsRow($field, $value) {
+        $db = self::getDb();
+        
+        $sql = $db->quoteInto(
+        	'SELECT count(*) FROM {users} where ' . $field . ' =?', $value);
+        $result = $db->fetchOne($sql);
         return ($result > 0) ? true : false;
     }
 
     /**
      * Make a random string
      *
-     * @param unknown_type $keyword
-     * @return string
+     * @param String $keyword
+     * @return String a random string(length = 10)
      */
     public static function makeSecurityCode($keyword) {
         return substr(md5($keyword . microtime() . 'lds'), 0, 10);
@@ -262,7 +305,7 @@ class Ediary_User extends Ediary_Query_Record
      *
      * @param String $password
      * @param String $securityCode
-     * @return string
+     * @return string encrypted password
      */
     public static function encryptPassword($password, $securityCode) {
         return md5( md5($password) . $securityCode . 'lds' );
@@ -295,7 +338,9 @@ class Ediary_User extends Ediary_Query_Record
 
     /**
      * Delete a Row
+     * 
      * @param int $userId
+     * @return 
      */
     public function delete($userId){
         $where = $this->db->quoteInto(self::ID . '= ?', $useId);
@@ -336,6 +381,11 @@ class Ediary_User extends Ediary_Query_Record
         return $result;
     }
     
+    /**
+     * Get current user's journals
+     * 
+     * @return Array<stdClass> a list of journals
+     */
     public function getJournals() {
         $db = self::getDb();
         $db->setFetchMode(Zend_Db::FETCH_OBJ);

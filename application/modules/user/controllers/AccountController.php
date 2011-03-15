@@ -20,7 +20,7 @@ class User_AccountController extends Zend_Controller_Action
 		
 		$form = $this->getLoginForm();
 		
-	    // Not a Post or Post data invalid, redisplay form
+	    // Not a Post or Post data invalid, redisplay the form
 		if ( !$this->getRequest()->isPost() || !$form->isValid($_POST) ) {
        	    foreach ($form->getErrorMessages() as $e) {
        	        $this->view->error .= $e . '<br />';
