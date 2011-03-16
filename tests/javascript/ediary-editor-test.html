@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>QUnit Test Suite</title>
+	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
+	<script type="text/javascript" src="js/jquery-1.5.min.js"></script>
+	<script type="text/javascript" src="js/ediary.js"></script>
+	<script type="text/javascript" src="js/ediary-editor.js"></script>
+	
+	<script type="text/javascript" src="qunit/qunit.js"></script>
+	<script type="text/javascript" src="ediary-editor-test.js"></script>
+</head>
+<body>
+	<h1 id="qunit-header">QUnit Test Suite</h1>
+	<h2 id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+	<div id="qunit-fixture">
+	</div>
+	
+	<div class="test-zone">
+	
+	   <!-- Notice -->
+	   <div id="notice"></div>
+	
+	   <!-- Editor -->
+	   <div id="editor">
+	       <form action="/" method="get">
+	           <div class="element">
+    	           <label for="title">TITLE</label>
+	              <input id="editor-title" name="title" type="text" />
+	           </div>
+	           <div class="element">
+	               <label for="title">BODY</label>
+	               <textarea id="editor-body" rows="5" cols="20"></textarea>
+	           </div>
+	           <input id="editor-submit" name="op" type="submit" value="Submit" />
+	           <input id="editor-btn-save" name="save" type="button" value="Save" />
+	       </form>
+	   </div>
+	   
+	</div><!--  /test-zone -->
+</body>
+</html>

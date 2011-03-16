@@ -1,0 +1,5 @@
+此文件夹仅用于Javascript单元测试, 因在htdocs目录外, 故外部无法直接访问.
+
+本目录下的 `js` 为 `public/js` 的镜像(linux环境使用的软链接,windows环境可以直接copy一份)
+
+ln -s /path/to/root/public/js .
