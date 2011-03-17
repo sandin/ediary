@@ -10,12 +10,14 @@ if (! window.console ) {
 }
 
 /**
- * Class Editor
+ * Editor Package
  * @author lds
  */
 (function($, Ediary, Window){
 
-// Class Editor
+/**
+ * Class Editor
+ */
 var Editor = {
     version : 0.1,
     
@@ -88,11 +90,11 @@ var Editor = {
     /**
      * Add Plugin
      * 
-     * @param String name plugin's name
      * @param Editor.Plugin plugin object
      * @param Object extend data
      */
-    addPlugin: function(name, plugin, extData) {
+    addPlugin: function(plugin, extData) {
+        var name = plugin.getName();
         this.plugins[name] = plugin;
         this.plugins[name].addExt(extData);
     },
@@ -185,9 +187,7 @@ var Editor = {
         
         // destory all plugins
         $.each(this.plugins, function() {
-            if (typeof this.destory == 'function') {
-                this.destory();
-            }
+            this.destory();
         });
     }
 };
@@ -203,61 +203,62 @@ Editor.events.addListener("onSaveSuccess", new Ediary.Listener(function(){
 /**
  * Class Plugin
  */ 
-Editor.Plugin =  {
-    // Plugin Name(for DEBUG)
-    name: '',
-
-    // DOM Element(jQuery Object)
-    element: null,
-    
-    // Extend Data
-    extData: {},
+Editor.Plugin = function() {
+    this.element = null;
+    this.extData = {};
+}
+Editor.Plugin.prototype = {
     
     /**
+     * 外部init方法, 非实例化对象时调用, 而是延时被Editor#init()调用 
+     * 故可在其中对DOM进行处理
+     */
+    init: function() {},    
+    
+    destory: function() {}, 
+    
+    /**
+     * Add Extend data (like options, params)
      * @param Object extend data
      */
     addExt: function(data) {
         $.extend(this.extData, data);
     },
-
-    // abstract function
-    init: function() {},    // will call by Editor#init()
-    destory: function() {}, 
     
-    // static : create a plugin
-    factory : function(plugin) {
-        if (typeof plugin.init !== 'function') {
-            console.warn("The %s Plugin dosen't have a init function", plugin.name);
-        }
-        return $.extend({}, Editor.Plugin, plugin);
+    getName: function() {
+        return this.constructor.name;
     }
-};
+}
 
 /**
- * Class Save extends Plugin
+ * Class SaveButton extend Plugin
  */
-Editor.addPlugin('Save', Editor.Plugin.factory({
-    name: 'Save',
-    init: function() {
-        var t = this, ext = t.extData;
-        
-        this.element = $(ext.element);
-        if (this.element.length < 1) {
-            console.warn("Save Button is missing, it should be :", ext.element);
-        }
-        
-        this.bindEvent();
-    },
-    bindEvent: function() {
-        this.element.click(this.clickHandler);
-    },
-    clickHandler : function(e) {
-        Editor.doSave();
-    },
-    destory: function() {
-        this.element.unbind();
+var SaveButton = function() {
+    Editor.Plugin.apply(this, arguments);
+    this.name = 'SaveButton';
+}
+SaveButton.fn = SaveButton.prototype = new Editor.Plugin();
+SaveButton.fn.init = function() {
+    var t = this, ext = t.extData;
+
+    this.element = $(ext.element);
+    if (this.element.length < 1) {
+        console.warn("Save Button is missing, it should be :", ext.element);
     }
-}), {element: '#editor-btn-save'});
+
+    this.bindEvent();
+};
+SaveButton.fn.bindEvent = function() {
+    this.element.click(this.clickHandler);
+};
+SaveButton.fn.clickHandler = function(e) {
+    Editor.doSave();
+};
+SaveButton.fn.destory = function() {
+    this.element.unbind();
+};
+
+Editor.addPlugin(new SaveButton(), {element: '#editor-btn-save'});
 
 // NAMESPACE
 window.Ediary.Editor = Editor;
