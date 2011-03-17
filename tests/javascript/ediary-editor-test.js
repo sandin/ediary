@@ -1,4 +1,8 @@
-//Ediary.Editor.init();
+/*
+$(window).load(function(){
+    Ediary.Editor.init();
+});
+*/
 
 module("Module Basic", {
     setup: function() {
@@ -18,7 +22,7 @@ module("Module Basic", {
 });
 
 test("init", function() {
-    console.log(this.obj);
+    console.dir(this.obj);
     ok("OK");
 });
 
@@ -69,4 +73,3 @@ test('testDoSave', function(){
 
 test('test', function() {
 });
-

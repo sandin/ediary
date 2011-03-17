@@ -69,22 +69,24 @@ var Editor = {
         t.bodyElem = $(o.bodyElem);
         
         // Cann't init the editor, Missing DOM element
-        if (t.element.length + t.titleElem.length + t.bodyElem.length !== 3) {
-            console.error('editor/title/body missing. ');
-            console.info(t.element);console.info(t.titleElem);console.info(t.bodyElem);
-            return;
-        }
+        if (! this.checkIsReady) { return; }
         
-        // Init all plugins
-        $.each(t.plugins, function() {
-            this.init();
-        });
-        
-        // Setup Ajax
-        this.setupAjax();
+        this.initPlugins(); // Init all plugins
+        this.setupAjax();   // Setup Ajax
         
         t.isReady = true;
         return this;
+    },
+    
+    // Check if all DOM elements exist
+    checkIsReady: function() {
+        var t = this;
+        if (t.element.length + t.titleElem.length + t.bodyElem.length !== 3) {
+            console.error('editor/title/body missing. ');
+            console.info(t.element);console.info(t.titleElem);console.info(t.bodyElem);
+            return false;
+        }
+        return true;
     },
     
     /**
@@ -93,10 +95,16 @@ var Editor = {
      * @param Editor.Plugin plugin object
      * @param Object extend data
      */
-    addPlugin: function(plugin, extData) {
-        var name = plugin.getName();
+    addPlugin: function(name, plugin, extData) {
         this.plugins[name] = plugin;
         this.plugins[name].addExt(extData);
+    },
+    
+    // Init all plugins
+    initPlugins: function() {
+        $.each(this.plugins, function() {
+            this.delayInit();
+        });
     },
     
     /**
@@ -203,19 +211,17 @@ Editor.events.addListener("onSaveSuccess", new Ediary.Listener(function(){
 /**
  * Class Plugin
  */ 
-Editor.Plugin = function() {
-    this.element = null;
-    this.extData = {};
-}
-Editor.Plugin.prototype = {
+var Plugin = Class.extend({
+    init: function() {
+        this.element = null;
+        this.extData = {};
+    },
     
     /**
-     * 外部init方法, 非实例化对象时调用, 而是延时被Editor#init()调用 
+     * 延时init方法, 非实例化对象时立即调用, 而是延时被Editor#init()调用 
      * 故可在其中对DOM进行处理
      */
-    init: function() {},    
-    
-    destory: function() {}, 
+    delayInit: function() {},    
     
     /**
      * Add Extend data (like options, params)
@@ -225,40 +231,42 @@ Editor.Plugin.prototype = {
         $.extend(this.extData, data);
     },
     
-    getName: function() {
-        return this.constructor.name;
-    }
-}
+    destory: function() {}, 
+});
 
 /**
- * Class SaveButton extend Plugin
+ * Class SaveButton extends Plugin
  */
-var SaveButton = function() {
-    Editor.Plugin.apply(this, arguments);
-    this.name = 'SaveButton';
-}
-SaveButton.fn = SaveButton.prototype = new Editor.Plugin();
-SaveButton.fn.init = function() {
-    var t = this, ext = t.extData;
+var SaveButton = Plugin.extend({
+    init: function() {
+        this._super();
+    },
+    
+    delayInit: function() {
+        var t = this, ext = t.extData;
 
-    this.element = $(ext.element);
-    if (this.element.length < 1) {
-        console.warn("Save Button is missing, it should be :", ext.element);
+        this.element = $(ext.element);
+        if (this.element.length < 1) {
+            console.warn("Save Button is missing, it should be :", ext.element);
+        }
+
+        this.bindEvent();
+    },
+    
+    bindEvent: function() {
+        this.element.click(this.clickHandler);
+    },
+    
+    clickHandler : function(e) {
+        Editor.doSave();
+    },
+    
+    destory : function() {
+        this.element.unbind();
     }
+});
 
-    this.bindEvent();
-};
-SaveButton.fn.bindEvent = function() {
-    this.element.click(this.clickHandler);
-};
-SaveButton.fn.clickHandler = function(e) {
-    Editor.doSave();
-};
-SaveButton.fn.destory = function() {
-    this.element.unbind();
-};
-
-Editor.addPlugin(new SaveButton(), {element: '#editor-btn-save'});
+Editor.addPlugin('SaveButton', new SaveButton(), {element: '#editor-btn-save'});
 
 // NAMESPACE
 window.Ediary.Editor = Editor;
