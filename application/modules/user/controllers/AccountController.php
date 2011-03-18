@@ -79,7 +79,7 @@ class User_AccountController extends Zend_Controller_Action
 	    
 	    // Create the user into database
 	    $user = new Ediary_User();
-	    $userId = $user->create($_POST['email'], $_POST['password']);
+	    $userId = $user->create($_POST['email'], $_POST['password'], '');
 	    
 	    // login for this user
 	    if ($userId > 0) {
@@ -196,6 +196,26 @@ class User_AccountController extends Zend_Controller_Action
             var_dump('Your name : ' . $form->getElement("username")->getValue());
             var_dump("OK");
         }
+    }
+    
+    public function existsAction() {
+        $this->_helper->viewRenderer->setNoRender();
+        $this->_helper->layout->disableLayout();
+        
+        $email = $this->_getParam('email');
+        $result = 'false';
+        
+        if (null !== $email) {
+            if (! Ediary_User::isExists($email)) {
+                $result = 'true';
+            } else {
+                $result = _t("该电子邮件已经被注册.");
+            }
+        }
+        
+        $this->_helper->json(
+            json_encode(array('name' => 'fasfd'))
+        );
     }
 
 

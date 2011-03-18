@@ -244,7 +244,6 @@ class Ediary_User extends Ediary_Query_Record
                   ->addvalidator(new Zend_Validate_StringLength(
                       self::PASSWORD_MIN_LENGTH, self::PASSWORD_MAX_LENGTH));
                   
-        //var_dump('password : ' . $password . ' | ' . 'valid :' . $validator->isValid($password));
         return $validator->isValid($password);
     }
     
@@ -254,7 +253,7 @@ class Ediary_User extends Ediary_Query_Record
      * @param mixed $who userId or email
      * @return boolean true if exists
      */
-    public function isExists($who) {
+    public static function isExists($who) {
         if ( is_numeric( $who ) ) {
             // Got a User ID
             return self::isExistsId($who);

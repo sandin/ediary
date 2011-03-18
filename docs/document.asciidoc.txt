@@ -3,3 +3,5 @@ lds <lds2012[at]gmail.com>
 
 == Cache ==
 `/application/data/cache` 须可读可写
+
+== LOG ==
