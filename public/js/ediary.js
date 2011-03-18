@@ -26,39 +26,62 @@ var Ediary = {
      * @param Object options
      */
     extend: function(name, object, options) {
-        if (typeof this[name] === 'undefined') {
-            this[name] = object;
-        } else {
+        if (typeof this[name] !== 'undefined') {
             console.error("Duplication Module, The " + name + " module is exsits.");
+            return;
+        } 
+        
+        switch (typeof object) {
+            case 'object': 
+                this[name] = object;
+                break;
+            case 'function':
+                //TODO: 匿名函数的this指针是否应该指向 Ediary ?
+                object.call(this, this, options); // inside Function 'this' point Ediary
+                break;
+            default:
+                return; //do nothing
         }
     }
 };
 window.Ediary = Ediary;
 
 // i18n 
-Ediary.extend('i18n', {
-    USERNAME_INVALID: "用户名只能输入字符, 数字和空格",
-    EMAIL_IS_NULL : "请输入您的邮箱地址",
-    EMAIL_INVALID : "请输入正确的邮箱格式",
-    PASSWORD_IS_NULL : "请输入您的密码",
-    PASSWORD_INVALID : "密码只允许数字,字母和下划线",
-    PASSWORD_TOO_SHORT : "密码至少8位数"
+Ediary.extend('i18n', function(E) {
+    var cn = {
+        USERNAME_INVALID: "用户名只能输入字符, 数字和空格",
+        EMAIL_IS_NULL : "请输入您的邮箱地址",
+        EMAIL_INVALID : "请输入正确的邮箱格式",
+        EMAIL_IS_EXISTS : "该电子邮件已经被注册",
+        PASSWORD_IS_NULL : "请输入您的密码",
+        PASSWORD_INVALID : "密码只允许数字,字母和下划线",
+        PASSWORD_TOO_SHORT : "密码至少8位数",
+        PASSWORD_NOT_SAME : "两次输入的密码不一样"
+    };
+    
+    E.i18n = cn; // set language 
 });
 
-// jQuery Validate Plugin
-if (jQuery.validator) {
+Ediary.extend('validator', function(){
+    
+    // Need jQuery Validate Plugin
+    if (! jQuery.validator) {
+        return;
+    }
     
     // Allow [0-9a-zA-Z_]
     jQuery.validator.addMethod("alnum", function(value, element) { 
         return this.optional(element) || /^[\w]+$/.test(value); 
     });
     
-    // Regex
+        // Regex
     jQuery.validator.addMethod("regex", function(value, element, param) { 
         return this.optional(element) || param.test(value); 
     });
     
-}
+});
+
+
     
 })(jQuery);
 

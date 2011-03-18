@@ -6,6 +6,8 @@ $this->inlineScript()->appendScript('
 $(document).ready(function(){
     var i18n = Ediary.i18n;
 
+    $("#email").focus();
+    
     $("#form_register").validate({
         //debug : true, 	// do not submit the form
 
@@ -30,7 +32,7 @@ $(document).ready(function(){
             email : {
                 required : i18n.EMAIL_IS_NULL,
                 email    : i18n.EMAIL_INVALID,
-                remote	 : "该电子邮件已经被注册"
+                remote	 : i18n.EMAIL_IS_EXISTS
             },
             password : {
                 required  : i18n.PASSWORD_IS_NULL,
@@ -39,7 +41,7 @@ $(document).ready(function(){
             },
             rePassword: {
                 required  : i18n.PASSWORD_IS_NULL,
-                equalTo	  : "两次输入的密码不一样"
+                equalTo	  : i18n.PASSWORD_NOT_SAME 
             }
         },
         success: function(label) {
@@ -47,18 +49,6 @@ $(document).ready(function(){
         }
     }); //end of validate
     
-    $.ajax({
-    	type: "GET",
-    	url: "/user/account/exists",
-    	success: function(data, textStatus, jqXHR) {
-    		console.log(123);
-    		var data = jQuery.parseJSON(data);
-    		console.log(data);
-    		console.log(data.name);
-    	},
-    	dataType: "json"
-    });
-    	
 });
 ');
 ?>
@@ -66,7 +56,7 @@ $(document).ready(function(){
     <div class="login_main">
         <h2>注册帐号</h2>
         <p class="formTitle">宜日记提供绝对保密的个人网络日记本，欢迎注册使用！</p>
-        <?php echo $this->error; ?>
+        <div class="error"><?php echo $this->error; ?></div>
         <?php echo $this->form; ?>
     </div>
     <div class="login_side">

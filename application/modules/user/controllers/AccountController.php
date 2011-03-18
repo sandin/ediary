@@ -74,16 +74,20 @@ class User_AccountController extends Zend_Controller_Action
 		
 	    // OK, register this user
 	    
-		$this->view->form = _t("注册成功");
-	    $form->saveToken(); // in case reSubmit
-	    
-	    // Create the user into database
+        // Create the user into database
 	    $user = new Ediary_User();
 	    $userId = $user->create($_POST['email'], $_POST['password'], '');
 	    
-	    // login for this user
 	    if ($userId > 0) {
+		    $this->view->form = _t("注册成功");
+	        $form->saveToken(); // in case reSubmit
+	    
+    	    // login for this user
 	        //$user->login($_POST['email'], $_POST['password']);
+	    } else {
+	        // register fail, reDisplay the form
+	        $this->view->error = _t("注册失败.");
+	        $this->view->form = $form;
 	    }
 	    
     }
@@ -203,19 +207,13 @@ class User_AccountController extends Zend_Controller_Action
         $this->_helper->layout->disableLayout();
         
         $email = $this->_getParam('email');
-        $result = 'false';
+        $result = false;
         
-        if (null !== $email) {
-            if (! Ediary_User::isExists($email)) {
-                $result = 'true';
-            } else {
-                $result = _t("该电子邮件已经被注册.");
-            }
+        if (null !== $email && !Ediary_User::isExists($email)) {
+            $result = true;
         }
         
-        $this->_helper->json(
-            json_encode(array('name' => 'fasfd'))
-        );
+        $this->_helper->json( $result );
     }
 
 

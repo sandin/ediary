@@ -159,13 +159,10 @@ class Ediary_User extends Ediary_Query_Record
      * @param String $password
      * @return int new user'id (last insert id) | return -1 on fail.
      */
-    public function create( $email, $password, $name ) {
-        if ( self::isValidUserName($name) 
-            && self::isValidEmail($email)
-            && !self::isExists($email)
-            && self::isValidPassword($password) ) 
-        {
-            return $this->insert($email, $password, $name);
+    public function create( $email, $password ) {
+        if ( self::isValidEmail($email) && !self::isExists($email)
+                && self::isValidPassword($password) ) {
+            return $this->insert($email, $password, '');
         }
         return -1;
     }
