@@ -1,0 +1,235 @@
+= Ediary Javascript Document =
+lds <lds2012@gmail.com>
+2011-03-18
+
+:language: javascript
+
+.UPDATE
+[width="100%"]
+|==============================================================
+|   version |   author  |   date        |   note    
+|   0.1     |   lds     |   2011-03-18  |   create document
+|==============================================================
+
+== Ediary ==
+
+=== 命名空间 ===
+
+`window.Ediary`
+
+本应用程序统一使用全局性的唯一命名空间 `Ediary` , 所有组件都必须储存在此命名空间下(第三外库除外).
+
+`window.Ediary` 是除 `window.jQuery` 外唯一的全局变量.
+
+=== 模块化 ===
+
+可扩展模块式, 可自由新建模块为程序做扩展.
+
+`Ediary` 命名空间下模块的扩展形式, 如下格式:
+
+[source]
+------------------------------------------
+Ediary.extend('moduleName', moduleObject);
+------------------------------------------
+
+NOTE: 如果扩展模块的moduleName已经存在, 将会抛出错误.
+
+目前的模块设计只是使用一个统一的命名空间, 而非实际的模块化, 若今后有需要, 可以改为如下格式的扩展模式:
+
+[source]
+------------------------------------------
+Ediary.extend('moduleName', function(){
+    //此处模块独享一个匿名函数作为其模块的代码块.
+
+}, options);
+------------------------------------------
+
+
+== Pad ==
+
+`class Pad`
+
+添加 Pad 类, 作为日记本的聚合对象.
+
+.其包括:
+    * 编辑器 ( `Editor` ).
+    * 通知器 ( `Notice` ).
+    * 按钮 ( `Plugin` ).
+    * 其他组件.
+
+
+== Notice ==
+
+`class Notice`
+
+Notice模块, 主要用于提示信息给用户, 使用方法:
+
+[source]
+--------------------------------
+// 如果制定delay, 则delay毫秒后该消息将自动隐藏.
+Notice.showMessage(message, delay);
+--------------------------------
+
+
+== Editor ==
+
+`class Editor`
+
+Editor模块, 做为日记主编辑器, 处理与日记书写的主逻辑.
+
+=== Plugin ===
+
+编辑器支持 `Plugin` 系统.
+
+编辑器中保存一个插件列表:
+`Editor.plugins = {}` 
+
+关于插件扩展方法参见 <<plugin>> .
+
+=== Listener ==
+
+编辑器支持在各类事件上绑定回调的监听器,当事件触发时,会通知绑定在 *该事件* 上所有监听器, 监听器独立的对该事件进行响应.
+
+例如当 编辑器的 *保存* ( `onSave` )事件被触发, 编辑器则会立即通知所有绑定在 `onSave` 事件上监听器. 监听器则开始自行处理各种响应. 
+
+部分Editor类中监听器, 会将Ajax返回的数据传递出来, 使得 `EventHandler` 可以读取服务器返回来的关键数据.
+目前并未对返回数据进行集中的传递,而是Editor各自回调时自行传递, 例如:
+[source]
+------------------------------------------------------
+// Editor内部: 
+
+// 将数据集中到event对象中附带传递出去.
+var event = { target: this.element, data: data };
+
+// 通知监听器
+this.events.callListener('onClick', event);
+------------------------------------------------------
+
+
+== Plugin ==
+[[plugin]]
+
+`class Plugin`
+
+`Plugin` 主要设计用于与编辑器核心逻辑之外的部分扩展, 例如调用编辑器的一些附加按钮之类的, 扩展方式:
+
+[source]
+------------------------------------------------
+    Editor.addPlugin('PluginName', Editor.Plugin.factory({
+        // 抽象方法, 必须实现该方法
+        // 初始化Plugin, 会被Editor#init集中调用
+        init : function() {},
+        // 非必须实现, 但推荐实现该方法
+        destory: function() {}
+    }), params);
+------------------------------------------------
+
+.严格化Editor编辑器addPlugin时的检验:
+    * 类型检验: 添加的插件必须是Plugin类的实例对象, 避免因类型错误,导致的异常.
+    * 重名检验: 添加已注册过的插件名, 将不被允许, 会提示并拒绝添加.
+
+
+== Events & Listener ==
+
+`class Events`
+`class Listenner`
+
+.特性:
+1. 当某个事件发生时, 绑定在该事件上的监听器可以对该事件作为响应. 
+2. 同名监听器是附加模式,即可以为同一个事件上绑定多个监听器, 当事件触发时, 所有监听器都可以作为响应.
+
+新建 `Events` & `Listener` 两个抽象类, 用于给一些 *On方法* 绑定事件监听器, 例如为各种事件触发时绑定监听器( `onSave` , `onDelete` , `onCreate` 等).
+
+.具体使用方法参考文档注释.
+
+[source]
+---------------------------------------------
+/**
+ * Class Events & Class Listener
+ * 
+ * Example: 
+ * ------------------------
+ * var obj = {
+ *    events : new Events(),
+ * 
+ *    click : function() {
+ *      this.events.callListener("onClick");
+ *    }
+ * }
+ * 
+ * obj.addListener('onClick', new Listener() {
+ *    // Handler click event
+ * });
+ * obj.addListener('onHover', new Listener() {
+ *    // Handler click event
+ * });
+ * ------------------------
+ */
+---------------------------------------------
+
+NOTE: 暂时只有Editor类使用了该模式.
+
+
+== Tests ==
+
+使用 `Qunit` 做前端单元测试. 
+
+http://docs.jquery.com/Qunit[官方文档]
+
+文件夹在:
+`/tests/javascript/`
+
+NOTE: 此文件夹仅用于Javascript单元测试, 因在htdocs目录外, 故外部无法直接访问.
+
+此目录下的 `js` 文件夹实际为 `/public/js` 的镜像 (linux环境使用的软链接, windows环境可以直接copy一份).
+
+[source, bash]
+---------------------------------
+ln -s /path/to/root/public/js .
+---------------------------------
+
+
+== Class ==
+
+`window.Class`
+
+需要大量实例化的对象, 为节省内存并提高效率, 一律使用原型链的继承模式, 并使用 John Resig 的 Simple JavaScript Inheritance 代码对原型链的继承模式进行封装.
+
+关于该继承方式可参考: http://ejohn.org/blog/simple-javascript-inheritance/[John Resig博文]
+
+摘要如下:
+[source]
+----------------------------------------------
+var Person = Class.extend({
+  init: function(isDancing){
+    this.dancing = isDancing;
+  },
+  dance: function(){
+    return this.dancing;
+  }
+});
+
+var Ninja = Person.extend({
+  init: function(){
+    this._super( false );
+  },
+  dance: function(){
+    // Call the inherited version of dance()
+    return this._super();
+  },
+  swingSword: function(){
+    return true;
+  }
+});
+
+var p = new Person(true);
+p.dance(); // => true
+
+var n = new Ninja();
+n.dance(); // => false
+n.swingSword(); // => true
+
+// Should all be true
+p instanceof Person && p instanceof Class &&
+n instanceof Ninja && n instanceof Person && n instanceof Class
+--------------------------------------------
