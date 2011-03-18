@@ -1,6 +1,6 @@
 = Ediary Javascript Document =
 lds <lds2012@gmail.com>
-2011-03-18
+{localdate}
 
 :language: javascript
 
@@ -11,9 +11,9 @@ lds <lds2012@gmail.com>
 |   0.1     |   lds     |   2011-03-18  |   create document
 |==============================================================
 
-== Ediary ==
+== Ediary 应用程序 ==
 
-=== 命名空间 ===
+=== Namespace 命名空间 ===
 
 `window.Ediary`
 
@@ -21,7 +21,7 @@ lds <lds2012@gmail.com>
 
 `window.Ediary` 是除 `window.jQuery` 外唯一的全局变量.
 
-=== 模块化 ===
+=== Modular 模块化 ===
 
 可扩展模块式, 可自由新建模块为程序做扩展.
 
@@ -45,7 +45,7 @@ Ediary.extend('moduleName', function(){
 ------------------------------------------
 
 
-== Pad ==
+== Pad 记事本 ==
 
 `class Pad`
 
@@ -58,26 +58,38 @@ Ediary.extend('moduleName', function(){
     * 其他组件.
 
 
-== Notice ==
+== Notice 通知器 ==
 
 `class Notice`
 
-Notice模块, 主要用于提示信息给用户, 使用方法:
+Notice模块, 主要用于提示信息给用户.
 
+.发送消息:
 [source]
 --------------------------------
-// 如果制定delay, 则delay毫秒后该消息将自动隐藏.
+// 如果指定delay值, 则delay毫秒后自动隐藏该消息.
 Notice.showMessage(message, delay);
 --------------------------------
 
+NOTE: 使用 `Notice.showMessage()` 必须确保了通知器已经被初始化.( 初始化会绑定DOM元素 )
 
-== Editor ==
+.初始化通知器
+[source]
+-----------------------------------
+Notice.init();
+
+// 指定DOM元素
+Notice.init({ element : '#noticeId' });
+-----------------------------------
+
+
+== Editor 编辑器 ==
 
 `class Editor`
 
 Editor模块, 做为日记主编辑器, 处理与日记书写的主逻辑.
 
-=== Plugin ===
+=== Plugin 插件 ===
 
 编辑器支持 `Plugin` 系统.
 
@@ -86,7 +98,7 @@ Editor模块, 做为日记主编辑器, 处理与日记书写的主逻辑.
 
 关于插件扩展方法参见 <<plugin>> .
 
-=== Listener ==
+=== Listener 监听器 ===
 
 编辑器支持在各类事件上绑定回调的监听器,当事件触发时,会通知绑定在 *该事件* 上所有监听器, 监听器独立的对该事件进行响应.
 
@@ -94,6 +106,7 @@ Editor模块, 做为日记主编辑器, 处理与日记书写的主逻辑.
 
 部分Editor类中监听器, 会将Ajax返回的数据传递出来, 使得 `EventHandler` 可以读取服务器返回来的关键数据.
 目前并未对返回数据进行集中的传递,而是Editor各自回调时自行传递, 例如:
+
 [source]
 ------------------------------------------------------
 // Editor内部: 
@@ -106,7 +119,7 @@ this.events.callListener('onClick', event);
 ------------------------------------------------------
 
 
-== Plugin ==
+== Plugin 插件 ==
 [[plugin]]
 
 `class Plugin`
@@ -114,22 +127,44 @@ this.events.callListener('onClick', event);
 `Plugin` 主要设计用于与编辑器核心逻辑之外的部分扩展, 例如调用编辑器的一些附加按钮之类的, 扩展方式:
 
 [source]
+-----------------------------------------------
+// 添加插件 
+editor.addPlugin('SaveButton', new E.SaveButton());
 ------------------------------------------------
-    Editor.addPlugin('PluginName', Editor.Plugin.factory({
-        // 抽象方法, 必须实现该方法
-        // 初始化Plugin, 会被Editor#init集中调用
-        init : function() {},
-        // 非必须实现, 但推荐实现该方法
-        destory: function() {}
-    }), params);
+
+.编写自己的插件:
+[source]
 ------------------------------------------------
+// 编写插件
+var SaveButton = Editor.Plugin.extend({
+
+    init: function() {
+        this._super();
+
+        // 设置成员变量
+        // some code here
+    },
+    
+    // 延时init方法, 非实例化对象时立即调用
+    // 而是被Editor延时调用(document.ready后)
+    // 故可在其中对DOM进行处理
+    delayInit: function() {
+        // your code
+    },
+    
+    // 非必须实现该方法, 但推荐实现.
+    destory : function() {
+    }
+});
+------------------------------------------------
+
 
 .严格化Editor编辑器addPlugin时的检验:
     * 类型检验: 添加的插件必须是Plugin类的实例对象, 避免因类型错误,导致的异常.
     * 重名检验: 添加已注册过的插件名, 将不被允许, 会提示并拒绝添加.
 
 
-== Events & Listener ==
+== Events & Listener 事件监听器 ==
 
 `class Events`
 `class Listenner`
@@ -170,7 +205,7 @@ this.events.callListener('onClick', event);
 NOTE: 暂时只有Editor类使用了该模式.
 
 
-== Tests ==
+== Tests 单元测试 ==
 
 使用 `Qunit` 做前端单元测试. 
 
@@ -189,7 +224,7 @@ ln -s /path/to/root/public/js .
 ---------------------------------
 
 
-== Class ==
+== Class 继承模式 ==
 
 `window.Class`
 
@@ -233,3 +268,13 @@ n.swingSword(); // => true
 p instanceof Person && p instanceof Class &&
 n instanceof Ninja && n instanceof Person && n instanceof Class
 --------------------------------------------
+
+== Libraries 外部库 ==
+
+.第三方
+    * http://jquery.com/[jQuery]
+    * http://docs.jquery.com/Plugins/Validation[jQuery.Validation]
+    * http://docs.jquery.com/Qunit[Qunit]
+    * http://ejohn.org/blog/simple-javascript-inheritance/[Simple JavaScript Inheritance By John Resig]
+
+.自写库

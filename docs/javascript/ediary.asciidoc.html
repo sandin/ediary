@@ -591,13 +591,13 @@ cellspacing="0" cellpadding="4">
 </div>
 </div>
 </div>
-<h2 id="_ediary">1. Ediary</h2>
+<h2 id="_ediary">1. Ediary 应用程序</h2>
 <div class="sectionbody">
-<h3 id="_">1.1. 命名空间</h3><div style="clear:left"></div>
+<h3 id="_namespace">1.1. Namespace 命名空间</h3><div style="clear:left"></div>
 <div class="paragraph"><p><tt>window.Ediary</tt></p></div>
 <div class="paragraph"><p>本应用程序统一使用全局性的唯一命名空间 <tt>Ediary</tt> , 所有组件都必须储存在此命名空间下(第三外库除外).</p></div>
 <div class="paragraph"><p><tt>window.Ediary</tt> 是除 <tt>window.jQuery</tt> 外唯一的全局变量.</p></div>
-<h3 id="__2">1.2. 模块化</h3><div style="clear:left"></div>
+<h3 id="_modular">1.2. Modular 模块化</h3><div style="clear:left"></div>
 <div class="paragraph"><p>可扩展模块式, 可自由新建模块为程序做扩展.</p></div>
 <div class="paragraph"><p><tt>Ediary</tt> 命名空间下模块的扩展形式, 如下格式:</p></div>
 <div class="listingblock">
@@ -625,7 +625,7 @@ http://www.gnu.org/software/src-highlite -->
 
 <span style="color: #FF0000">}</span><span style="color: #990000">,</span> options<span style="color: #990000">);</span></tt></pre></div></div>
 </div>
-<h2 id="_pad">2. Pad</h2>
+<h2 id="_pad">2. Pad 记事本</h2>
 <div class="sectionbody">
 <div class="paragraph"><p><tt>class Pad</tt></p></div>
 <div class="paragraph"><p>添加 Pad 类, 作为日记本的聚合对象.</p></div>
@@ -652,28 +652,47 @@ http://www.gnu.org/software/src-highlite -->
 </li>
 </ul></div>
 </div>
-<h2 id="_notice">3. Notice</h2>
+<h2 id="_notice">3. Notice 通知器</h2>
 <div class="sectionbody">
 <div class="paragraph"><p><tt>class Notice</tt></p></div>
-<div class="paragraph"><p>Notice模块, 主要用于提示信息给用户, 使用方法:</p></div>
+<div class="paragraph"><p>Notice模块, 主要用于提示信息给用户.</p></div>
 <div class="listingblock">
+<div class="title">发送消息:</div>
 <div class="content"><!-- Generator: GNU source-highlight 3.1.4
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-style: italic"><span style="color: #9A1900">// 如果制定delay, 则delay毫秒后该消息将自动隐藏.</span></span>
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">// 如果指定delay值, 则delay毫秒后自动隐藏该消息.</span></span>
 Notice<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">showMessage</span></span><span style="color: #990000">(</span>message<span style="color: #990000">,</span> delay<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">使用 <tt>Notice.showMessage()</tt> 必须确保了通知器已经被初始化.( 初始化会绑定DOM元素 )</td>
+</tr></table>
 </div>
-<h2 id="_editor">4. Editor</h2>
+<div class="listingblock">
+<div class="title">初始化通知器</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.4
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>Notice<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">init</span></span><span style="color: #990000">();</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">// 指定DOM元素</span></span>
+Notice<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">init</span></span><span style="color: #990000">(</span><span style="color: #FF0000">{</span> element <span style="color: #990000">:</span> <span style="color: #FF0000">'#noticeId'</span> <span style="color: #FF0000">}</span><span style="color: #990000">);</span></tt></pre></div></div>
+</div>
+<h2 id="_editor">4. Editor 编辑器</h2>
 <div class="sectionbody">
 <div class="paragraph"><p><tt>class Editor</tt></p></div>
 <div class="paragraph"><p>Editor模块, 做为日记主编辑器, 处理与日记书写的主逻辑.</p></div>
-<h3 id="_plugin">4.1. Plugin</h3><div style="clear:left"></div>
+<h3 id="_plugin">4.1. Plugin 插件</h3><div style="clear:left"></div>
 <div class="paragraph"><p>编辑器支持 <tt>Plugin</tt> 系统.</p></div>
 <div class="paragraph"><p>编辑器中保存一个插件列表:
 <tt>Editor.plugins = {}</tt></p></div>
 <div class="paragraph"><p>关于插件扩展方法参见 <a href="#plugin">[plugin]</a> .</p></div>
-<h3 id="_listener">4.2. Listener ==</h3><div style="clear:left"></div>
+<h3 id="_listener">4.2. Listener 监听器</h3><div style="clear:left"></div>
 <div class="paragraph"><p>编辑器支持在各类事件上绑定回调的监听器,当事件触发时,会通知绑定在 <strong>该事件</strong> 上所有监听器, 监听器独立的对该事件进行响应.</p></div>
 <div class="paragraph"><p>例如当 编辑器的 <strong>保存</strong> ( <tt>onSave</tt> )事件被触发, 编辑器则会立即通知所有绑定在 <tt>onSave</tt> 事件上监听器. 监听器则开始自行处理各种响应.</p></div>
 <div class="paragraph"><p>部分Editor类中监听器, 会将Ajax返回的数据传递出来, 使得 <tt>EventHandler</tt> 可以读取服务器返回来的关键数据.
@@ -691,7 +710,7 @@ http://www.gnu.org/software/src-highlite -->
 <span style="font-style: italic"><span style="color: #9A1900">// 通知监听器</span></span>
 <span style="font-weight: bold"><span style="color: #0000FF">this</span></span><span style="color: #990000">.</span>events<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">callListener</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'onClick'</span><span style="color: #990000">,</span> event<span style="color: #990000">);</span></tt></pre></div></div>
 </div>
-<h2 id="_plugin_2">5. Plugin</h2>
+<h2 id="_plugin_2">5. Plugin 插件</h2>
 <div class="sectionbody">
 <div class="paragraph" id="plugin"><p><tt>class Plugin</tt></p></div>
 <div class="paragraph"><p><tt>Plugin</tt> 主要设计用于与编辑器核心逻辑之外的部分扩展, 例如调用编辑器的一些附加按钮之类的, 扩展方式:</p></div>
@@ -700,13 +719,35 @@ http://www.gnu.org/software/src-highlite -->
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
-<pre><tt>    Editor<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">addPlugin</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'PluginName'</span><span style="color: #990000">,</span> Editor<span style="color: #990000">.</span>Plugin<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">factory</span></span><span style="color: #990000">(</span><span style="color: #FF0000">{</span>
-        <span style="font-style: italic"><span style="color: #9A1900">// 抽象方法, 必须实现该方法</span></span>
-        <span style="font-style: italic"><span style="color: #9A1900">// 初始化Plugin, 会被Editor#init集中调用</span></span>
-        init <span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #0000FF">function</span></span><span style="color: #990000">()</span> <span style="color: #FF0000">{}</span><span style="color: #990000">,</span>
-        <span style="font-style: italic"><span style="color: #9A1900">// 非必须实现, 但推荐实现该方法</span></span>
-        destory<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #0000FF">function</span></span><span style="color: #990000">()</span> <span style="color: #FF0000">{}</span>
-    <span style="color: #FF0000">}</span><span style="color: #990000">),</span> params<span style="color: #990000">);</span></tt></pre></div></div>
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">// 添加插件</span></span>
+editor<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">addPlugin</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'SaveButton'</span><span style="color: #990000">,</span> <span style="font-weight: bold"><span style="color: #0000FF">new</span></span> E<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">SaveButton</span></span><span style="color: #990000">());</span></tt></pre></div></div>
+<div class="listingblock">
+<div class="title">编写自己的插件:</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.4
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">// 编写插件</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">var</span></span> SaveButton <span style="color: #990000">=</span> Editor<span style="color: #990000">.</span>Plugin<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">extend</span></span><span style="color: #990000">(</span><span style="color: #FF0000">{</span>
+
+    init<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #0000FF">function</span></span><span style="color: #990000">()</span> <span style="color: #FF0000">{</span>
+        <span style="font-weight: bold"><span style="color: #0000FF">this</span></span><span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">_super</span></span><span style="color: #990000">();</span>
+
+        <span style="font-style: italic"><span style="color: #9A1900">// 设置成员变量</span></span>
+        <span style="font-style: italic"><span style="color: #9A1900">// some code here</span></span>
+    <span style="color: #FF0000">}</span><span style="color: #990000">,</span>
+
+    <span style="font-style: italic"><span style="color: #9A1900">// 延时init方法, 非实例化对象时立即调用</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">// 而是被Editor延时调用(document.ready后)</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">// 故可在其中对DOM进行处理</span></span>
+    delayInit<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #0000FF">function</span></span><span style="color: #990000">()</span> <span style="color: #FF0000">{</span>
+        <span style="font-style: italic"><span style="color: #9A1900">// your code</span></span>
+    <span style="color: #FF0000">}</span><span style="color: #990000">,</span>
+
+    <span style="font-style: italic"><span style="color: #9A1900">// 非必须实现该方法, 但推荐实现.</span></span>
+    destory <span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #0000FF">function</span></span><span style="color: #990000">()</span> <span style="color: #FF0000">{</span>
+    <span style="color: #FF0000">}</span>
+<span style="color: #FF0000">}</span><span style="color: #990000">);</span></tt></pre></div></div>
 <div class="ulist"><div class="title">严格化Editor编辑器addPlugin时的检验:</div><ul>
 <li>
 <p>
@@ -720,7 +761,7 @@ http://www.gnu.org/software/src-highlite -->
 </li>
 </ul></div>
 </div>
-<h2 id="_events_amp_listener">6. Events &amp; Listener</h2>
+<h2 id="_events_amp_listener">6. Events &amp; Listener 事件监听器</h2>
 <div class="sectionbody">
 <div class="paragraph"><p><tt>class Events</tt>
 <tt>class Listenner</tt></p></div>
@@ -773,7 +814,7 @@ http://www.gnu.org/software/src-highlite -->
 </tr></table>
 </div>
 </div>
-<h2 id="_tests">7. Tests</h2>
+<h2 id="_tests">7. Tests 单元测试</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>使用 <tt>Qunit</tt> 做前端单元测试.</p></div>
 <div class="paragraph"><p><a href="http://docs.jquery.com/Qunit">官方文档</a></p></div>
@@ -795,7 +836,7 @@ http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
 <pre><tt>ln -s /path/to/root/public/js <span style="color: #990000">.</span></tt></pre></div></div>
 </div>
-<h2 id="_class">8. Class</h2>
+<h2 id="_class">8. Class 继承模式</h2>
 <div class="sectionbody">
 <div class="paragraph"><p><tt>window.Class</tt></p></div>
 <div class="paragraph"><p>需要大量实例化的对象, 为节省内存并提高效率, 一律使用原型链的继承模式, 并使用 John Resig 的 Simple JavaScript Inheritance 代码对原型链的继承模式进行封装.</p></div>
@@ -839,11 +880,36 @@ n<span style="color: #990000">.</span><span style="font-weight: bold"><span styl
 p <span style="font-weight: bold"><span style="color: #0000FF">instanceof</span></span> Person <span style="color: #990000">&amp;&amp;</span> p <span style="font-weight: bold"><span style="color: #0000FF">instanceof</span></span> Class <span style="color: #990000">&amp;&amp;</span>
 n <span style="font-weight: bold"><span style="color: #0000FF">instanceof</span></span> Ninja <span style="color: #990000">&amp;&amp;</span> n <span style="font-weight: bold"><span style="color: #0000FF">instanceof</span></span> Person <span style="color: #990000">&amp;&amp;</span> n <span style="font-weight: bold"><span style="color: #0000FF">instanceof</span></span> Class</tt></pre></div></div>
 </div>
+<h2 id="_libraries">9. Libraries 外部库</h2>
+<div class="sectionbody">
+<div class="ulist"><div class="title">第三方</div><ul>
+<li>
+<p>
+<a href="http://jquery.com/">jQuery</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://docs.jquery.com/Plugins/Validation">jQuery.Validation</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://docs.jquery.com/Qunit">Qunit</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://ejohn.org/blog/simple-javascript-inheritance/">Simple JavaScript Inheritance By John Resig</a>
+</p>
+</li>
+</ul></div>
+</div>
 </div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2011-03-18 15:00:24 CST
+Last updated 2011-03-18 15:38:23 CST
 </div>
 </div>
 </body>
