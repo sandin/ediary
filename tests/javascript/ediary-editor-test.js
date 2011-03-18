@@ -4,7 +4,7 @@ $(window).load(function(){
 });
 */
 
-module("Module Basic", {
+module("Module Editor", {
     setup: function() {
         var options = {
             ajaxSetup : {
@@ -22,7 +22,7 @@ module("Module Basic", {
 });
 
 test("init", function() {
-    console.dir(this.obj);
+    //console.dir(this.obj);
     ok("OK");
 });
 
@@ -68,8 +68,36 @@ test('testDoSave', function(){
     
     // save it
     obj.doSave();
+    
+    ok("no test");
 });
 
 
 test('test', function() {
 });
+
+module("Module Pad", {
+    setup: function() {
+        var options = {
+            editor : {
+                ajaxSetup : {
+                    dataType : null // 此测试没有AJAX的服务器端支持
+                }
+            }
+        }
+        // 初始化对象
+        this.obj = Ediary.Pad.init(options);
+        
+    },
+    teardown: function() {
+        this.obj.destory();
+        this.obj = null;
+    }
+});
+
+test('testInit', function() {
+    
+    ok("ok");
+    
+});
+

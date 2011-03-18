@@ -1,6 +1,3 @@
-/**
- * Console
- */
 if (! window.console ) {
     window.console = {
         log:   function() {}, warn:  function() {},
@@ -13,10 +10,11 @@ if (! window.console ) {
  * Editor Package
  * @author lds
  */
-(function($, Ediary, Window){
+(function($, E, window){
 
 /**
  * Class Editor
+ * 主编辑器
  */
 var Editor = {
     version : 0.1,
@@ -58,15 +56,12 @@ var Editor = {
      * @return Editor self
      */
     init : function(options) {
-        $.extend(this.settings, options);
-        
-        var t = this,
-            o = this.settings;
+        var o = $.extend(this.settings, options);
         
         // Setup
-        t.element = $(o.target);
-        t.titleElem = $(o.titleElem);
-        t.bodyElem = $(o.bodyElem);
+        this.element = $(o.target);
+        this.bodyElem = $(o.bodyElem);
+        this.titleElem = $(o.titleElem);
         
         // Cann't init the editor, Missing DOM element
         if (! this.checkIsReady) { return; }
@@ -74,7 +69,7 @@ var Editor = {
         this.initPlugins(); // Init all plugins
         this.setupAjax();   // Setup Ajax
         
-        t.isReady = true;
+        this.isReady = true;
         return this;
     },
     
@@ -83,7 +78,6 @@ var Editor = {
         var t = this;
         if (t.element.length + t.titleElem.length + t.bodyElem.length !== 3) {
             console.error('editor/title/body missing. ');
-            console.info(t.element);console.info(t.titleElem);console.info(t.bodyElem);
             return false;
         }
         return true;
@@ -96,8 +90,18 @@ var Editor = {
      * @param Object extend data
      */
     addPlugin: function(name, plugin, extData) {
-        this.plugins[name] = plugin;
-        this.plugins[name].addExt(extData);
+        if (! (plugin instanceof E.Plugin)) {
+            console.warn("Editor.addPlugin expect a Object instance of Plugin. " 
+                + " Plugin name: " + name);
+            return;
+        }
+        
+        if (typeof this.plugins[name] === 'undefined') {
+            this.plugins[name] = plugin;
+            this.plugins[name].addExt(extData);
+        } else {
+            console.warn("Editor already has a Plugin named as " + name);
+        }
     },
     
     // Init all plugins
@@ -105,6 +109,11 @@ var Editor = {
         $.each(this.plugins, function() {
             this.delayInit();
         });
+    },
+    
+    // shortcut for events.addListener
+    addListener: function(name, listener) {
+        this.events.addListener(name, listener);
     },
     
     /**
@@ -141,8 +150,10 @@ var Editor = {
             //dataType: 'json',
             data: data,
             success: function(data, textStatus, jqXHR) {
-                console.log('success', textStatus);
-                that.events.callListener('onSaveSuccess');
+                that.events.callListener('onSaveSuccess', {
+                    data: data,
+                    textStatus:textStatus
+                });
             }
         });
     },
@@ -151,7 +162,7 @@ var Editor = {
         console.log('do delete');
     },
     
-    // call jQuery.ajaxSetup
+    // Call jQuery.ajaxSetup
     setupAjax: function() {
         var that = this, 
             options = {
@@ -199,17 +210,11 @@ var Editor = {
         });
     }
 };
-
-// TODO: delete me
-Editor.events.addListener("onSaveSuccess", new Ediary.Listener(function(){
-    console.log("listener1");
-}));
-Editor.events.addListener("onSaveSuccess", new Ediary.Listener(function(){
-    console.log("listener2");
-}));
+E.extend('Editor', Editor); // NAMESPACE
 
 /**
  * Class Plugin
+ * 编辑器插件基类
  */ 
 var Plugin = Class.extend({
     init: function() {
@@ -233,21 +238,28 @@ var Plugin = Class.extend({
     
     destory: function() {}, 
 });
+E.extend('Plugin', Plugin); // NAMESPACE
 
 /**
  * Class SaveButton extends Plugin
+ * 保存按钮 - 插件
  */
 var SaveButton = Plugin.extend({
+    options: {
+        element: '#editor-btn-sava'
+    },
+    
     init: function() {
         this._super();
     },
     
     delayInit: function() {
-        var t = this, ext = t.extData;
+        $.extend(this.options, this.extData);
+        var o = this.options;
 
-        this.element = $(ext.element);
+        this.element = $(o.element);
         if (this.element.length < 1) {
-            console.warn("Save Button is missing, it should be :", ext.element);
+            console.warn("Save Button is missing, it should be :", o.element);
         }
 
         this.bindEvent();
@@ -265,10 +277,53 @@ var SaveButton = Plugin.extend({
         this.element.unbind();
     }
 });
-
-Editor.addPlugin('SaveButton', new SaveButton(), {element: '#editor-btn-save'});
-
-// NAMESPACE
-window.Ediary.Editor = Editor;
+E.extend('SaveButton', SaveButton); // NAMESPACE
 
 })(jQuery, Ediary, window);
+
+
+(function($, E, window){
+    
+/**
+ * class Pad
+ * 写字板 - 含 Editor, Notice, Button...
+ * 
+ * Call Pad.init() after DOM ready
+ */
+var Pad = {
+    
+    options: {
+        editor: {},
+        notice: {}
+    },
+    
+    init: function(options) {
+        this.initEditor(options);
+        return this;
+    },
+    
+    initEditor: function(options) {
+        $.extend(this.options, options);
+        
+        var notice = E.Notice.init(this.options.notice),
+            editor = E.Editor.init(this.options.editor);
+        
+        // add listeners
+        editor.addListener("onSaveSuccess", new E.Listener(function(e){
+            console.log("Save listener 1: " + e.textStatus);
+            notice.showMessage('result from server : ' + e.data);
+        }));
+        
+        // add Plugins 
+        editor.addPlugin('SaveButton', new E.SaveButton());
+    },
+    
+    destory: function() {
+        
+    }
+};
+// NAMESPACE
+E.extend('Pad', Pad);
+        
+})(jQuery, Ediary, window);
+    

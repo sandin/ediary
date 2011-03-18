@@ -1,6 +1,3 @@
-/**
- * Console
- */
 if (! window.console ) {
     window.console = {
         log:   function() {},
@@ -14,24 +11,39 @@ if (! window.console ) {
 
 /**
  * Application
+ * 
  * @author lds
  */
 (function($){
     
 // NAMESPACE
-var Ediary = {};
+var Ediary = {
+    /**
+     * Registers a module
+     * 
+     * @param String module name 
+     * @param Object module object
+     * @param Object options
+     */
+    extend: function(name, object, options) {
+        if (typeof this[name] === 'undefined') {
+            this[name] = object;
+        } else {
+            console.error("Duplication Module, The " + name + " module is exsits.");
+        }
+    }
+};
 window.Ediary = Ediary;
 
 // i18n 
-var cn = {
+Ediary.extend('i18n', {
     USERNAME_INVALID: "用户名只能输入字符, 数字和空格",
     EMAIL_IS_NULL : "请输入您的邮箱地址",
     EMAIL_INVALID : "请输入正确的邮箱格式",
     PASSWORD_IS_NULL : "请输入您的密码",
     PASSWORD_INVALID : "密码只允许数字,字母和下划线",
     PASSWORD_TOO_SHORT : "密码至少8位数"
-};
-Ediary.i18n = cn;
+});
 
 // jQuery Validate Plugin
 if (jQuery.validator) {
@@ -53,6 +65,8 @@ if (jQuery.validator) {
 
 /** 
  * Class Notice
+ * 消息通知器, 提示用户相关信息
+ * 
  * @author lds
  */
 (function($){
@@ -65,7 +79,9 @@ var Notice = {
     isReady: false,
     
     // Options
-    options: {},
+    options: {
+        element: '#notice'
+    },
     
     // hide timer
     timer : null,
@@ -97,7 +113,7 @@ var Notice = {
     showMessage: function(message, delay) {
         this._setMessage(message);
         
-        if (typeof delay !== undefined) {
+        if (typeof delay !== 'undefined') {
             this._hide(delay);
         }
     },
@@ -125,9 +141,10 @@ var Notice = {
      * @param int delay millisec
      */
     _hide: function(delay) {
+        var that = this;
         this.timer = setTimeout(function(){
-            this._resetMessage();
-            this.element.hide();
+            that._resetMessage();
+            that.element.hide();
         }, delay);
     },
     
@@ -137,7 +154,7 @@ var Notice = {
         this.element = null;
     }
 };
-Ediary.Notice = Notice;
+Ediary.extend('Notice', Notice);
 
 })(jQuery);
 
@@ -177,11 +194,11 @@ Events.prototype = {
         this.listeners[name].push(listener);
     },
     // call listener
-    callListener: function(name) {
+    callListener: function(name, params) {
         var listeners = this.listeners[name];
         if (listeners) {
             for (var listener in listeners) {
-                listeners[listener].handleEvent();
+                listeners[listener].handleEvent(params);
             }
         }
     }
@@ -191,14 +208,14 @@ var Listener = function(handler) {
     this.handler = handler;
 };
 Listener.prototype = {
-    handleEvent : function() {
-        this.handler();
+    handleEvent : function(params) {
+        this.handler(params);
     }
 };
 
 // NAMESPACE
-E.Events = Events;
-E.Listener = Listener;
+E.extend('Events', Events);
+E.extend('Listener', Listener);
 
 })(Ediary);
 
