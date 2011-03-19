@@ -79,6 +79,8 @@ NOTE: 在这个匿名函数内部 `this` 指向的 `Ediary` 这个对象
 
 NOTE: 如果扩展模块的moduleName已经存在, 将会抛出错误.
 
+NOTE: 目前两种扩展方式没有使用统一的方法,是因为使用typeof无法判断函数是普通函数,还是构造函数, 所以想把构造函数直接
+
 目前的模块设计只是使用一个统一的命名空间, 而非实际的模块化. 若今后有需要, 可扩展为实际的模块化.
 
 
@@ -141,19 +143,67 @@ Editor模块, 做为日记主编辑器, 处理与日记书写的主逻辑.
 
 例如当 编辑器的 *保存* ( `onSave` )事件被触发, 编辑器则会立即通知所有绑定在 `onSave` 事件上监听器. 监听器则开始自行处理各种响应. 
 
-部分Editor类中监听器, 会将Ajax返回的数据传递出来, 使得 `EventHandler` 可以读取服务器返回来的关键数据.
-目前并未对返回数据进行集中的传递,而是Editor各自回调时自行传递, 例如:
+.注册监听器
+[source]
+-----------------------------------------------------
+// add listeners
+editor.addListener("onSaveSuccess", new E.Listener(function(event){
+    // handle this event
+}));
+
+-----------------------------------------------------
+
+.监听器原型
+`void Ediary.Listenner(eventHandler);`
+
+参数 `eventHandler` 为一个回调函数, 例如:
+`function(params)`
+
+注意传递进来的这个 `params` 是不确定的, 它由这个通知监听器的主体决定(一般是由事件的类型不同,参数而不同);
+
+例如, 如果handle的是一个Ajax的 `onSuccess` 事件, 那么传递进来的就完全等同与 `jQuery AJAX success` 的参数:
+`function(data, textStatus, jqXHR)`
+
+如果handle的是一个普通的 `onClick` 事件, 那么传递进来的就完全等同与 `onClick` 的参数:
+`function(event)`
+
+
+.通知所有监听器
+目前并未对返回数据进行集中的传递,而是Editor各自回调时自行传递数据, 也就是说回调的时候传递出去什么数据是自由的, 例如:
 
 [source]
 ------------------------------------------------------
 // Editor内部: 
 
-// 将数据集中到event对象中附带传递出去.
-var event = { target: this.element, data: data };
+// 例如可以把某个回调函数的参数全部传递出去:
+success: function(data, textStatus, jqXHR) {
+    // 此处直接把ajax success回调方法的参数全部传递主去
+    that.events.callListener('onSaveSuccess', arguments);
+}
+
+// 所以此事件的监听器将会得到和原始回调函数一模一样的参数列表(包括顺序):
+new E.Listener(function(data, textStatus, jqXHR) {
+    console.log(data);
+    console.log(textStatus);
+    console.log(jqXHR);
+}));
+
+///////////////////////////////////////////
+
+// 也可以有选择的自行传递一些值, 但注意, 为了和 arguments 方法统一,
+// 传递出去的参数一定要用数组包装一个, 因为 arguments 是个伪数组:
+var args = [{event: { target: 'target-0'}}];
+
+// 如果想直接传递一个对象出去, 也可以把对象转换为伪数组:
+var args = {}
+Array.prototype.push.call(args);
+args = Array.prototype.slice.call(args);
 
 // 通知监听器
-this.events.callListener('onClick', event);
-------------------------------------------------------
+this.events.callListener('onClick', args);
+
+
+-----------------------------------------------------
 
 
 == Plugin 插件 ==

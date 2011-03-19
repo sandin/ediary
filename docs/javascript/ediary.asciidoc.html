@@ -600,12 +600,62 @@ cellspacing="0" cellpadding="4">
 <h3 id="_modular">1.2. Modular 模块化</h3><div style="clear:left"></div>
 <div class="paragraph"><p>可扩展模块式, 可自由新建模块为程序做扩展.</p></div>
 <div class="paragraph"><p><tt>Ediary</tt> 命名空间下模块的扩展形式, 如下格式:</p></div>
+<div class="paragraph"><div class="title">方法1:</div><p>直接把一个对象扩展到Ediary对象上.</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight 3.1.4
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
-<pre><tt>Ediary<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">extend</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'moduleName'</span><span style="color: #990000">,</span> moduleObject<span style="color: #990000">);</span></tt></pre></div></div>
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">var</span></span> moduleObject <span style="color: #990000">=</span> <span style="color: #FF0000">{</span>
+    <span style="font-style: italic"><span style="color: #9A1900">// your module object</span></span>
+<span style="color: #FF0000">}</span><span style="color: #990000">;</span>
+Ediary<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">extend</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'moduleName'</span><span style="color: #990000">,</span> moduleObject<span style="color: #990000">);</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">// 此方法等同于:</span></span>
+Ediary<span style="color: #990000">.</span>moduleName <span style="color: #990000">=</span> moduleObject<span style="color: #990000">;</span>
+<span style="font-style: italic"><span style="color: #9A1900">// 只是避免了定义重名的对象</span></span></tt></pre></div></div>
+<div class="paragraph"><div class="title">方法2:</div><p>模块独享一个匿名函数作为其模块的代码块.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.4
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>Ediary<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">extend</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'moduleName'</span><span style="color: #990000">,</span> <span style="font-weight: bold"><span style="color: #0000FF">function</span></span><span style="color: #990000">(</span>E<span style="color: #990000">)</span><span style="color: #FF0000">{</span>
+    <span style="font-style: italic"><span style="color: #9A1900">// 这里可书写任何代码, 该模块独享这个代码块</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">// 整个模块定义在一个匿名函数内, 避免了全局变量污染</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">// 该匿名函数的第一个参数指向全局命名空间对象 -- Ediary</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">// 因此可以直接将对象存入到全局的命名空间中去:</span></span>
+    E<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #0000FF">var</span></span> <span style="color: #990000">=</span> <span style="color: #FF0000">{</span> name<span style="color: #990000">:</span> <span style="color: #FF0000">'object'</span> <span style="color: #FF0000">}</span><span style="color: #990000">;</span>
+
+    <span style="font-style: italic"><span style="color: #9A1900">// 在外部(全局范围内)都使用如下方式来访问这个变量:</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">// var name = Ediary.var.name;</span></span>
+
+    <span style="font-style: italic"><span style="color: #9A1900">// 推荐的模块书写方式是只绑定一个变量到命名空间中:</span></span>
+
+    <span style="font-weight: bold"><span style="color: #0000FF">var</span></span> YourModule <span style="color: #990000">=</span> <span style="color: #FF0000">{</span>
+        name<span style="color: #990000">:</span> <span style="color: #FF0000">'lds'</span><span style="color: #990000">,</span>
+        init<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #0000FF">function</span></span><span style="color: #990000">()</span> <span style="color: #FF0000">{</span>
+        <span style="color: #FF0000">}</span><span style="color: #990000">,</span>
+        getName<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #0000FF">function</span></span><span style="color: #990000">()</span> <span style="color: #FF0000">{</span>
+        <span style="color: #FF0000">}</span>
+    <span style="color: #FF0000">}</span><span style="color: #990000">;</span>
+
+    <span style="font-style: italic"><span style="color: #9A1900">// 在命名空间中注册</span></span>
+    E<span style="color: #990000">.</span>YourModule <span style="color: #990000">=</span> YourModule<span style="color: #990000">;</span>
+
+    <span style="font-style: italic"><span style="color: #9A1900">// 注意在该匿名函数中的 `this` 指针其实指向 `Ediary` 对象的,</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">// 但不建议使用 `this` 关键词来引用 `Ediary` 对象, 而应该用 `E` 来引用.</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900">// 因为在后续版本中, `this` 指针的问题可能会改进, 指向其他对象.</span></span>
+
+<span style="color: #FF0000">}</span><span style="color: #990000">,</span> options<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">在这个匿名函数内部 <tt>this</tt> 指向的 <tt>Ediary</tt> 这个对象</td>
+</tr></table>
+</div>
 <div class="admonitionblock">
 <table><tr>
 <td class="icon">
@@ -614,16 +664,7 @@ http://www.gnu.org/software/src-highlite -->
 <td class="content">如果扩展模块的moduleName已经存在, 将会抛出错误.</td>
 </tr></table>
 </div>
-<div class="paragraph"><p>目前的模块设计只是使用一个统一的命名空间, 而非实际的模块化, 若今后有需要, 可以改为如下格式的扩展模式:</p></div>
-<div class="listingblock">
-<div class="content"><!-- Generator: GNU source-highlight 3.1.4
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt>Ediary<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">extend</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'moduleName'</span><span style="color: #990000">,</span> <span style="font-weight: bold"><span style="color: #0000FF">function</span></span><span style="color: #990000">()</span><span style="color: #FF0000">{</span>
-    <span style="font-style: italic"><span style="color: #9A1900">//此处模块独享一个匿名函数作为其模块的代码块.</span></span>
-
-<span style="color: #FF0000">}</span><span style="color: #990000">,</span> options<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="paragraph"><p>目前的模块设计只是使用一个统一的命名空间, 而非实际的模块化. 若今后有需要, 可扩展为实际的模块化.</p></div>
 </div>
 <h2 id="_pad">2. Pad 记事本</h2>
 <div class="sectionbody">
@@ -909,7 +950,7 @@ n <span style="font-weight: bold"><span style="color: #0000FF">instanceof</span>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2011-03-18 15:38:23 CST
+Last updated 2011-03-18 20:33:13 CST
 </div>
 </div>
 </body>

@@ -150,10 +150,7 @@ var Editor = {
             //dataType: 'json',
             data: data,
             success: function(data, textStatus, jqXHR) {
-                that.events.callListener('onSaveSuccess', {
-                    data: data,
-                    textStatus:textStatus
-                });
+                that.events.callListener('onSaveSuccess', arguments);
             }
         });
     },
@@ -238,7 +235,7 @@ var Plugin = Class.extend({
     
     destory: function() {}, 
 });
-E.extend('Plugin', Plugin); // NAMESPACE
+E.Plugin = Plugin; // NAMESPACE
 
 /**
  * Class SaveButton extends Plugin
@@ -277,7 +274,7 @@ var SaveButton = Plugin.extend({
         this.element.unbind();
     }
 });
-E.extend('SaveButton', SaveButton); // NAMESPACE
+E.SaveButton = SaveButton; // NAMESPACE
 
 })(jQuery, Ediary, window);
 
@@ -309,9 +306,10 @@ var Pad = {
             editor = E.Editor.init(this.options.editor);
         
         // add listeners
-        editor.addListener("onSaveSuccess", new E.Listener(function(e){
-            console.log("Save listener 1: " + e.textStatus);
-            notice.showMessage('result from server : ' + e.data);
+        editor.addListener("onSaveSuccess", new E.Listener(function(data, textStatus, jqXHR){
+            console.log("data : " + data);
+            console.log("Save listener 1: " + textStatus);
+            notice.showMessage('result from server : ' + data);
         }));
         
         // add Plugins 
