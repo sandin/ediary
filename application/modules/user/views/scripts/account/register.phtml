@@ -4,51 +4,10 @@ $this->headScript()->appendFile("/js/jquery.validate.js");
 $this->headScript()->appendFile("/js/ediary.js?v=1");
 $this->inlineScript()->appendScript('
 $(document).ready(function(){
-    var i18n = Ediary.i18n;
-
+    Ediary.loadModule("Validator");
+    
+    $("#form_register").validate(Ediary.Validator.getRegisterForm());
     $("#email").focus();
-    
-    $("#form_register").validate({
-        //debug : true, 	// do not submit the form
-
-        errorElement: "span",
-        rules : {
-            email: {
-                required: true,
-                email: true,
-                remote: "/user/account/exists"
-            },
-            password: {
-                required: true,
-                minlength: 8,
-                alnum : true
-            },
-            rePassword: {
-            	required: true,
-            	equalTo : "#password",
-            }
-        },
-        messages : {
-            email : {
-                required : i18n.EMAIL_IS_NULL,
-                email    : i18n.EMAIL_INVALID,
-                remote	 : i18n.EMAIL_IS_EXISTS
-            },
-            password : {
-                required  : i18n.PASSWORD_IS_NULL,
-                alnum 	  : i18n.PASSWORD_INVALID,
-                minlength : i18n.PASSWORD_TOO_SHORT
-            },
-            rePassword: {
-                required  : i18n.PASSWORD_IS_NULL,
-                equalTo	  : i18n.PASSWORD_NOT_SAME 
-            }
-        },
-        success: function(label) {
-            label.html("Ok!").addClass("valid");
-        }
-    }); //end of validate
-    
 });
 ');
 ?>

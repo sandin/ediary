@@ -16,32 +16,84 @@ if (! window.console ) {
  */
 (function($){
     
-// NAMESPACE
+// Application
 var Ediary = {
+    
+    // default options
+    options: {
+        autoLoad : true             // auto load module immediately
+    },
+    
+    // modules list
+    modules: {},
+    
     /**
      * Registers a module
      * 
      * @param String module name 
-     * @param Object module object
-     * @param Object options
+     * @param mixed module:
+     *          Object:   如果提供一个对象, 就被直接附加到命名空间下
+     *          Function: 如果提供一个函数, 则被会视作模块代码块, 该函数会在加载模块时执行.
+     * @param Object options:
+     *          autoLoad: 如果为false, 则模块中的代码不会被立即执行, 而是储存在modules list中
      */
     extend: function(name, object, options) {
-        if (typeof this[name] !== 'undefined') {
+        if (typeof this.modules[name] !== 'undefined') {
             console.error("Duplication Module, The " + name + " module is exsits.");
             return;
         } 
+        
+        var o = $.extend({}, this.options, options);
         
         switch (typeof object) {
             case 'object': 
                 this[name] = object;
                 break;
             case 'function':
-                //TODO: 匿名函数的this指针是否应该指向 Ediary ?
-                object.call(this, this, options); // inside Function 'this' point Ediary
+                if (o.autoLoad) {
+                    // load immediately
+                    this.loadModule(object, options);
+                } else {
+                    // Save it into this modules list
+                    this.modules[name] = {origin: object, load: false};
+                }
                 break;
             default:
                 return; //do nothing
         }
+    },
+    
+    /**
+     * Load a module
+     * 
+     * @param mixed module name 
+     *           Function: 如果提供一个匿名函数, 则被立即执行
+     *           String:   如果提供一个模块名称, 则会去调用之前注册时存储在模块列表中的模块代码 
+     * @param Object options
+     */
+    loadModule: function(module, options) {
+        var fn;
+        
+        if (typeof module == 'function') {
+            // Got a Function
+            fn = module;            //TODO: 匿名函数的this指针是否应该指向 Ediary ?
+        } else if (typeof module == 'string') {
+            // Got a Module Name
+            var mod = this.modules[module];
+            
+            if (typeof mod !== 'undefined') {
+                fn = mod['origin']; //TODO: 暂时可加载已经load过的模块
+                mod.load = true;
+            } else {
+                console.warn("The Module %s is not exsits.", module);
+                return;
+            }
+        }
+        
+        fn.call(this, this, options); // inside Function 'this' point Ediary
+    },
+    
+    destory: function() {
     }
 };
 window.Ediary = Ediary;
@@ -62,11 +114,13 @@ Ediary.extend('i18n', function(E) {
     E.i18n = cn; // set language 
 });
 
+
 // validator module
-Ediary.extend('validator', function(){
-    
+Ediary.extend('Validator', function(E){
+
     // Need jQuery Validate Plugin
-    if (! jQuery.validator) {
+    if (typeof jQuery.validator == 'undefined') {
+        console.warn("jQuery Validator Plugin is not loaded.");
         return;
     }
     
@@ -74,13 +128,96 @@ Ediary.extend('validator', function(){
     jQuery.validator.addMethod("alnum", function(value, element) { 
         return this.optional(element) || /^[\w]+$/.test(value); 
     });
-    
-        // Regex
+
+    // Regex
     jQuery.validator.addMethod("regex", function(value, element, param) { 
         return this.optional(element) || param.test(value); 
     });
     
-});
+    // TODO: user Ediary.require method
+    if (typeof E.i18n === 'undefined') {
+        console.warn("Validator Module require i18n module.");
+        return;
+    }
+
+    // Register From Validator options
+    var registerForm = {
+        rules : {
+            email: {
+                required: true,
+                email: true,
+                remote: "/user/account/exists"
+            },
+            password: {
+                required: true,
+                minlength: 8,
+                alnum : true
+            },
+            rePassword: {
+                required: true,
+                equalTo : "#password",
+            }
+        },
+        messages : {
+            email : {
+                required : E.i18n.EMAIL_IS_NULL,
+                email    : E.i18n.EMAIL_INVALID,
+                remote   : E.i18n.EMAIL_IS_EXISTS
+            },
+            password : {
+                required  : E.i18n.PASSWORD_IS_NULL,
+                alnum     : E.i18n.PASSWORD_INVALID,
+                minlength : E.i18n.PASSWORD_TOO_SHORT
+            },
+            rePassword: {
+                required  : E.i18n.PASSWORD_IS_NULL,
+                equalTo   : E.i18n.PASSWORD_NOT_SAME 
+            }
+        },
+    };
+
+    // Login From Validator options
+    var loginForm = {
+        rules : {
+            email : {
+                required: true,
+                email: true
+            },
+            password : {
+                required: true
+            }
+        },
+        messages : {
+            email : {
+                required : E.i18n.EMAIL_IS_NULL,
+                email    : E.i18n.EMAIL_INVALID
+            },
+            password : {
+                required  : E.i18n.PASSWORD_IS_NULL
+            }
+        }
+    };
+
+    var Validator = {
+        init: function() {},
+        options: {
+            //debug : true,     // do not submit the form
+            errorElement: "span",
+            success: function(label) {
+                label.html("Ok!").addClass("valid");
+            }
+        },
+        getRegisterForm: function() {
+            return $.extend({}, this.options, registerForm);
+        },
+        getLoginForm: function() {
+            return $.extend({}, this.options, loginForm);
+        }
+    };
+    E.Validator = Validator;
+
+}, {autoLoad: false});
+
 
 /**
  * Class Events & Class Listener
@@ -150,6 +287,10 @@ Ediary.extend('Events', function(E) {
          */
         handleEvent : function(args) {
             this.handler.apply(this, args);
+        },
+        
+        makeArgs: function(obj) {
+            
         }
     };
 

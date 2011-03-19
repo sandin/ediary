@@ -4,34 +4,10 @@ $this->headScript()->appendFile("/js/jquery.validate.js");
 $this->headScript()->appendFile("/js/ediary.js?v=1");
 $this->inlineScript()->appendScript('
 $(document).ready(function(){
-    var i18n = Ediary.i18n;
-
-    $("#form_login").validate({
-        //debug : true, 	// do not submit the form
-
-        errorElement: "span",
-        rules : {
-            email : {
-                required: true,
-                email: true
-            },
-            password : {
-                required: true
-            }
-        },
-        messages : {
-            email : {
-                required : i18n.EMAIL_IS_NULL,
-                email    : i18n.EMAIL_INVALID
-            },
-            password : {
-                required  : i18n.PASSWORD_IS_NULL
-            }
-        },
-        success: function(label) {
-            label.html("Ok!").addClass("valid");
-        }
-    }); //end of validate
+    Ediary.loadModule("Validator");
+    
+    $("#form_login").validate(Ediary.Validator.getLoginForm());
+    $("#email").focus();
 });
 ');
 ?>

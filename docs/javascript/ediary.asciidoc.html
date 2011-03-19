@@ -554,7 +554,7 @@ footnotes: function () {
 <h1>Ediary Javascript Document</h1>
 <span id="author">lds</span><br />
 <span id="email"><tt>&lt;<a href="mailto:lds2012@gmail.com">lds2012@gmail.com</a>&gt;</tt></span><br />
-<span id="revdate">2011-03-18</span>
+<span id="revdate">2011-03-19</span>
 <div id="toc">
   <div id="toctitle">Table of Contents</div>
   <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
@@ -664,7 +664,43 @@ http://www.gnu.org/software/src-highlite -->
 <td class="content">如果扩展模块的moduleName已经存在, 将会抛出错误.</td>
 </tr></table>
 </div>
-<div class="paragraph"><p>目前的模块设计只是使用一个统一的命名空间, 而非实际的模块化. 若今后有需要, 可扩展为实际的模块化.</p></div>
+<div class="paragraph"><p>目前的模块设计大部分只是在使用一个统一的命名空间, 而并未使用模块化. 若今后有需要, 可扩展为实际的模块化(将所有模块集中储存在 <tt>modules list</tt> 中).</p></div>
+<div class="paragraph"><div class="title">延迟加载模块</div><p>对于有些模块, 需要使用外部库, 或需要等待DOM解析完毕等情况,需要延迟加载模块,而非注册模块时立即加载,则可以使用 <tt>autoLoad</tt> 参数来实现:
+<tt>options: {autoLoad: false}</tt></p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.4
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>Ediary<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">extend</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'moduleName'</span><span style="color: #990000">,</span> <span style="font-weight: bold"><span style="color: #0000FF">function</span></span><span style="color: #990000">(</span>E<span style="color: #990000">)</span> <span style="color: #FF0000">{</span>
+    <span style="font-style: italic"><span style="color: #9A1900">// your module code</span></span>
+<span style="color: #FF0000">}</span><span style="color: #990000">,</span> <span style="color: #FF0000">{</span>autoLoad<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #0000FF">false</span></span><span style="color: #FF0000">}</span><span style="color: #990000">);</span></tt></pre></div></div>
+<div class="paragraph"><p>这样进行注册的模块不会立即被加载到命名空间中(此模块的匿名函数不会被立即执行), 而是被存储到一个模块列表中去 ( <tt>Ediary.modules</tt> ), 存储的具体实现为:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.4
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>Ediary<span style="color: #990000">.</span>moudles<span style="color: #990000">[</span><span style="color: #FF0000">'moduleName'</span><span style="color: #990000">]</span> <span style="color: #990000">=</span> <span style="color: #FF0000">{</span>
+    load<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #0000FF">false</span></span><span style="color: #990000">,</span>        <span style="font-style: italic"><span style="color: #9A1900">// 标记为未加载模块</span></span>
+    origin<span style="color: #990000">:</span> moduleFnc   <span style="font-style: italic"><span style="color: #9A1900">// 此处origin对象储存的就是模块的匿名函数</span></span>
+<span style="color: #FF0000">}</span><span style="color: #990000">;</span></tt></pre></div></div>
+<div class="paragraph"><p>手动加载模块:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.4
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>Ediary<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">loadModule</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'moduleName'</span><span style="color: #990000">);</span></tt></pre></div></div>
+<div class="paragraph"><p>此时应用程序将会执行储存在modules list中的注册此模块时提供的匿名函数.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">如果加载一个尚未注册过的模块,会不被允许并抛出提示.</td>
+</tr></table>
+</div>
 </div>
 <h2 id="_pad">2. Pad 记事本</h2>
 <div class="sectionbody">
@@ -736,8 +772,26 @@ Notice<span style="color: #990000">.</span><span style="font-weight: bold"><span
 <h3 id="_listener">4.2. Listener 监听器</h3><div style="clear:left"></div>
 <div class="paragraph"><p>编辑器支持在各类事件上绑定回调的监听器,当事件触发时,会通知绑定在 <strong>该事件</strong> 上所有监听器, 监听器独立的对该事件进行响应.</p></div>
 <div class="paragraph"><p>例如当 编辑器的 <strong>保存</strong> ( <tt>onSave</tt> )事件被触发, 编辑器则会立即通知所有绑定在 <tt>onSave</tt> 事件上监听器. 监听器则开始自行处理各种响应.</p></div>
-<div class="paragraph"><p>部分Editor类中监听器, 会将Ajax返回的数据传递出来, 使得 <tt>EventHandler</tt> 可以读取服务器返回来的关键数据.
-目前并未对返回数据进行集中的传递,而是Editor各自回调时自行传递, 例如:</p></div>
+<div class="listingblock">
+<div class="title">注册监听器</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.4
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">// add listeners</span></span>
+editor<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">addListener</span></span><span style="color: #990000">(</span><span style="color: #FF0000">"onSaveSuccess"</span><span style="color: #990000">,</span> <span style="font-weight: bold"><span style="color: #0000FF">new</span></span> E<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">Listener</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #0000FF">function</span></span><span style="color: #990000">(</span>event<span style="color: #990000">)</span><span style="color: #FF0000">{</span>
+    <span style="font-style: italic"><span style="color: #9A1900">// handle this event</span></span>
+<span style="color: #FF0000">}</span><span style="color: #990000">));</span>
+</tt></pre></div></div>
+<div class="paragraph"><div class="title">监听器原型</div><p><tt>void Ediary.Listenner(eventHandler);</tt></p></div>
+<div class="paragraph"><p>参数 <tt>eventHandler</tt> 为一个回调函数, 例如:
+<tt>function(params)</tt></p></div>
+<div class="paragraph"><p>注意传递进来的这个 <tt>params</tt> 是不确定的, 它由这个通知监听器的主体决定(一般是由事件的类型不同,参数而不同);</p></div>
+<div class="paragraph"><p>例如, 如果handle的是一个Ajax的 <tt>onSuccess</tt> 事件, 那么传递进来的就完全等同与 <tt>jQuery AJAX success</tt> 的参数:
+<tt>function(data, textStatus, jqXHR)</tt></p></div>
+<div class="paragraph"><p>如果handle的是一个普通的 <tt>onClick</tt> 事件, 那么传递进来的就完全等同与 <tt>onClick</tt> 的参数:
+<tt>function(event)</tt></p></div>
+<div class="paragraph"><div class="title">通知所有监听器</div><p>目前并未对返回数据进行集中的传递,而是Editor各自回调时自行传递数据, 也就是说回调的时候传递出去什么数据是自由的, 例如:</p></div>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight 3.1.4
 by Lorenzo Bettini
@@ -745,11 +799,34 @@ http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
 <pre><tt><span style="font-style: italic"><span style="color: #9A1900">// Editor内部:</span></span>
 
-<span style="font-style: italic"><span style="color: #9A1900">// 将数据集中到event对象中附带传递出去.</span></span>
-<span style="font-weight: bold"><span style="color: #0000FF">var</span></span> event <span style="color: #990000">=</span> <span style="color: #FF0000">{</span> target<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #0000FF">this</span></span><span style="color: #990000">.</span>element<span style="color: #990000">,</span> data<span style="color: #990000">:</span> data <span style="color: #FF0000">}</span><span style="color: #990000">;</span>
+<span style="font-style: italic"><span style="color: #9A1900">// 例如可以把某个回调函数的参数全部传递出去:</span></span>
+success<span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #0000FF">function</span></span><span style="color: #990000">(</span>data<span style="color: #990000">,</span> textStatus<span style="color: #990000">,</span> jqXHR<span style="color: #990000">)</span> <span style="color: #FF0000">{</span>
+    <span style="font-style: italic"><span style="color: #9A1900">// 此处直接把ajax success回调方法的参数全部传递主去</span></span>
+    that<span style="color: #990000">.</span>events<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">callListener</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'onSaveSuccess'</span><span style="color: #990000">,</span> arguments<span style="color: #990000">);</span>
+<span style="color: #FF0000">}</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">// 所以此事件的监听器将会得到和原始回调函数一模一样的参数列表(包括顺序):</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">new</span></span> E<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">Listener</span></span><span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #0000FF">function</span></span><span style="color: #990000">(</span>data<span style="color: #990000">,</span> textStatus<span style="color: #990000">,</span> jqXHR<span style="color: #990000">)</span> <span style="color: #FF0000">{</span>
+    console<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">log</span></span><span style="color: #990000">(</span>data<span style="color: #990000">);</span>
+    console<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">log</span></span><span style="color: #990000">(</span>textStatus<span style="color: #990000">);</span>
+    console<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">log</span></span><span style="color: #990000">(</span>jqXHR<span style="color: #990000">);</span>
+<span style="color: #FF0000">}</span><span style="color: #990000">));</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">///////////////////////////////////////////</span></span>
+
+<span style="font-style: italic"><span style="color: #9A1900">// 也可以有选择的自行传递一些值, 但注意, 为了和 arguments 方法统一,</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">// 传递出去的参数一定要用数组包装一个, 因为 arguments 是个伪数组:</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">var</span></span> args <span style="color: #990000">=</span> <span style="color: #990000">[</span><span style="color: #FF0000">{</span>event<span style="color: #990000">:</span> <span style="color: #FF0000">{</span> target<span style="color: #990000">:</span> <span style="color: #FF0000">'target-0'</span><span style="color: #FF0000">}}</span><span style="color: #990000">];</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">// 如果想直接传递一个对象出去, 也可以把对象转换为伪数组:</span></span>
+<span style="font-weight: bold"><span style="color: #0000FF">var</span></span> args <span style="color: #990000">=</span> <span style="color: #FF0000">{}</span>
+Array<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #0000FF">prototype</span></span><span style="color: #990000">.</span>push<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span>args<span style="color: #990000">);</span>
+args <span style="color: #990000">=</span> Array<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #0000FF">prototype</span></span><span style="color: #990000">.</span>slice<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">call</span></span><span style="color: #990000">(</span>args<span style="color: #990000">);</span>
 
 <span style="font-style: italic"><span style="color: #9A1900">// 通知监听器</span></span>
-<span style="font-weight: bold"><span style="color: #0000FF">this</span></span><span style="color: #990000">.</span>events<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">callListener</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'onClick'</span><span style="color: #990000">,</span> event<span style="color: #990000">);</span></tt></pre></div></div>
+<span style="font-weight: bold"><span style="color: #0000FF">this</span></span><span style="color: #990000">.</span>events<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">callListener</span></span><span style="color: #990000">(</span><span style="color: #FF0000">'onClick'</span><span style="color: #990000">,</span> args<span style="color: #990000">);</span>
+
+</tt></pre></div></div>
 </div>
 <h2 id="_plugin_2">5. Plugin 插件</h2>
 <div class="sectionbody">
@@ -950,7 +1027,7 @@ n <span style="font-weight: bold"><span style="color: #0000FF">instanceof</span>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2011-03-18 20:33:13 CST
+Last updated 2011-03-19 13:40:36 CST
 </div>
 </div>
 </body>

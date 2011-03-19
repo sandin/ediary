@@ -1,4 +1,3 @@
-
 module("Module Notice", {
     setup: function() {
         this.obj = Ediary.Notice.init({element: '#notice'});
@@ -17,3 +16,21 @@ test('testShowMessage', function() {
     equals(message, obj.element.html());
 });
 
+
+module("Module Ediary", {
+    setup: function() {
+    },
+    teardown: function() {
+        Ediary.destory();
+    }
+});
+
+test('testLoadModule', function() {
+    ok(!Ediary.modules['Validator'].load); // hasn't load yet
+    
+    Ediary.loadModule("Validator");
+    ok(Ediary.modules['Validator'].load); // already loaded now
+    
+    equals('object', typeof Ediary.Validator);
+    ok( Ediary.Validator.getLoginForm() !== null );
+});
