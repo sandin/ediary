@@ -329,6 +329,8 @@ var Notice = {
     
     // construct
     init : function(options) {
+        if (this.isReady) { return; } // only init it once
+        
         $.extend(this.options, options);
         var t = this, o = t.options;
         
@@ -337,7 +339,7 @@ var Notice = {
         
         // DOM element Missing
         if (t.element.length == 0) {
-            console.error("The Notice Element is Missing. It shout be : " + o.element);
+            console.warn("The Notice Element is Missing. It shout be : " + o.element);
             return;
         }
         
@@ -352,6 +354,7 @@ var Notice = {
      * @param int delay if has this, the message will be hidden after a few second
      */
     showMessage: function(message, delay) {
+        if (!this.isReady) { this.init(); }
         this._setMessage(message);
         
         if (typeof delay !== 'undefined') {

@@ -85,6 +85,7 @@ NOTE: 如果扩展模块的moduleName已经存在, 将会抛出错误.
 对于有些模块, 需要使用外部库, 或需要等待DOM解析完毕等情况,需要延迟加载模块,而非注册模块时立即加载,则可以使用 `autoLoad` 参数来实现:
 `options: {autoLoad: false}`
 
+
 [source]
 -------------------------------------------
 Ediary.extend('moduleName', function(E) {
@@ -113,6 +114,11 @@ Ediary.loadModule('moduleName');
 
 NOTE: 如果加载一个尚未注册过的模块,会不被允许并抛出提示.
 
+=== 参数 ===
+
+.autoLoad : true
+是否立即自动加载模块
+
 == Pad 记事本 ==
 
 `class Pad`
@@ -121,7 +127,7 @@ NOTE: 如果加载一个尚未注册过的模块,会不被允许并抛出提示.
 
 .其包括:
     * 编辑器 ( `Editor` ).
-    * 通知器 ( `Notice` ).
+    * 通知器 ( `Notice` ). (非内部组件,全局部件)
     * 按钮 ( `Plugin` ).
     * 其他组件.
 
@@ -139,16 +145,26 @@ Notice模块, 主要用于提示信息给用户.
 Notice.showMessage(message, delay);
 --------------------------------
 
-NOTE: 使用 `Notice.showMessage()` 必须确保了通知器已经被初始化.( 初始化会绑定DOM元素 )
+NOTE: 在使用 `Notice.showMessage()` 前, 应该确保通知器已被初始化.( 初始化会绑定DOM元素 ).
 
 .初始化通知器
 [source]
 -----------------------------------
+// 使用默认参数
 Notice.init();
 
 // 指定DOM元素
 Notice.init({ element : '#noticeId' });
 -----------------------------------
+
+NOTE: 通知器作为一个全局性的组件, 只会被初始化一次. 但init()方法是可以安全的被外部多次调用, 因为其内部确保了只会初始化一遍.
+
+NOTE: 如果调用showMessage前没有手动初始化通知器, 通知器将会去尝试使用默认设置去初始化(寻找ID为默认值的DOM元素, 如果该元素不存在将会抛出提示信息);
+
+=== 参数 ===
+
+.element: '#notice'
+DOM Element selector
 
 
 == Editor 编辑器 ==
@@ -233,6 +249,26 @@ this.events.callListener('onClick', args);
 
 
 -----------------------------------------------------
+
+== 参数 ==
+
+.target : '#editor'
+编辑器DOM元素选择器.
+
+.titleElem : '#editor-title' 
+标题DOM元素选择器.
+
+.bodyElem : '#editor-body' 
+内容DOM元素选择器.
+
+.ajaxSetup: { dataType : 'json' }
+jQuery.Ajax.Options.
+
+.saveUrl : '' 
+保存动作URL
+
+.deleteUrl : ''       
+删除动作URL
 
 
 == Plugin 插件 ==

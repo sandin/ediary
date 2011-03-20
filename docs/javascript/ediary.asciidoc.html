@@ -417,7 +417,7 @@ div#toc a:visited { color: blue; }
 </style>
 <script type="text/javascript">
 /*<![CDATA[*/
-window.onload = function(){asciidoc.footnotes(); asciidoc.toc(2);}
+window.onload = function(){asciidoc.footnotes();}
 var asciidoc = {  // Namespace.
 
 /////////////////////////////////////////////////////////////////////
@@ -554,11 +554,7 @@ footnotes: function () {
 <h1>Ediary Javascript Document</h1>
 <span id="author">lds</span><br />
 <span id="email"><tt>&lt;<a href="mailto:lds2012@gmail.com">lds2012@gmail.com</a>&gt;</tt></span><br />
-<span id="revdate">2011-03-19</span>
-<div id="toc">
-  <div id="toctitle">Table of Contents</div>
-  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
-</div>
+<span id="revdate">2011-03-20</span>
 </div>
 <div id="content">
 <div id="preamble">
@@ -701,6 +697,8 @@ http://www.gnu.org/software/src-highlite -->
 <td class="content">如果加载一个尚未注册过的模块,会不被允许并抛出提示.</td>
 </tr></table>
 </div>
+<h3 id="_">1.3. 参数</h3><div style="clear:left"></div>
+<div class="paragraph"><div class="title">autoLoad : true</div><p>是否立即自动加载模块</p></div>
 </div>
 <h2 id="_pad">2. Pad 记事本</h2>
 <div class="sectionbody">
@@ -714,7 +712,7 @@ http://www.gnu.org/software/src-highlite -->
 </li>
 <li>
 <p>
-通知器 ( <tt>Notice</tt> ).
+通知器 ( <tt>Notice</tt> ). (非内部组件,全局部件)
 </p>
 </li>
 <li>
@@ -746,7 +744,7 @@ Notice<span style="color: #990000">.</span><span style="font-weight: bold"><span
 <td class="icon">
 <div class="title">Note</div>
 </td>
-<td class="content">使用 <tt>Notice.showMessage()</tt> 必须确保了通知器已经被初始化.( 初始化会绑定DOM元素 )</td>
+<td class="content">在使用 <tt>Notice.showMessage()</tt> 前, 应该确保通知器已被初始化.( 初始化会绑定DOM元素 ).</td>
 </tr></table>
 </div>
 <div class="listingblock">
@@ -755,10 +753,29 @@ Notice<span style="color: #990000">.</span><span style="font-weight: bold"><span
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
-<pre><tt>Notice<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">init</span></span><span style="color: #990000">();</span>
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">// 使用默认参数</span></span>
+Notice<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">init</span></span><span style="color: #990000">();</span>
 
 <span style="font-style: italic"><span style="color: #9A1900">// 指定DOM元素</span></span>
 Notice<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">init</span></span><span style="color: #990000">(</span><span style="color: #FF0000">{</span> element <span style="color: #990000">:</span> <span style="color: #FF0000">'#noticeId'</span> <span style="color: #FF0000">}</span><span style="color: #990000">);</span></tt></pre></div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">通知器作为一个全局性的组件, 只会被初始化一次. 但init()方法是可以安全的被外部多次调用, 因为其内部确保了只会初始化一遍.</td>
+</tr></table>
+</div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">如果调用showMessage前没有手动初始化通知器, 通知器将会去尝试使用默认设置去初始化(寻找ID为默认值的DOM元素, 如果该元素不存在将会抛出提示信息);</td>
+</tr></table>
+</div>
+<h3 id="__2">3.1. 参数</h3><div style="clear:left"></div>
+<div class="paragraph"><div class="title">element: <em>#notice</em></div><p>DOM Element selector</p></div>
 </div>
 <h2 id="_editor">4. Editor 编辑器</h2>
 <div class="sectionbody">
@@ -828,7 +845,16 @@ args <span style="color: #990000">=</span> Array<span style="color: #990000">.</
 
 </tt></pre></div></div>
 </div>
-<h2 id="_plugin_2">5. Plugin 插件</h2>
+<h2 id="__3">5. 参数</h2>
+<div class="sectionbody">
+<div class="paragraph"><div class="title">target : <em>#editor</em></div><p>编辑器DOM元素选择器.</p></div>
+<div class="paragraph"><div class="title">titleElem : <em>#editor-title</em></div><p>标题DOM元素选择器.</p></div>
+<div class="paragraph"><div class="title">bodyElem : <em>#editor-body</em></div><p>内容DOM元素选择器.</p></div>
+<div class="paragraph"><div class="title">ajaxSetup: { dataType : <em>json</em> }</div><p>jQuery.Ajax.Options.</p></div>
+<div class="paragraph"><div class="title">saveUrl : ''</div><p>保存动作URL</p></div>
+<div class="paragraph"><div class="title">deleteUrl : ''</div><p>删除动作URL</p></div>
+</div>
+<h2 id="_plugin_2">6. Plugin 插件</h2>
 <div class="sectionbody">
 <div class="paragraph" id="plugin"><p><tt>class Plugin</tt></p></div>
 <div class="paragraph"><p><tt>Plugin</tt> 主要设计用于与编辑器核心逻辑之外的部分扩展, 例如调用编辑器的一些附加按钮之类的, 扩展方式:</p></div>
@@ -879,7 +905,7 @@ http://www.gnu.org/software/src-highlite -->
 </li>
 </ul></div>
 </div>
-<h2 id="_events_amp_listener">6. Events &amp; Listener 事件监听器</h2>
+<h2 id="_events_amp_listener">7. Events &amp; Listener 事件监听器</h2>
 <div class="sectionbody">
 <div class="paragraph"><p><tt>class Events</tt>
 <tt>class Listenner</tt></p></div>
@@ -932,7 +958,7 @@ http://www.gnu.org/software/src-highlite -->
 </tr></table>
 </div>
 </div>
-<h2 id="_tests">7. Tests 单元测试</h2>
+<h2 id="_tests">8. Tests 单元测试</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>使用 <tt>Qunit</tt> 做前端单元测试.</p></div>
 <div class="paragraph"><p><a href="http://docs.jquery.com/Qunit">官方文档</a></p></div>
@@ -954,7 +980,7 @@ http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
 <pre><tt>ln -s /path/to/root/public/js <span style="color: #990000">.</span></tt></pre></div></div>
 </div>
-<h2 id="_class">8. Class 继承模式</h2>
+<h2 id="_class">9. Class 继承模式</h2>
 <div class="sectionbody">
 <div class="paragraph"><p><tt>window.Class</tt></p></div>
 <div class="paragraph"><p>需要大量实例化的对象, 为节省内存并提高效率, 一律使用原型链的继承模式, 并使用 John Resig 的 Simple JavaScript Inheritance 代码对原型链的继承模式进行封装.</p></div>
@@ -998,7 +1024,7 @@ n<span style="color: #990000">.</span><span style="font-weight: bold"><span styl
 p <span style="font-weight: bold"><span style="color: #0000FF">instanceof</span></span> Person <span style="color: #990000">&amp;&amp;</span> p <span style="font-weight: bold"><span style="color: #0000FF">instanceof</span></span> Class <span style="color: #990000">&amp;&amp;</span>
 n <span style="font-weight: bold"><span style="color: #0000FF">instanceof</span></span> Ninja <span style="color: #990000">&amp;&amp;</span> n <span style="font-weight: bold"><span style="color: #0000FF">instanceof</span></span> Person <span style="color: #990000">&amp;&amp;</span> n <span style="font-weight: bold"><span style="color: #0000FF">instanceof</span></span> Class</tt></pre></div></div>
 </div>
-<h2 id="_libraries">9. Libraries 外部库</h2>
+<h2 id="_libraries">10. Libraries 外部库</h2>
 <div class="sectionbody">
 <div class="ulist"><div class="title">第三方</div><ul>
 <li>
@@ -1027,7 +1053,7 @@ n <span style="font-weight: bold"><span style="color: #0000FF">instanceof</span>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2011-03-19 13:40:36 CST
+Last updated 2011-03-20 09:50:18 CST
 </div>
 </div>
 </body>

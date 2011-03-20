@@ -64,7 +64,7 @@ var Editor = {
         this.titleElem = $(o.titleElem);
         
         // Cann't init the editor, Missing DOM element
-        if (! this.checkIsReady) { return; }
+        if (! this.checkIsReady()) { return; }
         
         this.initPlugins(); // Init all plugins
         this.setupAjax();   // Setup Ajax
@@ -150,7 +150,8 @@ var Editor = {
             //dataType: 'json',
             data: data,
             success: function(data, textStatus, jqXHR) {
-                that.events.callListener('onSaveSuccess', arguments);
+                E.Notice.showMessage('notice, save success');
+                //that.events.callListener('onSaveSuccess', arguments);
             }
         });
     },
@@ -302,14 +303,11 @@ var Pad = {
     initEditor: function(options) {
         $.extend(this.options, options);
         
-        var notice = E.Notice.init(this.options.notice),
-            editor = E.Editor.init(this.options.editor);
+        var editor = E.Editor.init(this.options.editor);
+            //notice = E.Notice.init(this.options.notice),
         
         // add listeners
         editor.addListener("onSaveSuccess", new E.Listener(function(data, textStatus, jqXHR){
-            console.log("data : " + data);
-            console.log("Save listener 1: " + textStatus);
-            notice.showMessage('result from server : ' + data);
         }));
         
         // add Plugins 
