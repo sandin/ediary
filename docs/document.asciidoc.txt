@@ -1,7 +1,201 @@
-= Document =
+= Ediary PHP Document =
 lds <lds2012[at]gmail.com>
+{localdate}
 
-== Cache ==
-`/application/data/cache` 须可读可写
+:language: php
 
-== LOG ==
+.LOG
+[width="100%"]
+|====================================================================
+|   Version     |       author      |       date        |       note
+|   0.1         |       lds         |      2011-03-20   |        
+|====================================================================
+
+== application.ini 配置文件 ==
+
+`/application/configs/application.ini`
+全局配置文件.
+
+复制 `application-sample.ini` 为 `application.ini` .
+
+其中包括数据库等基本配置.
+
+=== 参数 ===
+
+.resources.db.params.host = "localhost"
+数据库主机
+
+.resources.db.params.username = ""
+数据库帐号
+
+.resources.db.params.password = ""
+数据库密码
+
+.resources.db.params.dbname = "eriji"
+数据库名
+
+.ediary.config.debug = "0"
+    * "0" 关闭DEBUG
+    * "1" 开启DEBUG
+
+.ediary.config.logger.enable = "1"
+    * "0" 关闭日志
+    * "1" 开启日志
+
+.ediary.config.logger.path = ""
+日志文件绝对路径
+
+.ediary.config.logger.type = "file"
+日志类型: 
+    * "file" : 日志储存到文件
+    * "database" : 日志储存到数据库
+    * "firebug" : 日志发送至firebug控制台
+
+.ediary.config.installed = "0"
+    * "1" 应用程序从未被安装
+    * "0" 应用程序已经被安装
+
+
+== autoLoad 命名方式 ==
+
+module目录下的所有类名都使用 `Zend_Loader_Autoloader` , 命名方式为:
+`Modulename_Model_Classname`
+
+例如 `user` 模块下的名为 `User` 的类名如下:
+`User_Model_User`
+
+
+== magic quotes 魔法引号 ==
+
+*魔法引号是被关闭的, 入库前必须注意安全性.*
+
+
+== Cache 缓存系统 ==
+
+如果使用缓存系统, 缓存目录必须可读可写:
+`/application/data/cache`
+
+
+== Logger 日志系统 ==
+
+使用日志系统,必须在配置文件中开启日志功能.
+
+日志文件默认存储在:
+`/application/log/log.txt`
+
+
+== i18n 多国语言 ==
+
+使用 `gettext` 实现多国语言支持, `mo` 文件集中储存在:
+`/application/data/languages/`
+
+默认语言为 `zh` .
+
+在 `controller` 或 `view` 里都可以自动统一的翻译函数:
+`echo _t("需要翻译的输出信息")`
+
+
+== Testing 单元测试 ==
+
+使用 `phpunit` 做单元测试. `phpunit.xml` 文件已经配置好所需的信息, 足够boot整个应用程序的基本环境, 即在测试里可以和正常环境下一样使用.
+
+.运行所有测试:
+转到 `/tests/` 目录下, 终端(命令行)下直接运行:
+[source,bash]
+---------------------
+phpunit 
+---------------------
+
+.运行单个测试:
+目前不支持.
+
+
+== User 用户模块 ==
+
+目前的 `Ediary_User` 和其他几个类有很大区别, 属于历史遗留问题, 使用的早期设计, 故没有和其他类使用统一的结构.
+
+=== 新建用户 ===
+
+新建用户时需要提供两个参数 `email` 和 `password` .
+
+可以作为识别用户的只有 `id` 和 `email` , `name` 不能作为identification, 用户名只是作为一个显示, 而非识别, 可以是任意数字字符,甚至可以包括空格(兼容外国人名字).
+
+大部分如 `Ediary_User->find($who)` 方法都提供了重载机制,即:
+    * 当 `$who` 输入的为一串数字时, 则被识别输入的 `id` .
+    * 当 `$who` 输入的是符合电子邮件格式的字符串时, 则被识别为 `email`.
+
+NOTE: 不允许使用已经注册过的Email创建新用户, 前端会在输入时进行即时提示, 后端会直接拒绝(不会抛异常).
+
+=== 用户验证 ===
+
+=== Validate ===
+
+当其他地方需要检验用户名/密码/电子邮箱的输入值是否合法时( `validate` ), 例如检查注册表单传递来的POST值, 可以直接条用静态方式:
+[source]
+-----------------------------------------
+// return boolean
+Ediary_User::isValidEmail($email);
+Ediary_User::isValidUsername($name);
+Ediary_User::isValidPassword($password);
+-----------------------------------------
+
+=== 判断用户是否存在 ===
+
+`Ediary_User::isExists($who)`
+
+=== 数据库原型 ===
+
+用户在数据库中的主键是 `id` ,为一个自增长值.
+
+`email` 为 `UNIQUE KEY` , 带索引并不允许重复.
+
+
+== 重定向 ==
+
+当访问不存在的控制器或动作时, 会重定向到 `default/error/error` 错误控制器做集中处理. 
+    * 404:
+    * 500:
+
+.重定向:
+    * 直接使用ZF提供的goSimple API
+    * 使用倒计时重定向, 即先显示一个即将被重定向的倒计时页面,然后再重定向.
+
+.倒计时重定向
+
+原型:
+`Ediary_Core::redirect($message, $title, $url)`
+
+实例:
+`$this->_redirect(Ediary_Core::redirect('登录成功', '首页', "/"));`
+
+
+== Theme 样式布局 ==
+
+样式应以简洁为主. 还原日记的本质, 靠近纸质书写的体验.
+
+.layout
+`/application/layouts/scripts/layout.phtml`
+全局布局文件(HTML总结构).
+
+.style
+`/public/css`
+
+.首页模板
+`/application/modules/default/views/script/index/index.phtml`
+
+== library 库 ==
+
+根目录下的 `/library` 文件夹是自动设置到 `include_path` 里面的, 并且使用 `Zend frameword` 统一的命名约定.
+
+=== Ediary ===
+
+应用程序核心 `core` .
+
+
+=== 第三方库 ===
+    * http://code.google.com/p/zfdebug/[ZFDebug]
+
+
+== TODO ==
+
+实现注册后,自动重定向/登录到编写日记页面.

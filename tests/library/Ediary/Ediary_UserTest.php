@@ -117,7 +117,6 @@ class Ediary_UserTest extends ControllerTestCase
         
         $this->assertEquals($userId, $user->getId());
         $this->assertEquals($this->data['email'], $user->mEmail);
-        $this->assertEquals($this->data['name'], $user->mName);
     }
     
     /**
@@ -131,7 +130,6 @@ class Ediary_UserTest extends ControllerTestCase
         
         $this->assertEquals($userId, $user->getId());
         $this->assertEquals($this->data['email'], $user->mEmail);
-        $this->assertEquals($this->data['name'], $user->mName);
     }
 
     /**

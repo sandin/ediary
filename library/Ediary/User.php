@@ -223,8 +223,8 @@ class Ediary_User extends Ediary_Query_Record
      */
     public static function isValidEmail($email) {
         $validator = new Zend_Validate();
-        $validator->addValidator(new Zend_Validate_EmailAddress())
-                  ->addValidator(new zend_validate_NotEmpty());
+        $validator->addValidator(new Zend_Validate_EmailAddress(array('domain' => false))) 
+                  ->addValidator(new Zend_Validate_NotEmpty());
         
         //var_dump('email valid :' . $validator->isValid($email));
         return $validator->isValid($email);

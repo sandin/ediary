@@ -2,14 +2,17 @@
     <div class="inner">
         <a class="title" href="/"><span>宜日记</span></a>
         <ul class="user_info">
-        <?php if (isset($this->user)): ?>
+        <?php if (isset($this->user)): //登录用户 ?>
             <li><a href="<?php echo $this->baseUrl("user/") . $this->user->id ?>"><?php echo $this->user->email?></a></li>
             &nbsp;&nbsp;|&nbsp;&nbsp;
-            <li><a class="" href=<?php echo $this->baseUrl("logout") ?>>退出</a></li>
-        <?php else: ?>
-            <li><a href="<?php echo $this->baseUrl("login") ?>">登录</a></li>
+            <li><a href="/diary">写日记</a>
             &nbsp;&nbsp;|&nbsp;&nbsp;
-            <li><a class="" href=<?php echo $this->baseUrl("register") ?>>注册</a></li>
+            <li><a class="" href="/logout">退出</a></li>
+        <?php else:  //游客 ?>
+            <li><a href="/login">登录</a></li>
+            &nbsp;&nbsp;|&nbsp;&nbsp;
+            <li><a class="" href="register">注册</a></li>
         <?php endif;?>
         </ul>
+      	<div id="notice" class="active">正在保存...</div>
     </div>

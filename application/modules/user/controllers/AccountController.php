@@ -46,7 +46,7 @@ class User_AccountController extends Zend_Controller_Action
 	    $form->saveToken(); // in case reSubmit
 	    
 	    // redirect to front page
-        $this->_redirect(Ediary_Core::redirect('登录成功', '首页', "/"));
+        $this->_redirect('/diary');
     }
 
     public function logoutAction()
@@ -83,7 +83,8 @@ class User_AccountController extends Zend_Controller_Action
 	        $form->saveToken(); // in case reSubmit
 	    
     	    // login for this user
-	        //$user->login($_POST['email'], $_POST['password']);
+	        Ediary_User::login($_POST['email'], $_POST['password']);
+	        $this->_redirect('/diary');
 	    } else {
 	        // register fail, reDisplay the form
 	        $this->view->error = _t("注册失败.");
@@ -110,7 +111,7 @@ class User_AccountController extends Zend_Controller_Action
      	$username = new Zend_Form_Element_Text('email');
      	$username->setLabel(_t("邮箱"))
      			 ->setRequired(true)
-     			 ->addValidator(new Zend_Validate_EmailAddress())
+     			 ->addValidator(new Zend_Validate_EmailAddress(array('domain' => false)))
      	         ->setAttrib('class', 'text')
      			 ->setDecorators(array($textElement));
      	
@@ -154,7 +155,7 @@ class User_AccountController extends Zend_Controller_Action
      	$username = new Zend_Form_Element_Text('email');
      	$username->setLabel(_t("邮箱"))
      			 ->setRequired(true)
-     			 ->addValidator(new Zend_Validate_EmailAddress())
+     			 ->addValidator(new Zend_Validate_EmailAddress(array('domain' => false)))
      	         ->setAttrib('class', 'text')
      			 ->setDecorators(array($textElement));
      	

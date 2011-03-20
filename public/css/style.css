@@ -106,6 +106,18 @@ em {color:red;}
    line-height: 25px;
    margin-bottom: 20px;
 }
+
+/* icon */
+.icon_loading_small {
+	display: inline-block;
+	text-indent: -9000px; /* hide text */
+}
+.icon_loading_small {
+	background: url("../images/icon_loading.gif") no-repeat;
+	width: 16px;
+	height: 16px;
+}
+
 /*}}}*/
 
 /* Layout {{{ 
@@ -176,6 +188,16 @@ em {color:red;}
     text-indent: -2000px;
     top: 0;
     width: 163px;
+}
+
+#notice {
+	margin: 0 auto;
+	width: 400px;
+	color: #fff;
+	text-align: center;
+	font-weight: bold;
+}
+#notice.active {
 }
 
 /* footer */
@@ -787,19 +809,81 @@ form.profile #forget_pw {
 	width: 744px;
 	margin: 0 auto;
 }
-.diary_content_wrapper {
-	background: url("../images/bg_diary_line.gif") repeat-y;
+.diary_wrapper {
+	background: #FFF;
+	font-size: 14px; /* equals 1 */
+	line-height: 24px; /* equals 2 */
+	width: 700px;
+	margin: 0 auto;
+}
+.diary_wrapper .text,
+.diary_wrapper textarea {
+	background: none;
+	border: none;
+}
+.diary_wrapper .diary_content,
+#diary_content {
+    margin: 0 auto;
+    width: 572px;
 }
 #diary_content {
-	background-color: transparent;
-    border: medium none;
-    height: 800px;
-    line-height: 20px;
-    margin: 20px 0 0 4px;
+	background: #FFF url("../images/bg_diary_line_24.gif") repeat-y;
+    height: 815px;
     overflow: hidden;
-    padding: 0 6px 0 4px;
-    width: 572px;
-    border: 1px #ccc solid;
+    font-size: 14px;/* equals 1 */
+    line-height: 24px; /* equals 2 */
+    padding-top: 24px; /* equals 2 */
+}
+.diary_header {
+	position: relative;
+	/*border-bottom: 1px solid #32cdfd;*/
+	height: 80px;
+}
+.diary_header .title {
+	background: #FFF url("../images/bg_diary_line_24.gif") no-repeat 0 bottom;
+	margin: 0 64px;
+	padding-top: 55px;
+}
+.diary_header .lastupdate {
+	position: absolute;
+	right: 9px;
+	top: 6px;
+	font-size: 12px;
+	color: #555;
+}
+#diary_title {
+	float: left;
+	width: 200px;
+    font-weight: bold;
+    font-size: 16px;
+}
+.diary_weather {
+	float: right;
+	width: 88px;
+}
+#diary_weather {
+    width: 50px;
+    text-align: center;
+}
+
+.diary_body {
+}
+.diary_footer {
+	height: 20px;
+}
+
+.toolbar {
+	margin-left: 125px;
+}
+.toolbar .menu {
+    background: none repeat scroll 0 0 #50514D;
+    color: #FFFFFF;
+    display: inline-block;
+    height: 26px;
+    line-height: 26px;
+    margin-bottom: 3px;
+    text-align: center;
+    width: 42px;
 }
 
 .redirectBox {
@@ -825,6 +909,11 @@ form.profile #forget_pw {
 .aside,
 .toplink {
     /*border: 1px red solid*/;
+}
+
+#diary input,
+#diary textarea {
+	/*border: 1px solid #DDD*/;
 }
 /*}}}*/
 

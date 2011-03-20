@@ -4,7 +4,7 @@ lds <lds2012@gmail.com>
 
 :language: javascript
 
-.UPDATE
+.LOG
 [width="100%"]
 |==============================================================
 |   version |   author  |   date        |   note    

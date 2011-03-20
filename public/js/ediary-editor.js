@@ -39,8 +39,8 @@ var Editor = {
         ajaxSetup : {                      // jQuery.Ajax.Options
             dataType : 'json'
         },
-        saveUrl : '',                      // do save Url
-        deleteUrl : ''                     // do delete Url
+        saveUrl : '',                      // save action Url
+        deleteUrl : ''                     // delete action Url
     },
     
     // A list of Plugins
