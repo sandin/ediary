@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>QUnit Test Suite</title>
+	<title>Editor Test Suite</title>
 	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
 	<script type="text/javascript" src="js/jquery-1.5.min.js"></script>
 	<script type="text/javascript" src="js/ediary.js"></script>
@@ -9,6 +9,17 @@
 	
 	<script type="text/javascript" src="qunit/qunit.js"></script>
 	<script type="text/javascript" src="ediary-editor-test.js"></script>
+	<style>
+	   #notice {
+	       background: yellow;
+	       padding: 5px;
+	   }
+	   .diary_container,
+	   #diary_content
+	   iframe {
+	       border: 1px red solid;
+	   }
+	</style>
 </head>
 <body>
 	<h1 id="qunit-header">QUnit Test Suite</h1>
@@ -25,18 +36,20 @@
 	   <div id="notice">Notice</div>
 	
 	   <!-- Editor -->
-	   <div id="editor">
+	   <div id="diary">
 	       <form action="/" method="get">
 	           <div class="element">
     	           <label for="title">TITLE</label>
-	              <input id="editor-title" name="title" type="text" />
+	              <input id="diary_title" name="title" type="text" />
 	           </div>
 	           <div class="element">
 	               <label for="title">BODY</label>
-	               <textarea id="editor-body" rows="5" cols="20"></textarea>
+	               <div class="diary_container">
+    	               <textarea id="diary_content" rows="5" cols="20"></textarea>
+	               </div>
 	           </div>
-	           <input id="editor-submit" name="op" type="submit" value="Submit" />
-	           <input id="editor-btn-save" name="save" type="button" value="Save" />
+	           <input id="diary-submit" name="op" type="submit" value="Submit" />
+	           <input id="diary-btn-save" name="save" type="button" value="Save" />
 	       </form>
 	   </div>
 	   

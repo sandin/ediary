@@ -99,6 +99,8 @@ module目录下的所有类名都使用 `Zend_Loader_Autoloader` , 命名方式�
 
 使用 `phpunit` 做单元测试. `phpunit.xml` 文件已经配置好所需的信息, 足够boot整个应用程序的基本环境, 即在测试里可以和正常环境下一样使用.
 
+尽量保证每天最后一次提交代码前必须运行并通过所有单元测试, 不要遗留问题.
+
 .运行所有测试:
 转到 `/tests/` 目录下, 终端(命令行)下直接运行:
 [source,bash]
@@ -198,4 +200,10 @@ Ediary_User::isValidPassword($password);
 
 == TODO ==
 
-实现注册后,自动重定向/登录到编写日记页面.
+    * 实现注册后,自动重定向/登录到编写日记页面. 3-20
+    * 为今后扩展考虑,决定引入tinyMCE作为编辑器的底层. 3-21
+        - 尝试将tinyMCE默认的theme复制后,替换theme name来新建一个主题,但是试了很多次,总是报 `q is not a constructor` 查明为在加载 theme 目录下的 `langs/en.js` 时url错误, `undefined/en/js` , 应该是theme的路径出错, 但是 `themeManager` 里面的 `urls` 列表里面是存在一个正确的URL的, 而且 `editor_template.js` 也可以正确的GET到.
+        - 因为尝试新建主题失败,所以只有直接修改自带主题. 复制 `advanced` 主题下的 `default` skin为 `ediary` .
+        - 暂时取消所有按钮,只保留tinyMCE编辑器本身, 今后再决定按钮如果加入.
+    * 应该对页面也进行一定的单元测试.
+    * 对前端JS进行性能测试, 检查是否有内存溢出.

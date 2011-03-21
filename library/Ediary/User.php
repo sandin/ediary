@@ -219,12 +219,12 @@ class Ediary_User extends Ediary_Query_Record
      * Check Email
      *
      * @param String $name
-     * @return boolean
+     * @return boolean is valid
      */
     public static function isValidEmail($email) {
         $validator = new Zend_Validate();
-        $validator->addValidator(new Zend_Validate_EmailAddress(array('domain' => false))) 
-                  ->addValidator(new Zend_Validate_NotEmpty());
+        $validator->addValidator(new Zend_Validate_NotEmpty())
+                  ->addValidator(new Zend_Validate_EmailAddress(array('mx' => false)));
         
         //var_dump('email valid :' . $validator->isValid($email));
         return $validator->isValid($email);

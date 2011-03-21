@@ -3,6 +3,7 @@ $(window).load(function(){
     Ediary.Editor.init();
 });
 */
+Ediary.baseUrl = '/test/yiriji/tests/javascript';
 
 module("Module Editor", {
     setup: function() {
@@ -13,10 +14,9 @@ module("Module Editor", {
         }
         // 初始化对象
         this.obj = Ediary.Editor.init(options);
-        
     },
     teardown: function() {
-        this.obj.destory();
+        this.obj.destroy(); 
         this.obj = null;
     }
 });
@@ -51,16 +51,41 @@ test('testSetElementsValues', function() {
         },
         obj = this.obj;
     
+    // TinyMCE will add <p> around
+    if (obj.getRTEditor()) {
+        values.content = '<p>' + values.content + '</p>';
+    }
+    
     // set elements values
-    obj.setElementsValues(values);
-    equals(values.content, obj.getContent());
-    equals(values.title, obj.getTitle());
+    obj.updateValues(values);
+    equals(obj.getTitle(), values.title);
+    equals(obj.getContent(), values.content);
     
     // test getElementsValues();
     var newValues = obj.getElementsValues();
     for (var key in values) {
-        equals(values[key], newValues[key]);
+        equals(newValues[key], values[key]);
     }
+});
+
+test('testGetContent', function() {
+    var obj = this.obj,
+        tinyMCE = this.obj.editor;
+        
+    if (! tinyMCE) { return; } // no tinyMCE mode
+    
+    var tinyBody = tinyMCE.getBody(),
+        old_content = obj.getContent(),
+        content = "<p>new line</p>";
+        
+    ok(tinyMCE, 'tinyMCE is not null');
+    ok(tinyBody, 'tinyHTML is not null');
+    ok(old_content, 'old content is not null');
+    
+    // mock, write a new line
+    $(tinyBody).append(content);
+    
+    equals(obj.getContent(), old_content + "\n" + content);
 });
 
 test('testDoSave', function(){
@@ -73,7 +98,27 @@ test('testDoSave', function(){
 });
 
 
-test('test', function() {
+//TODO: 因为tinyMCE无法destroy干净, 所以导致同一页面出现了多个残留DOM元素, resize无法进行测试
+// iframe>body读取不到height
+test('testAutoResize', function() {
+    //console.log( $('.diary_container>.mceEditor:hidden') );
+    
+    var obj = this.obj,
+        mce = obj.getRTEditor(),
+        oldContent = mce.getContent(),
+        newContent = '<p>Hello</p>',
+        oldHeight = obj.bodyElem.height();
+   
+   for (var i = 0; i < 8; i++) {
+       newContent += newContent;
+   }
+   
+   console.log(oldHeight);
+   mce.setContent(newContent);
+   console.log(obj.bodyElem.height());
+    
+    //equals(mce.getContent(), newContent);
+    //console.log(mce.getContent());
 });
 
 module("Module Pad", {
@@ -90,7 +135,7 @@ module("Module Pad", {
         
     },
     teardown: function() {
-        this.obj.destory();
+        this.obj.destroy();
         this.obj = null;
     }
 });

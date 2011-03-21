@@ -111,7 +111,7 @@ class User_AccountController extends Zend_Controller_Action
      	$username = new Zend_Form_Element_Text('email');
      	$username->setLabel(_t("邮箱"))
      			 ->setRequired(true)
-     			 ->addValidator(new Zend_Validate_EmailAddress(array('domain' => false)))
+     			 ->addValidator(new Zend_Validate_EmailAddress(array('mx' => false)))
      	         ->setAttrib('class', 'text')
      			 ->setDecorators(array($textElement));
      	
@@ -155,7 +155,7 @@ class User_AccountController extends Zend_Controller_Action
      	$username = new Zend_Form_Element_Text('email');
      	$username->setLabel(_t("邮箱"))
      			 ->setRequired(true)
-     			 ->addValidator(new Zend_Validate_EmailAddress(array('domain' => false)))
+     			 ->addValidator(new Zend_Validate_EmailAddress(array('mx' => false)))
      	         ->setAttrib('class', 'text')
      			 ->setDecorators(array($textElement));
      	

@@ -19,6 +19,8 @@ if (! window.console ) {
 // Application
 var Ediary = {
     
+    baseUrl : '',
+    
     // default options
     options: {
         autoLoad : true             // auto load module immediately
@@ -93,7 +95,7 @@ var Ediary = {
         fn.call(this, this, options); // inside Function 'this' point Ediary
     },
     
-    destory: function() {
+    destroy: function() {
     }
 };
 window.Ediary = Ediary;
@@ -300,6 +302,18 @@ Ediary.extend('Events', function(E) {
 
 });
 
+// extend jquery
+jQuery.extend({
+    include: function (jsurl) {
+        if (jsurl == null || typeof(jsurl) != 'string') return;
+        var js = document.createElement('script');
+        js.type = 'text/javascript';
+        js.charset = 'utf-8';
+        js.src = jsurl;
+        $('head').append(js);
+    }
+});
+
     
 })(jQuery);
 
@@ -392,8 +406,8 @@ var Notice = {
         }, delay);
     },
     
-    // destory
-    destory: function() {
+    // destroy
+    destroy: function() {
         this._resetMessage();
         this.element = null;
     }

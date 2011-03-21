@@ -29,14 +29,18 @@ var Editor = {
     titleElem : null,
     
     // Body Element(jQuery Object)
-    bodyElem : null,
+    bodyElem : null, // <textarae>
     
-    // Default settings
+    // resize Interval
+    resizer: null,
+    
+    // Default Settings
     settings : {
-        target : '#editor',                // editor target selector
-        titleElem : '#editor-title',       // editor title selector
-        bodyElem : '#editor-body',         // editor content selector
-        ajaxSetup : {                      // jQuery.Ajax.Options
+        target : '#diary',                // editor target selector
+        titleElem : '#diary_title',       // editor title selector
+        bodyElem : '#diary_content',      // editor content selector
+        containerElem : '.diary_container',
+        ajaxSetup : {                     // jQuery.Ajax.Options
             dataType : 'json'
         },
         saveUrl : '',                      // save action Url
@@ -56,28 +60,98 @@ var Editor = {
      * @return Editor self
      */
     init : function(options) {
-        var o = $.extend(this.settings, options);
+        var t = this, o = $.extend(this.settings, options);
         
         // Setup
         this.element = $(o.target);
         this.bodyElem = $(o.bodyElem);
         this.titleElem = $(o.titleElem);
+        this.containerElem = $(o.containerElem);
         
         // Cann't init the editor, Missing DOM element
         if (! this.checkIsReady()) { return; }
         
-        this.initPlugins(); // Init all plugins
+        this.initPlugins(); // init all plugins
         this.setupAjax();   // Setup Ajax
+        this.setupTinyMCE();
+        
+        // 
+        this.resizer = setInterval(function () { t.resize(); }, 500);
         
         this.isReady = true;
         return this;
     },
     
+    setupTinyMCE: function() {
+        var t = this;
+        
+        if (typeof jQuery.tinymce === 'undefined') {
+            $.include(E.baseUrl + "/js/tiny_mce/jquery.tinymce.js");
+        }
+
+        t.bodyElem.tinymce({
+            // Location of TinyMCE script
+            script_url : E.baseUrl + '/js/tiny_mce/tiny_mce.js',
+
+            // General options
+            mode: 'exact',
+            plugins: "safari,paste,inlinepopups,spellchecker,insertdatetime,nonbreaking",
+            elements: this.bodyElem.attr('id'),
+            width: this.bodyElem.width(),
+            height: this.bodyElem.height(),
+
+            // Theme options
+            theme : "advanced",
+            skin: 'default',
+            theme_advanced_buttons1 : "",
+            theme_advanced_buttons2 : "",
+            theme_advanced_buttons3 : "",
+            theme_advanced_toolbar_location : "none",
+            theme_advanced_toolbar_align : "left",
+            theme_advanced_statusbar_location : "none",
+            theme_advanced_resizing : true,
+
+            content_css : E.baseUrl + "/css/rte.css",
+
+            // Setup
+            setup: function(ed) {
+                // IE iframe background trasparent hack
+                if ($.browser.msie) {
+                    ed.onPostRender.add(function (ed, cm) {
+                        if ($.browser.msie) {
+                            $('iframe', $(ed.getContentAreaContainer())).attr('allowTransparency', "true");
+                            $(ed.getBody()).css('background', 'transparent');
+                        }
+                    });
+                }
+            },
+
+            // Drop lists for link/image/media/template dialogs
+
+            // Replace values for the template plugin
+            template_replace_values : {
+            }
+        });
+
+    },
+
     // Check if all DOM elements exist
     checkIsReady: function() {
-        var t = this;
-        if (t.element.length + t.titleElem.length + t.bodyElem.length !== 3) {
-            console.error('editor/title/body missing. ');
+        var t = this, o = t.settings;
+        if (t.element.length < 1) {
+            console.error("editor element is missing, it should be : " + o.element);
+            return false;
+        }
+        if (t.titleElem.length < 1) {
+            console.error("editor title element is missing, it should be : " + o.titleElem);
+            return false;
+        }
+        if (t.bodyElem.length < 1) {
+            console.error("editor body element is missing, it should be : " + o.bodyElem);
+            return false;
+        }
+         if (t.containerElem.length < 1) {
+            console.error("editor container element is missing, it should be : " + o.containerElem);
             return false;
         }
         return true;
@@ -115,13 +189,60 @@ var Editor = {
     addListener: function(name, listener) {
         this.events.addListener(name, listener);
     },
+
+    // resize the editor when reach the bottom
+    resize: function () {
+        var rte = this.getRTEditor(),
+            elem, elemHeight, scrollHeight, newHeight,
+            settings = {
+                minHeight: 815,
+                increment: 815,
+                margin: 0
+        };
+        if (rte) {
+            elem = $('iframe', $(rte.getContentAreaContainer()));
+            elemHeight = elem.height(); // iframe height
+            // iframe's body height
+            scrollHeight = $.browser.chrome ? $(rte.getBody()).insideHeight() : $(rte.getBody()).height();
+            settings.margin = 40;
+        } else if (!this.isLocked()) {
+            elem = this.bodyElem;
+            elemHeight = elem.height();
+            scrollHeight = elem.get(0).scrollHeight;
+        }
+        if (elem) {
+            if ((elemHeight < scrollHeight + settings.margin) || (elemHeight - settings.increment > scrollHeight + settings.margin)) {
+                newHeight = Math.ceil((scrollHeight + settings.margin) / settings.increment) * settings.increment;
+            }
+            //console.log($(rte.getBody()));
+            //console.log('scrool', scrollHeight);
+            if (newHeight) {
+                newHeight = Math.max(settings.minHeight, newHeight);
+                elem.css('height', newHeight + "px");
+                this.containerElem.css('height', newHeight + "px");
+            }
+        }
+    },
+    
+    isLocked: function() {
+        return false;
+    },
+
+    /**
+     * Get Rich text editor
+     * 
+     * @return TinyMCE.Editor rich text editor 
+     */ 
+    getRTEditor: function() {
+        return window.tinyMCE.get(this.bodyElem.attr("id"));
+    },
     
     /**
      * Set DOM elements' values
      * 
      * @param Object{title, content} values
      */
-    setElementsValues: function(values) {
+    updateValues: function(values) {
         this.setTitle(values.title);
         this.setContent(values.content);
     },
@@ -187,25 +308,41 @@ var Editor = {
     
     // set/get Content
     setContent: function(content) {
-        this.bodyElem.val(content);
+         if ( this.getRTEditor() ) {
+            this.getRTEditor().setContent(content);
+        } else {
+            this.bodyElem.val(content);
+        }
+        
     },
     getContent: function() {
-        return this.bodyElem.val();
+        if ( this.getRTEditor() ) {
+            return this.getRTEditor().getContent();
+        } else {
+            return this.bodyElem.val();
+        }
     },
     
-    // destory the editor
-    destory : function() {
-        //console.log('destory editor');
+    // destroy the editor
+    destroy : function() {
+        //console.log('destroy editor');
         
-        // destory all elements
+        // destroy TinyMCE Editor
+        if ( window.tinyMCE && this.getRTEditor() ) {
+            //TODO: tinyMCE 生成的元素无法完全destroy, 生成的元素只是被hide,而非删除
+            this.getRTEditor().remove();
+        }
+        
+        // destroy all elements
         this.element = null;
         this.titleElem = null;
         this.bodyElem = null;
         
-        // destory all plugins
+        // destroy all plugins
         $.each(this.plugins, function() {
-            this.destory();
+            this.destroy();
         });
+        
     }
 };
 E.extend('Editor', Editor); // NAMESPACE
@@ -234,7 +371,7 @@ var Plugin = Class.extend({
         $.extend(this.extData, data);
     },
     
-    destory: function() {}, 
+    destroy: function() {}, 
 });
 E.Plugin = Plugin; // NAMESPACE
 
@@ -271,7 +408,7 @@ var SaveButton = Plugin.extend({
         Editor.doSave();
     },
     
-    destory : function() {
+    destroy : function() {
         this.element.unbind();
     }
 });
@@ -314,7 +451,7 @@ var Pad = {
         editor.addPlugin('SaveButton', new E.SaveButton());
     },
     
-    destory: function() {
+    destroy: function() {
         
     }
 };

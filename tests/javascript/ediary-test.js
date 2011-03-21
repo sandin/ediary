@@ -1,9 +1,11 @@
+Ediary.baseUrl = '/test/yiriji/tests/javascript';
+
 module("Module Notice", {
     setup: function() {
         this.obj = Ediary.Notice.init({element: '#notice'});
     },
     teardown: function() {
-        this.obj.destory();
+        this.obj.destroy();
         this.obj = null;
     }
 });
@@ -21,7 +23,7 @@ module("Module Ediary", {
     setup: function() {
     },
     teardown: function() {
-        Ediary.destory();
+        Ediary.destroy();
     }
 });
 
@@ -33,4 +35,12 @@ test('testLoadModule', function() {
     
     equals('object', typeof Ediary.Validator);
     ok( Ediary.Validator.getLoginForm() !== null );
+});
+
+test('textInclude', function() {
+    js_files_count = $('script').length;
+    $.include("js/tiny_mce/jquery.tinymce.js");
+    
+    console.log(jQuery.fn.tinymce);
+    equals(js_files_count, $('script').length);
 });

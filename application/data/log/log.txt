@@ -179,3 +179,21 @@
 2011-03-20T11:07:44+08:00 INFO (6): The application is not installed, installing now.
 2011-03-20T11:09:02+08:00 INFO (6): The application is already installed
 2011-03-20T12:37:35+08:00 INFO (6): The application is already installed
+2011-03-21T23:13:05+08:00 INFO (6): The application is already installed
+2011-03-21T23:13:06+08:00 INFO (6): The application is not installed, installing now.
+2011-03-21T23:15:33+08:00 INFO (6): The application is already installed
+2011-03-21T23:15:34+08:00 INFO (6): The application is not installed, installing now.
+2011-03-21T23:18:04+08:00 INFO (6): The application is already installed
+2011-03-21T23:18:06+08:00 INFO (6): The application is not installed, installing now.
+2011-03-21T23:18:51+08:00 INFO (6): The application is already installed
+2011-03-21T23:18:53+08:00 INFO (6): The application is not installed, installing now.
+2011-03-21T23:19:12+08:00 INFO (6): The application is already installed
+2011-03-21T23:19:13+08:00 INFO (6): The application is not installed, installing now.
+2011-03-21T23:25:06+08:00 INFO (6): The application is already installed
+2011-03-21T23:26:00+08:00 INFO (6): The application is already installed
+2011-03-21T23:26:01+08:00 INFO (6): The application is not installed, installing now.
+2011-03-21T23:26:29+08:00 INFO (6): The application is already installed
+2011-03-21T23:26:31+08:00 INFO (6): The application is not installed, installing now.
+2011-03-21T23:26:46+08:00 INFO (6): The application is already installed
+2011-03-21T23:27:16+08:00 INFO (6): The application is already installed
+2011-03-21T23:28:24+08:00 INFO (6): The application is already installed

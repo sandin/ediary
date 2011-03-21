@@ -243,19 +243,25 @@ class Ediary_UserTest extends ControllerTestCase
         $this->assertEquals($journal->id, $journals_from_db[0]->id);
     }
     
-    public function testIsValidEmail() {
-        $data = array( 
-            'lds2012@gmail.com' => true,
-            'lds2012gmail.com'  => false,
-            'lds2012@gmailcom'  => false,
-            'asdfajjklsdfaoihosdfa' => false
+    public function emailDataProvider() {
+        return array( 
+            array('lds2012@gmail.com', true),
+            array('lds2012@noexists.com', true), 
+            array('lds2012@noexists.cn', true), 
+            array('lds2012@noexists.com.cn', true), 
+            array('lds2012@noexists.org', true), 
+            
+            array('lds2012gmail.com', false),
+            array('lds2012@gmailcom', false),
+            array('asdfajjklsdfaoihosdfa', false)
         );
-        
-        foreach ( $data as $email => $isValid ) {
-            if( $isValid !== Ediary_User::isValidEmail($email)) {
-                $this->fail($email . ' is invalid.');
-            }
-        }
+    }
+    
+    /**
+     * @dataProvider emailDataProvider
+     */
+    public function testIsValidEmail($email, $isValid) {
+        $this->assertEquals($isValid, Ediary_User::isValidEmail($email));
     }
     
     // for testIsValidUser
