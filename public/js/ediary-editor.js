@@ -11,6 +11,11 @@ if (! window.console ) {
  * @author lds
  */
 (function($, E, window){
+    
+var i18n = {
+    SAVE_SUCCESS : '保存成功.',
+    SAVING : '正在保存...'
+}
 
 /**
  * Class Editor
@@ -36,15 +41,16 @@ var Editor = {
     
     // Default Settings
     settings : {
-        target : '#diary',                // editor target selector
-        titleElem : '#diary_title',       // editor title selector
-        bodyElem : '#diary_content',      // editor content selector
-        containerElem : '.diary_container',
-        ajaxSetup : {                     // jQuery.Ajax.Options
-            dataType : 'json'
+        target:        '#diary',              // editor target selector
+        formElem:      '#form_diary',         // editor form selector
+        titleElem:     '#diary_title',        // diary title selector
+        bodyElem:      '#diary_content',      // diary content selector
+        containerElem: '.diary_container',    // diary content wrapper
+        ajaxSetup: {                          // jQuery.Ajax.Options
+           // dataType : 'json'
         },
-        saveUrl : '',                      // save action Url
-        deleteUrl : ''                     // delete action Url
+        saveUrl: Ediary.baseUrl + '/diary/do/save',  // save action Url
+        deleteUrl: ''                     // delete action Url
     },
     
     // A list of Plugins
@@ -69,7 +75,7 @@ var Editor = {
         this.containerElem = $(o.containerElem);
         
         // Cann't init the editor, Missing DOM element
-        if (! this.checkIsReady()) { return; }
+        if (! this.checkDOMIsReady()) { return; }
         
         this.initPlugins(); // init all plugins
         this.setupAjax();   // Setup Ajax
@@ -90,30 +96,30 @@ var Editor = {
         }
 
         t.bodyElem.tinymce({
-            // Location of TinyMCE script
             script_url : E.baseUrl + '/js/tiny_mce/tiny_mce.js',
-
-            // General options
+            content_css : E.baseUrl + "/css/rte.css",
             mode: 'exact',
-            plugins: "safari,paste,inlinepopups,spellchecker,insertdatetime,nonbreaking",
             elements: this.bodyElem.attr('id'),
             width: this.bodyElem.width(),
             height: this.bodyElem.height(),
-
-            // Theme options
             theme : "advanced",
             skin: 'default',
-            theme_advanced_buttons1 : "",
+            plugins: "safari,paste,inlinepopups,spellchecker,insertdatetime,nonbreaking",
+            theme_advanced_buttons1 : "bold,italic,underline,|,fontselect,fontsizeselect,forecolor,|,justifyleft,justifycenter,justifyright,|,indent,outdent,|,strikethrough,backcolor,|,bullist,numlist,|,spellchecker,insertdate,link,removeformat",
             theme_advanced_buttons2 : "",
             theme_advanced_buttons3 : "",
             theme_advanced_toolbar_location : "none",
             theme_advanced_toolbar_align : "left",
             theme_advanced_statusbar_location : "none",
             theme_advanced_resizing : true,
-
-            content_css : E.baseUrl + "/css/rte.css",
-
-            // Setup
+            invalid_elements: 'embed,object,script,form',
+            entity_encoding: "raw", //All characters will be stored in non-entity form except these XML default entities: &amp; &lt; &gt; &quot;
+            paste_convert_middot_lists: true,
+            paste_remove_spans: true,
+            paste_remove_styles: true,
+            paste_strip_class_attributes: true,
+            nonbreaking_force_tab: true,
+            convert_urls: false,
             setup: function(ed) {
                 // IE iframe background trasparent hack
                 if ($.browser.msie) {
@@ -125,10 +131,6 @@ var Editor = {
                     });
                 }
             },
-
-            // Drop lists for link/image/media/template dialogs
-
-            // Replace values for the template plugin
             template_replace_values : {
             }
         });
@@ -136,7 +138,7 @@ var Editor = {
     },
 
     // Check if all DOM elements exist
-    checkIsReady: function() {
+    checkDOMIsReady: function() {
         var t = this, o = t.settings;
         if (t.element.length < 1) {
             console.error("editor element is missing, it should be : " + o.element);
@@ -150,8 +152,12 @@ var Editor = {
             console.error("editor body element is missing, it should be : " + o.bodyElem);
             return false;
         }
-         if (t.containerElem.length < 1) {
+        if (t.containerElem.length < 1) {
             console.error("editor container element is missing, it should be : " + o.containerElem);
+            return false;
+        }
+        if ($(o.formElem).length < 1) {
+            console.error("editor form element is missing, it should be : " + o.formElem);
             return false;
         }
         return true;
@@ -180,6 +186,7 @@ var Editor = {
     
     // Init all plugins
     initPlugins: function() {
+        console.log(this.plugins);
         $.each(this.plugins, function() {
             this.delayInit();
         });
@@ -252,7 +259,7 @@ var Editor = {
      * 
      * @return Object{title, content}
      */
-    getElementsValues: function() {
+    getValues: function() {
         return {
             title : this.getTitle(),
             content : this.getContent()
@@ -262,17 +269,28 @@ var Editor = {
     doSave: function() {
         console.log('do save');
         
-        var that = this,
-            data = this.getElementsValues();
+        var self = this,
+            rte = this.getRTEditor(),
+            $form = $(this.settings.formElem);
+        
+        console.log(this.getContent());
+        if (rte && rte.isDirty()) {
+            rte.save(); // save the content into the textarea
+        }
+        
                
         $.ajax({
-            url: 'http://localhost',
+            url: self.settings.saveUrl,
             type: 'POST',
-            //dataType: 'json',
-            data: data,
+            data: $form.serialize(),
+            beforeSendMessage: i18n.SAVING,
             success: function(data, textStatus, jqXHR) {
-                E.Notice.showMessage('notice, save success');
-                //that.events.callListener('onSaveSuccess', arguments);
+                var data =  $.parseJSON(data),
+                    diary = data.diary;
+                E.Notice.showMessage(i18n.SAVE_SUCCESS, 1000);
+                self.events.callListener('onSaveSuccess', arguments);
+                self.setContent(diary.content);
+                console.log(data);
             }
         });
     },
@@ -291,7 +309,12 @@ var Editor = {
                             + " Cann't parse it. Response is: \n" ,jqXHR.responseText);
                     }
                     that.events.callListener('onError');
-                }
+                },
+                beforeSend: function(jqXHR, settings) {
+                    if (settings.beforeSendMessage) {
+                        E.Notice.showMessage(settings.beforeSendMessage);
+                    }
+                },
             };
         
         $.extend(this.settings.ajaxSetup, options);
@@ -326,6 +349,9 @@ var Editor = {
     // destroy the editor
     destroy : function() {
         //console.log('destroy editor');
+        
+        // stop the resizer
+        clearInterval(this.resizer);
         
         // destroy TinyMCE Editor
         if ( window.tinyMCE && this.getRTEditor() ) {
@@ -381,14 +407,12 @@ E.Plugin = Plugin; // NAMESPACE
  */
 var SaveButton = Plugin.extend({
     options: {
-        element: '#editor-btn-sava'
+        element: '#editor-btn-save'
     },
     
     init: function() {
         this._super();
-    },
     
-    delayInit: function() {
         $.extend(this.options, this.extData);
         var o = this.options;
 
@@ -405,7 +429,8 @@ var SaveButton = Plugin.extend({
     },
     
     clickHandler : function(e) {
-        Editor.doSave();
+        console.log('click save btn');
+        E.Editor.doSave();
     },
     
     destroy : function() {

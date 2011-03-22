@@ -259,6 +259,15 @@ this.events.callListener('onClick', args);
 目前的富文本编辑器功能几乎全都没有使用, 尽量保持简洁性, 引入该底层编辑器的原因是为了今后功能扩展考虑, 今后肯定会设计到富文本编辑的一些功能, 所以提前引入, 避免兼容性问题.
 
 
+DELETE: 今后扩展时为了样式考虑,可以考虑不使用自带的toolbar button,而是在Editor外使用 `Editor.Plugin` 来绑定按钮事件, 调用 `tinyMCE.get("ID").execCommand()` .
+
+.借鉴penzu方法,参考一下代码:
+[source]
+----------------------------------------------
+ theme_penzu_toolbar_location: "docked",
+ theme_penzu_toolbar_location_docked_element_id: "menudroprte",
+----------------------------------------------
+
 === Auto Resize ===
 
 目前的auto resize功能完全使用了penze网站的代码和设计, 即循环计时去判断当前的输入是否需要增加高度, 这样实现有一个坏处和一个好处:

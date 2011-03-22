@@ -4,14 +4,14 @@ $this->headScript()->appendFile("/js/ediary.js?v=1");
 $this->headScript()->appendFile("/js/ediary-editor.js?v=1");
 $this->inlineScript()->appendScript('
 $(document).ready(function(){
-	Ediary.Editor.init();
+	Ediary.Pad.init();
 });
 ');
 ?>
 <!-- Toolbar -->
 <div class="toolbar">
-<a href="#" class="menu">新建</a>
-<a href="#" class="menu">保存</a>
+<a href="#" id="" class="menu">新建</a>
+<a href="#" id="editor-btn-save" class="menu">保存</a>
 <a href="#" class="menu">附件</a>
 
 </div><!-- /toolbar -->
@@ -25,7 +25,7 @@ $(document).ready(function(){
 			<input id="diary_title" name="diary[title]" type="text" class="text" value="2011年03月12日" />
 			<div class="diary_weather">
 				<label for="diary_weather">天气</label>
-				<input id="diary_weather" name="diary[title]" type="text" class="text" value="晴" />
+				<input id="diary_weather" name="diary[weather]" type="text" class="text" value="晴" />
 			</div>
 		</div>
 		<div class="lastupdate">最后保存: 2011-03-20 12:13</div>
@@ -33,7 +33,7 @@ $(document).ready(function(){
 	
 	<div class="diary_body">
 		<div class="diary_container"><textarea id="diary_content" class="" rows="40" cols="60" name="diary[content]">
-“1692年，新登基的法国国王路易十四感到法国的印刷水平强差人意，因此命令成立一个管理印刷的皇家特别委员会。他们的首要任务是设计出科学的、合理的， 重视功能性的新字体。委员会由数学家尼古拉斯加宗（Nicolas Jaugeon）担任领导，他们以罗马体为基础，采用方格为设计依据，每个字体方格分为64个基本方各单位，每个方各单位再分成36个小格，这样，一个印 刷版面就有 2304个小格组成，在这个严谨的几何网格网络中设计字体的形状，版面的编排，试验传达功能的效能，这是是世界上最早对字体和版面进行科学实验的活动，也 是栅格系统最早的雏形。”
+&lt;script&gt;alert(123)&lt;/script&gt; “1692年，新登基的法国国王路易十四感到法国的印刷水平强差人意，因此命令成立一个管理印刷的皇家特别委员会。他们的首要任务是设计出科学的、合理的， 重视功能性的新字体。委员会由数学家尼古拉斯加宗（Nicolas Jaugeon）担任领导，他们以罗马体为基础，采用方格为设计依据，每个字体方格分为64个基本方各单位，每个方各单位再分成36个小格，这样，一个印 刷版面就有 2304个小格组成，在这个严谨的几何网格网络中设计字体的形状，版面的编排，试验传达功能的效能，这是是世界上最早对字体和版面进行科学实验的活动，也 是栅格系统最早的雏形。”
 
 嗯。简单说来，网页栅格化解决的问题即是网页如何能最多的分割成为各种整数宽度的问题。。通过看上面的图片大家应该基本可以了解到什么是网页栅格化的设计，以上是950宽度的网页设计。如果把30作为每个单独的单元格的宽度，10作为每个单元格之间的宽度。那么950恰好可以分成24个小列，每个间隔10像素。
 因此，这个就是网页栅格化最简单的一个解释了。下面我想说另外一个问题，即使黄金分割。
@@ -43,6 +43,7 @@ $(document).ready(function(){
 	
 	<div class="diary_footer">
 		<input type="submit" value="submit" class="hide" />
+		<input type="hidden" name="diary[id]" value="123" />
 	</div><!-- footer -->
 </form>
 </div><!-- /diary_wrapper -->

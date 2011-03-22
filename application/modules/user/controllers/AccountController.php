@@ -203,6 +203,13 @@ class User_AccountController extends Zend_Controller_Action
         }
     }
     
+    /**
+     * The User is exists or not
+     * 
+     * Request: post 'email'
+     * Response: json 'true|false'
+     * 
+     */
     public function existsAction() {
         $this->_helper->viewRenderer->setNoRender();
         $this->_helper->layout->disableLayout();

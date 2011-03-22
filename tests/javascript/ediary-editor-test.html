@@ -37,19 +37,22 @@
 	
 	   <!-- Editor -->
 	   <div id="diary">
-	       <form action="/" method="get">
+	       <form id="form_diary" action="/" method="get">
 	           <div class="element">
     	           <label for="title">TITLE</label>
-	              <input id="diary_title" name="title" type="text" />
+    	           <!-- 标题 -->
+	              <input id="diary_title" name="diary[title]" type="text" />
 	           </div>
 	           <div class="element">
 	               <label for="title">BODY</label>
 	               <div class="diary_container">
-    	               <textarea id="diary_content" rows="5" cols="20"></textarea>
+	                   <!-- 内容 -->
+    	               <textarea id="diary_content" name="diary[content]" rows="5" cols="20"></textarea>
 	               </div>
 	           </div>
 	           <input id="diary-submit" name="op" type="submit" value="Submit" />
 	           <input id="diary-btn-save" name="save" type="button" value="Save" />
+	           <input type="hidden" id="diary_id" name="diary[id]" value="123" />
 	       </form>
 	   </div>
 	   

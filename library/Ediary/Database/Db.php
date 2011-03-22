@@ -299,12 +299,32 @@ class Ediary_Database_Db
         return self::formator(time());
     }
 
-    public function escape($str) {
-        if (function_exists('mysql_real_escape_string')) {
-            return mysql_real_escape_string(trim($str));
-        } else {
-            return addslashes($str); // unsafe 0xbf5c
+    /**
+     * addslashes for string, shortcut for Zend_Db->quote
+     * 
+     * @param String $str
+     * @return string safe string
+     */
+    public static function quote($str) {
+        return self::getInstance()->quote($str);
+        //return addslashes($str); // unsafe 0xbf5c
+    }
+    
+    /**
+     * addslashes for array
+     * 
+     * @param Array $array
+     * @return Array safe array
+     */
+    public static function addMagicQuotes( $array ) {
+        foreach ( (array) $array as $k => $v ) {
+            if ( is_array( $v ) ) {
+                $array[$k] = add_magic_quotes( $v );
+            } else {
+                $array[$k] = self::quote( $v );
+            }
         }
+        return $array;
     }
     
     public function fetchRow($sql, $bind = array(), $fetchMode = null) {

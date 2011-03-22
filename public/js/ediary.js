@@ -29,6 +29,11 @@ var Ediary = {
     // modules list
     modules: {},
     
+    // base url helper
+    url: function(url) {
+        return this.baseUrl + url;
+    },
+    
     /**
      * Registers a module
      * 

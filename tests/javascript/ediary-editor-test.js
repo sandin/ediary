@@ -10,7 +10,8 @@ module("Module Editor", {
         var options = {
             ajaxSetup : {
                 dataType : null // 此测试没有AJAX的服务器端支持
-            }
+            },
+            saveUrl : 'http://localhost/test/yiriji/public/diary/do/save?format=json' // localhost url
         }
         // 初始化对象
         this.obj = Ediary.Editor.init(options);
@@ -42,7 +43,7 @@ test('testSetContent', function() {
     equals(content, this.obj.getContent());
 });
 
-test('testSetElementsValues', function() {
+test('testUpdateValues', function() {
     
     // test data
     var values = {
@@ -62,7 +63,7 @@ test('testSetElementsValues', function() {
     equals(obj.getContent(), values.content);
     
     // test getElementsValues();
-    var newValues = obj.getElementsValues();
+    var newValues = obj.getValues();
     for (var key in values) {
         equals(newValues[key], values[key]);
     }
@@ -91,6 +92,9 @@ test('testGetContent', function() {
 test('testDoSave', function(){
     var obj = this.obj;
     
+    obj.setTitle("setTitle first");
+    obj.setContent("setContent first");
+    
     // save it
     obj.doSave();
     
@@ -113,9 +117,9 @@ test('testAutoResize', function() {
        newContent += newContent;
    }
    
-   console.log(oldHeight);
+   //console.log(oldHeight);
    mce.setContent(newContent);
-   console.log(obj.bodyElem.height());
+   //console.log(obj.bodyElem.height());
     
     //equals(mce.getContent(), newContent);
     //console.log(mce.getContent());

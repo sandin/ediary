@@ -13,26 +13,6 @@ class Diary_IndexController extends Zend_Controller_Action
         // action body
     }
     
-    public function saveAction() 
-    {
-        if (isset($_POST['diary']['id'])) {
-            $this->_forward('update');
-        } else {
-            //$this->_forward('create');
-        }
-    }
-    
-    public function createAction() {
-        $params = $this->_parsePost();
-        $diary = Ediary_Diary::create($params);
-        Ediary_Response::send($diary->toArray());
-    }
-    
-    public function updateAction() {
-        $params = $this->_parsePost();
-        $diary = Ediary_Diary::update($params);
-        Ediary_Response::send($diary->toArray());
-    }
     
     private function _parsePost() {
         return array(
