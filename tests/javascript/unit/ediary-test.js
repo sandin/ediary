@@ -39,7 +39,7 @@ test('testLoadModule', function() {
 
 test('textInclude', function() {
     js_files_count = $('script').length;
-    $.include("js/tiny_mce/jquery.tinymce.js");
+    Ediary.include("js/tiny_mce/jquery.tinymce.js");
     
     console.log(jQuery.fn.tinymce);
     equals(js_files_count, $('script').length);

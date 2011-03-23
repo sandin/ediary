@@ -218,8 +218,8 @@ Ediary_User::isValidPassword($password);
 
 == TODO ==
 
-    * 实现注册后,自动重定向/登录到编写日记页面. 3-20
-    * 为今后扩展考虑,决定引入tinyMCE作为编辑器的底层. 3-21
+    * 实现注册后,自动重定向/登录到编写日记页面. [3-20]
+    * 为今后扩展考虑,决定引入tinyMCE作为编辑器的底层. [3-21]
         - 尝试将tinyMCE默认的theme复制后,替换theme name来新建一个主题,但是试了很多次,总是报 `q is not a constructor` 查明为在加载 theme 目录下的 `langs/en.js` 时url错误, `undefined/en/js` , 应该是theme的路径出错, 但是 `themeManager` 里面的 `urls` 列表里面是存在一个正确的URL的, 而且 `editor_template.js` 也可以正确的GET到.
         - 因为尝试新建主题失败,所以只有直接修改自带主题. 复制 `advanced` 主题下的 `default` skin为 `ediary` .
         - 暂时取消所有按钮,只保留tinyMCE编辑器本身, 今后再决定按钮如果加入.
@@ -229,3 +229,4 @@ Ediary_User::isValidPassword($password);
         - 心情, 因为要去描述一天的心情不是件容易的事情.会出现很多时候都使用默认的一种心情(比如"一般"), 使得这个字段变得没有太多意义.
         - 天气, 前端取消天气的input,就是说用户不能去改变天气, 原因是天气是和日期关联的, 外部API可以将(日期/城市)转换为天气, 让用户去记录天气会造成操作的复杂, "你记,或者你不记,天气就在那里,不变不移".
     * 进行 `doSave` 这个动作前端和后端的协调.
+    * `doSave` 动作前端单元测试.

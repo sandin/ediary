@@ -4,11 +4,15 @@
 	<title>Editor Test Suite</title>
 	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
 	<script type="text/javascript" src="js/jquery-1.5.min.js"></script>
+	<script type="text/javascript" src="qunit/qunit.js"></script>
+	<script type="text/javascript" src="sinonjs/sinon-1.0.0.js"></script>
+	
+	<!-- source -->
 	<script type="text/javascript" src="js/ediary.js"></script>
 	<script type="text/javascript" src="js/ediary-editor.js"></script>
-	
-	<script type="text/javascript" src="qunit/qunit.js"></script>
-	<script type="text/javascript" src="ediary-editor-test.js"></script>
+    
+    <!-- testing -->
+	<script type="text/javascript" src="unit/ediary-editor-test.js"></script>
 	<style>
 	   #notice {
 	       background: yellow;
@@ -28,9 +32,6 @@
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
 	<div id="qunit-fixture">
-	</div>
-	
-	<div class="test-zone">
 	
 	   <!-- Notice -->
 	   <div id="notice">Notice</div>
@@ -51,7 +52,7 @@
 	               </div>
 	           </div>
 	           <input id="diary-submit" name="op" type="submit" value="Submit" />
-	           <input id="diary-btn-save" name="save" type="button" value="Save" />
+	           <input id="editor-btn-save" name="save" type="button" value="Save" />
 	           <input type="hidden" id="diary_id" name="diary[id]" value="123" />
 	       </form>
 	   </div>

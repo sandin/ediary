@@ -92,7 +92,7 @@ var Editor = {
         var t = this;
         
         if (typeof jQuery.tinymce === 'undefined') {
-            $.include(E.baseUrl + "/js/tiny_mce/jquery.tinymce.js");
+            E.include(E.baseUrl + "/js/tiny_mce/jquery.tinymce.js");
         }
 
         t.bodyElem.tinymce({
@@ -186,14 +186,19 @@ var Editor = {
     
     // Init all plugins
     initPlugins: function() {
-        console.log(this.plugins);
         $.each(this.plugins, function() {
             this.delayInit();
         });
     },
     
-    // shortcut for events.addListener
-    addListener: function(name, listener) {
+    /**
+     * addListener 
+     * 
+     * @param String event name
+     * @param Function callback function
+     */
+    addListener: function(name, callback) {
+        var listener = new E.Listener(callback);
         this.events.addListener(name, listener);
     },
 
@@ -273,24 +278,24 @@ var Editor = {
             rte = this.getRTEditor(),
             $form = $(this.settings.formElem);
         
-        console.log(this.getContent());
+        // Save the content into the textarea
         if (rte && rte.isDirty()) {
-            rte.save(); // save the content into the textarea
+            rte.save();
         }
-        
                
+        // Send data to Server
         $.ajax({
             url: self.settings.saveUrl,
             type: 'POST',
             data: $form.serialize(),
             beforeSendMessage: i18n.SAVING,
             success: function(data, textStatus, jqXHR) {
+                self.events.callListener('onSaveSuccess', arguments);
+                
                 var data =  $.parseJSON(data),
                     diary = data.diary;
                 E.Notice.showMessage(i18n.SAVE_SUCCESS, 1000);
-                self.events.callListener('onSaveSuccess', arguments);
                 self.setContent(diary.content);
-                console.log(data);
             }
         });
     },
@@ -301,16 +306,17 @@ var Editor = {
     
     // Call jQuery.ajaxSetup
     setupAjax: function() {
-        var that = this, 
+        var self = this, 
             options = {
                 error: function(jqXHR, textStatus, errorThrown) {
                     if('parsererror' == textStatus) {
                         console.warn("Response is not a valid JSON Object," 
                             + " Cann't parse it. Response is: \n" ,jqXHR.responseText);
                     }
-                    that.events.callListener('onError');
+                    self.events.callListener('onError');
                 },
                 beforeSend: function(jqXHR, settings) {
+                    self.events.callListener('onBeforeSend', arguments);
                     if (settings.beforeSendMessage) {
                         E.Notice.showMessage(settings.beforeSendMessage);
                     }
@@ -469,8 +475,8 @@ var Pad = {
             //notice = E.Notice.init(this.options.notice),
         
         // add listeners
-        editor.addListener("onSaveSuccess", new E.Listener(function(data, textStatus, jqXHR){
-        }));
+        editor.addListener("onSaveSuccess", function(data, textStatus, jqXHR){
+        });
         
         // add Plugins 
         editor.addPlugin('SaveButton', new E.SaveButton());

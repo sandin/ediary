@@ -8,13 +8,12 @@ Ediary.baseUrl = '/test/yiriji/tests/javascript';
 module("Module Editor", {
     setup: function() {
         var options = {
-            ajaxSetup : {
-                dataType : null // 此测试没有AJAX的服务器端支持
+             ajaxSetup: {                          
+                dataType : null
             },
-            saveUrl : 'http://localhost/test/yiriji/public/diary/do/save?format=json' // localhost url
-        }
-        // 初始化对象
-        this.obj = Ediary.Editor.init(options);
+            saveUrl: Ediary.baseUrl + '/data/diary.php', 
+         };
+        this.obj = Ediary.Editor.init(options); // 初始化对象
     },
     teardown: function() {
         this.obj.destroy(); 
@@ -83,29 +82,35 @@ test('testGetContent', function() {
     ok(tinyBody, 'tinyHTML is not null');
     ok(old_content, 'old content is not null');
     
-    // mock, write a new line
+    // mock action, write a new line
     $(tinyBody).append(content);
     
     equals(obj.getContent(), old_content + "\n" + content);
 });
 
-test('testDoSave', function(){
-    var obj = this.obj;
+test('testDoSave', function() {
+    stop();
     
-    obj.setTitle("setTitle first");
-    obj.setContent("setContent first");
+    var obj = this.obj,
+        newContent = "<p>new content</p>";
     
-    // save it
+//    obj.setContent(newContent);
+    
+    // trigger do save action
     obj.doSave();
     
-    ok("no test");
+    setTimeout(function(){
+        console.log(obj.getContent());
+        
+        start();
+    }, 500);
+    // check request
+    
 });
-
 
 //TODO: 因为tinyMCE无法destroy干净, 所以导致同一页面出现了多个残留DOM元素, resize无法进行测试
 // iframe>body读取不到height
 test('testAutoResize', function() {
-    //console.log( $('.diary_container>.mceEditor:hidden') );
     
     var obj = this.obj,
         mce = obj.getRTEditor(),
@@ -149,4 +154,3 @@ test('testInit', function() {
     ok("ok");
     
 });
-

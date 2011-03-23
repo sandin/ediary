@@ -100,6 +100,15 @@ var Ediary = {
         fn.call(this, this, options); // inside Function 'this' point Ediary
     },
     
+    include: function (jsurl) {
+        if (jsurl == null || typeof(jsurl) != 'string') return;
+        var js = document.createElement('script');
+        js.type = 'text/javascript';
+        js.charset = 'utf-8';
+        js.src = jsurl;
+        $('head').append(js);
+    },
+    
     destroy: function() {
     }
 };
@@ -309,14 +318,7 @@ Ediary.extend('Events', function(E) {
 
 // extend jquery
 jQuery.extend({
-    include: function (jsurl) {
-        if (jsurl == null || typeof(jsurl) != 'string') return;
-        var js = document.createElement('script');
-        js.type = 'text/javascript';
-        js.charset = 'utf-8';
-        js.src = jsurl;
-        $('head').append(js);
-    }
+   
 });
 
     
