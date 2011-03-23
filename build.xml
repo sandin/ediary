@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ediary" default="all" basedir=".">
+
+	<property file="build.properties" />
+
+	<target name="init">
+		<mkdir dir="${dir.build}" />
+	</target>
+
+	<target name="all">
+	</target>
+
+	<target name="clean" description="clean up">
+		<delete dir="${dir.build}" />
+	</target>
+
+	<target name="docs" depends="init" description="create api docs">
+		<delete dir="${dir.build}/${dir.docs}" />
+		<mkdir dir="${dir.build}/${dir.docs}" />
+		<exec executable="asciidoc" output="${dir.build}/${dir.docs}/asciidoc.log">
+			<arg line="-a" />
+			<arg line="toc" />
+			<arg line="-n" />
+			<arg line="-o ${dir.build}/${dir.docs}/document.html" />
+			<arg line="${dir.docs}/document.asciidoc.txt" />
+		</exec>
+		<exec executable="asciidoc" output="${dir.build}/${dir.docs}/asciidoc.log">
+			<arg line="-a" />
+			<arg line="toc" />
+			<arg line="-n" />
+			<arg line="-o ${dir.build}/${dir.docs}/document_js.html" />
+			<arg line="${dir.docs}/document_js.asciidoc.txt" />
+		</exec>
+
+
+	</target>
+
+</project>
