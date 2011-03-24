@@ -202,3 +202,5 @@
 2011-03-23T00:35:12+08:00 INFO (6): The application is not installed, installing now.
 2011-03-23T13:21:42+08:00 INFO (6): The application is already installed
 2011-03-23T13:21:43+08:00 INFO (6): The application is not installed, installing now.
+2011-03-24T16:27:41+08:00 INFO (6): The application is already installed
+2011-03-24T16:27:42+08:00 INFO (6): The application is not installed, installing now.

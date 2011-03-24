@@ -1,3 +1,5 @@
+(function($, E) {
+    
 Ediary.baseUrl = '/test/yiriji/tests/javascript';
 
 module("Module Notice", {
@@ -38,9 +40,17 @@ test('testLoadModule', function() {
 });
 
 test('textInclude', function() {
-    js_files_count = $('script').length;
-    Ediary.include("js/tiny_mce/jquery.tinymce.js");
+    var js_files_count = $('script').length;
+    expect(1);
+    stop();
     
-    console.log(jQuery.fn.tinymce);
-    equals(js_files_count, $('script').length);
+    Ediary.include("js/tiny_mce/tiny_mce.js");
+    
+    //TODO: 无法延时到js加载 
+    setTimeout(function(){
+        equals(js_files_count, $('script').length);
+        start();
+    }, 50);
 });
+
+})(jQuery, Ediary);

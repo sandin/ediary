@@ -2,6 +2,7 @@
 $this->loadJquery();
 $this->headScript()->appendFile("/js/ediary.js?v=1");
 $this->headScript()->appendFile("/js/ediary-editor.js?v=1");
+$this->headScript()->appendFile("/js/tiny_mce/tiny_mce.js");
 $this->inlineScript()->appendScript('
 $(document).ready(function(){
 	Ediary.Pad.init();

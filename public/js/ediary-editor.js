@@ -39,9 +39,18 @@ var Editor = {
     // resize Interval
     resizer: null,
     
+    // current title length
+    titleLength: -1,
+    
+    // current body length
+    bodyLength: -1,
+    
+    // auto save task(Interval)
+    updater: null,
+    
     // Default Settings
     settings : {
-        target:        '#diary',              // editor target selector
+        element:       '#diary',              // editor target selector
         formElem:      '#form_diary',         // editor form selector
         titleElem:     '#diary_title',        // diary title selector
         bodyElem:      '#diary_content',      // diary content selector
@@ -68,20 +77,22 @@ var Editor = {
     init : function(options) {
         var t = this, o = $.extend(this.settings, options);
         
+        // Cann't init the editor, Missing DOM element
+        if (! this.checkDOMIsReady()) { return; }
+        
         // Setup
-        this.element = $(o.target);
+        this.element = $(o.element);
         this.bodyElem = $(o.bodyElem);
         this.titleElem = $(o.titleElem);
         this.containerElem = $(o.containerElem);
-        
-        // Cann't init the editor, Missing DOM element
-        if (! this.checkDOMIsReady()) { return; }
+        this.bodyLength = this.bodyElem.val().length;
+        this.titleLength = this.titleElem.val().length;
         
         this.initPlugins(); // init all plugins
         this.setupAjax();   // Setup Ajax
         this.setupTinyMCE();
         
-        // 
+        // FIXME:
         this.resizer = setInterval(function () { t.resize(); }, 500);
         
         this.isReady = true;
@@ -91,20 +102,19 @@ var Editor = {
     setupTinyMCE: function() {
         var t = this;
         
-        if (typeof jQuery.tinymce === 'undefined') {
-            E.include(E.baseUrl + "/js/tiny_mce/jquery.tinymce.js");
+        if (typeof window.tinyMCE == 'undefined') {
+            E.include(E.baseUrl + "/js/tiny_mce/tiny_mce.js");
         }
 
-        t.bodyElem.tinymce({
-            script_url : E.baseUrl + '/js/tiny_mce/tiny_mce.js',
-            content_css : E.baseUrl + "/css/rte.css",
+        window.tinyMCE.init({
             mode: 'exact',
             elements: this.bodyElem.attr('id'),
             width: this.bodyElem.width(),
             height: this.bodyElem.height(),
+            plugins: "safari,paste,inlinepopups,spellchecker,insertdatetime,nonbreaking",
             theme : "advanced",
             skin: 'default',
-            plugins: "safari,paste,inlinepopups,spellchecker,insertdatetime,nonbreaking",
+            content_css : E.baseUrl + "/css/rte.css",
             theme_advanced_buttons1 : "bold,italic,underline,|,fontselect,fontsizeselect,forecolor,|,justifyleft,justifycenter,justifyright,|,indent,outdent,|,strikethrough,backcolor,|,bullist,numlist,|,spellchecker,insertdate,link,removeformat",
             theme_advanced_buttons2 : "",
             theme_advanced_buttons3 : "",
@@ -137,29 +147,22 @@ var Editor = {
 
     },
 
-    // Check if all DOM elements exist
+    // Check if required DOM elements all exist
     checkDOMIsReady: function() {
-        var t = this, o = t.settings;
-        if (t.element.length < 1) {
-            console.error("editor element is missing, it should be : " + o.element);
-            return false;
+        var o = this.settings,
+            requiredElem = ['element', 'titleElem', 'bodyElem',
+                            'containerElem', 'formElem'];
+            
+        for (var elem in requiredElem) {
+            var elem = requiredElem[elem];
+            
+            if ($(o[elem]).length < 1) {
+                console.error(elem + " DOM element is missing, " 
+                    + " it should be : " + o[elem]);
+                return false;
+            }
         }
-        if (t.titleElem.length < 1) {
-            console.error("editor title element is missing, it should be : " + o.titleElem);
-            return false;
-        }
-        if (t.bodyElem.length < 1) {
-            console.error("editor body element is missing, it should be : " + o.bodyElem);
-            return false;
-        }
-        if (t.containerElem.length < 1) {
-            console.error("editor container element is missing, it should be : " + o.containerElem);
-            return false;
-        }
-        if ($(o.formElem).length < 1) {
-            console.error("editor form element is missing, it should be : " + o.formElem);
-            return false;
-        }
+            
         return true;
     },
     
@@ -236,8 +239,9 @@ var Editor = {
         }
     },
     
+    // is read only
     isLocked: function() {
-        return false;
+        return this.titleElem.attr('readonly') || this.bodyElem.attr('readonly');
     },
 
     /**
@@ -246,7 +250,13 @@ var Editor = {
      * @return TinyMCE.Editor rich text editor 
      */ 
     getRTEditor: function() {
-        return window.tinyMCE.get(this.bodyElem.attr("id"));
+        var rte;
+        try {
+            rte = window.tinyMCE.get(this.bodyElem.attr("id"));
+        } catch (e) {
+            rte = null;
+        }
+        return rte;
     },
     
     /**
@@ -271,10 +281,45 @@ var Editor = {
         };
     },
     
-    doSave: function() {
-        console.log('do save');
-        
+    // title&&body is empty
+    isEmpty: function() {
+       return ( 0 == this.titleElem.val().length 
+             && 0 == this.bodyElem.val().length );
+    },
+    
+    // title||body is changed
+    isChanged: function() {
+        return ( this.titleElem.val().length !== this.titleLength 
+              || this.bodyElem.val().length !== this.bodyLenght ); 
+    },
+    
+    // start auto-save task
+    startAutoSave: function() {
+        var self = this;
+        this.updater = setInterval(function() {
+            self.doSave();
+        }, self.AUTO_SAVE_INTERVAL);
+    },
+    
+    // stop auto-save task
+    stopAutoSave: function() {
+        if (!! this.updater) {
+            clearInterval(this.updater);
+            this.updater = null;
+        }
+    },
+    
+    stopResizer: function() {
+        if (!! this.resizer) {
+            clearInterval(this.resizer);
+            this.resizer = null;
+        }
+    },
+    
+    // do save action
+    doSave: function(force) {
         var self = this,
+            force = force || false,
             rte = this.getRTEditor(),
             $form = $(this.settings.formElem);
         
@@ -282,22 +327,26 @@ var Editor = {
         if (rte && rte.isDirty()) {
             rte.save();
         }
-               
-        // Send data to Server
-        $.ajax({
-            url: self.settings.saveUrl,
-            type: 'POST',
-            data: $form.serialize(),
-            beforeSendMessage: i18n.SAVING,
-            success: function(data, textStatus, jqXHR) {
-                self.events.callListener('onSaveSuccess', arguments);
-                
-                var data =  $.parseJSON(data),
+        
+        // force save or (is not empty and changed)
+        if ( force || (!this.isEmpty() && this.isChanged()) ) {
+            console.log('do save');
+            // Send data to Server
+            $.ajax({
+                url: self.settings.saveUrl,
+                type: 'POST',
+                data: $form.serialize(),
+                beforeSendMessage: i18n.SAVING,
+                success: function(data, textStatus, jqXHR) {
+                    console.log("Get data form server : " + data);
+                    var data =  $.parseJSON(data),
                     diary = data.diary;
-                E.Notice.showMessage(i18n.SAVE_SUCCESS, 1000);
-                self.setContent(diary.content);
-            }
-        });
+                    E.Notice.showMessage(i18n.SAVE_SUCCESS, 1000);
+                    self.setContent(diary.content);
+                    self.events.callListener('onSaveSuccess', arguments);
+                }
+            });
+        }
     },
     
     doDelete: function() {
@@ -337,7 +386,7 @@ var Editor = {
     
     // set/get Content
     setContent: function(content) {
-         if ( this.getRTEditor() ) {
+        if ( this.getRTEditor() ) {
             this.getRTEditor().setContent(content);
         } else {
             this.bodyElem.val(content);
@@ -356,21 +405,22 @@ var Editor = {
     destroy : function() {
         //console.log('destroy editor');
         
-        // stop the resizer
-        clearInterval(this.resizer);
+        // Stop Tasks
+        this.stopAutoSave();
+        this.stopResizer();
         
-        // destroy TinyMCE Editor
+        // Destroy TinyMCE Editor
         if ( window.tinyMCE && this.getRTEditor() ) {
             //TODO: tinyMCE 生成的元素无法完全destroy, 生成的元素只是被hide,而非删除
             this.getRTEditor().remove();
         }
         
-        // destroy all elements
+        // Destroy all elements
         this.element = null;
         this.titleElem = null;
         this.bodyElem = null;
         
-        // destroy all plugins
+        // Destroy all plugins
         $.each(this.plugins, function() {
             this.destroy();
         });
@@ -437,6 +487,7 @@ var SaveButton = Plugin.extend({
     clickHandler : function(e) {
         console.log('click save btn');
         E.Editor.doSave();
+        return false;
     },
     
     destroy : function() {
