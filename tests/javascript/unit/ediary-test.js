@@ -39,6 +39,22 @@ test('testLoadModule', function() {
     ok( Ediary.Validator.getLoginForm() !== null );
 });
 
+test('testI18n', function() {
+    
+    var pgk = {
+        NAME: '名字',
+        AGE: '年龄'
+    };
+    E.i18n.extend('pgk', pgk);
+    
+    var lang = E.i18n.get('pgk');
+    
+    ok(typeof lang != 'undefined' && lang != null);
+    equals(lang.NAME, pgk.NAME);
+    equals(lang.AGE, pgk.AGE);
+    
+});
+
 test('textInclude', function() {
     var js_files_count = $('script').length;
     expect(1);

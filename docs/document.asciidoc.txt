@@ -79,6 +79,17 @@ Ediary_Database_Db::addMagicQuotes($array);
 该方法会递归的对数组的 *值* 进行转义, 返回的数据可以安全入库.
 
 
+== 数据安全性 ==
+
+在 `Ediary` 库中的基本类几乎都没有对于数据进行验证,过滤(除了转义引号,防止SQL注入以外), 因为这个层面的设计是完全相信输入的数据, 不仅相信数据是非恶意的, 而且认定将会输入正确的数据(如不会输入不存在的field).
+
+所以不要直接使用 *用户输入* 作为参数来直接调用这些类的公共方法, 用户是魔鬼.必须使用 `Controller` 作为这个底层和用户层的缓冲带, 验证/过滤用户传递来的所有数据(防止各种恶意/非正常输入). 
+
+.FILTER INPUT, ESCAPE OUTPUT
+    * Filter input : 推荐使用 `Zend_Filter_Input` .
+    * Escape output: 推荐使用 `Zend_View->escape()` .
+
+
 == Cache 缓存系统 ==
 
 如果使用缓存系统, 缓存目录必须可读可写:
@@ -117,9 +128,13 @@ Ediary_Database_Db::addMagicQuotes($array);
 phpunit 
 ---------------------
 
-.运行单个测试:
-目前不支持.
+.运行单个测试文件:
+[source,bash]
+--------------------------------------
+phpunit --bootstrap bootstrap.php library/Ediary/Ediary_DiaryTest.php
+--------------------------------------
 
+NOTE: 必须加载 `bootstrap.php` ,该文件会boot起整个 `Zend Framework` 环境(依然是模拟环境,并非是真实的环境, 但足够进行各种测试)
 
 == User 用户模块 ==
 
@@ -168,6 +183,8 @@ Ediary_User::isValidPassword($password);
 ==== saveAction ====
 
 使用 `Zend_Filter_StripTags` 对POST过来的diary content进行过滤, 没有使用html entity,是因为前端的tinyMCE对转义过的信息显示出来会直接显示HTML实体,而不是来浏览器上显示字符. stripTags 可以控制 allowTag , 所以对于XSS的预防还是有效的,不存在安全问题, 这是唯一的特例, 其他所以output都应该使用严格escape.
+
+当 `$_POST['id']` 为 `-1` 时则认为是 `create` 动作, 否则都是 `update` .
 
 
 == 重定向 ==
@@ -230,3 +247,12 @@ Ediary_User::isValidPassword($password);
         - 天气, 前端取消天气的input,就是说用户不能去改变天气, 原因是天气是和日期关联的, 外部API可以将(日期/城市)转换为天气, 让用户去记录天气会造成操作的复杂, "你记,或者你不记,天气就在那里,不变不移".
     * 进行 `doSave` 这个动作前端和后端的协调.
     * `doSave` 动作前端单元测试.
+    
+首页-登录 -> today页面
+
+单日记页面
+今天写了日记(显示出来id=xxx)  || 今天没写日记(空白id=-1)
+
+日记列表页面
+分页查看
+

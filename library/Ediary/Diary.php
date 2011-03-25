@@ -29,12 +29,12 @@ class Ediary_Diary extends Ediary_Query_Record
      * 
      * @param Array $params initial field values
      */
-    public function __construct($params = array()) {
+    public function __construct($data = array()) {
         $this->fields = array_merge(
             $this->fields,
             self::$defaultFields
         );
-        parent::__construct($params);
+        parent::__construct($data);
     }
     
     /**
@@ -43,8 +43,8 @@ class Ediary_Diary extends Ediary_Query_Record
      * @param Array $params diary data
      * @return Ediary_Diary
      */
-    public static function create($params = array()) {
-        $diary = new Ediary_Diary($params);
+    public static function create($data = array()) {
+        $diary = new Ediary_Diary($data);
         $diary->insert();
         return $diary;
     }
@@ -88,13 +88,30 @@ class Ediary_Diary extends Ediary_Query_Record
      * Get a Diary By diary id
      * 
      * @param String $id
-     * @return Ediary_Diary diary object
+     * @return Ediary_Diary or null
      */
     public static function findById($id) {
         $row = self::getDb()->fetchRow(
             'SELECT * FROM {diarys} WHERE id=?', $id);
-        $diary = new Ediary_Diary($row);
-        return $diary;
+        if ($row != false) {
+            return new Ediary_Diary($row);
+        }
+    }
+    
+    /**
+     * Get a Diary by Date
+     * 
+     * @param String $date '2011-03-25 00:00:00'
+     * @param String user id
+     * @return Ediary_Diary or null
+     */
+    public static function findByDate($date, $user_id) {
+        $row = self::getDb()->fetchRow('SELECT * FROM {diarys} '
+       	    . ' WHERE created_at >= ? AND user_id = ? '
+       	    . ' ORDER BY id DESC LIMIT 1', array($date, $user_id)); 
+        if ($row != false) {
+            return new Ediary_Diary($row);
+        }
     }
     
     /**
@@ -178,13 +195,15 @@ class Ediary_Diary extends Ediary_Query_Record
     /**
      * Convert this Object to an Array
      * 
+     * @param boolean get all field include LONGTEXT
      * @return Array 
      */
-    public function toArray() {
+    public function toArray($getAllField = false) {
         //$data = get_class_vars(__CLASS__);
         $data = array_merge($this->fields, $this->newFields);
-        if (isset($data['content'])) // content is LONGTEXT
-            unset($data['content']);
+        if (!$getAllField && isset($data['content'])) {
+            unset($data['content']); // content is LONGTEXT
+        }
         
         return $data;
     }

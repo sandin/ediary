@@ -13,7 +13,7 @@ module("Module Editor", {
              ajaxSetup: {                          
                 dataType : null
             },
-            saveUrl: Ediary.baseUrl + '/data/diary.php', 
+            saveUrl: Ediary.baseUrl + '/data/diary.php?op=doSave', 
          };
         this.obj = Ediary.Editor.init(options); // 初始化对象
         
@@ -171,17 +171,26 @@ test('testAutoResize', function() {
     //console.log(mce.getContent());
 });
 
+test('testCache', function() {
+    expect(1);
+    
+    var obj = this.obj,
+        cache = {diary: {content: 'content'}};
+    
+    obj.cache('diary', cache);
+    same(obj.getCache('diary'), cache);
+});
 
 // 异步测试
 
 test('testDoSave', function() {
-    expect(1);
+    expect(3);
     stop();
     
     var obj = this.obj,
         ajaxCount = 0;
         newContent = "<p>new content</p>",
-        serverResponse = "<p>" + "diary_content" + "</p>"; // response of fackServer
+        serverResponse = "diary_content"; // response of fackServer
     
     //obj.doSave(); // will not post data, Case's content is not change.
     
@@ -198,9 +207,32 @@ test('testDoSave', function() {
     */
     
     setTimeout(function(){
-        equals(obj.getContent(),  serverResponse);
+        // check cache flush
+        var diaryCache = obj.getCache('diary');
+        ok(diaryCache !== null);
+        equals(diaryCache.content,  serverResponse);
+        
+        // check callback
+        equals($(obj.settings.idElem).val(), diaryCache.id + "");
+        
         start();
-    }, 50);
+    }, 100);
+    
+});
+
+test('testDoSaveOnFail', function() {
+    expect(1);
+    stop();
+    
+    var E = Ediary, obj = this.obj
+    
+    obj.settings.saveUrl = E.baseUrl + '/data/diary.php?op=doSave&haserror=1'; 
+    obj.doSave(true);
+    
+    setTimeout(function() {
+        equals(E.Notice.getMessage(), E.i18n.get('Editor').JSON_PARSE_ERROR);
+        start();
+    }, 100);
     
 });
 

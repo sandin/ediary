@@ -14,8 +14,10 @@ if (! window.console ) {
     
 var i18n = {
     SAVE_SUCCESS : '保存成功.',
-    SAVING : '正在保存...'
-}
+    SAVING : '正在保存...',
+    JSON_PARSE_ERROR : '无法解析服务器返回的数据'
+};
+E.i18n.extend('Editor', i18n);
 
 /**
  * Class Editor
@@ -53,6 +55,7 @@ var Editor = {
         element:       '#diary',              // editor target selector
         formElem:      '#form_diary',         // editor form selector
         titleElem:     '#diary_title',        // diary title selector
+        idElem:        '#diary_id',           // diary id selector
         bodyElem:      '#diary_content',      // diary content selector
         containerElem: '.diary_container',    // diary content wrapper
         ajaxSetup: {                          // jQuery.Ajax.Options
@@ -204,6 +207,20 @@ var Editor = {
         var listener = new E.Listener(callback);
         this.events.addListener(name, listener);
     },
+    
+    // Notice listeners
+    hook: function(hookName, args) {
+        this.events.callListener(hookName, args);
+    },
+    
+    callback: function(callbackName) {
+        if (typeof this[callbackName] === 'function') {
+            var fn = this[callbackName];
+            fn.call(this);
+        }
+    },
+    
+    
 
     // resize the editor when reach the bottom
     resize: function () {
@@ -281,6 +298,11 @@ var Editor = {
         };
     },
     
+    updateId: function($id) {
+        console.log('update Id');
+        $(this.settings.idElem).val(this.getCache('diary').id);
+    },
+    
     // title&&body is empty
     isEmpty: function() {
        return ( 0 == this.titleElem.val().length 
@@ -318,37 +340,56 @@ var Editor = {
     
     // do save action
     doSave: function(force) {
-        var self = this,
+        try {
+            var self = this,
             force = force || false,
             rte = this.getRTEditor(),
             $form = $(this.settings.formElem);
-        
-        // Save the content into the textarea
-        if (rte && rte.isDirty()) {
-            rte.save();
-        }
-        
-        // force save or (is not empty and changed)
-        if ( force || (!this.isEmpty() && this.isChanged()) ) {
-            console.log('do save');
-            // Send data to Server
-            $.ajax({
-                url: self.settings.saveUrl,
-                type: 'POST',
-                data: $form.serialize(),
-                beforeSendMessage: i18n.SAVING,
-                success: function(data, textStatus, jqXHR) {
-                    console.log("Get data form server : " + data);
-                    var data =  $.parseJSON(data),
-                    diary = data.diary;
-                    E.Notice.showMessage(i18n.SAVE_SUCCESS, 1000);
-                    self.setContent(diary.content);
-                    self.events.callListener('onSaveSuccess', arguments);
-                }
-            });
+
+            // Save the content into the textarea
+            if (rte && rte.isDirty()) {
+                rte.save();
+            }
+
+            // force save or (is not empty and changed)
+            if ( force || (!this.isEmpty() && this.isChanged()) ) {
+                console.log('do save');
+                // Send data to Server
+                $.ajax({
+                    url: self.settings.saveUrl,
+                    type: 'POST',
+                    data: $form.serialize(),
+                    dataType: 'json',
+                    beforeSendMessage: i18n.SAVING,
+                    success: function(data, textStatus, jqXHR) {
+                        self.onSaveDone(data);
+                        self.hook('onSaveDone', arguments);
+                    }
+                });
+            }
+        } catch (e) {
+            console.log('error by dosave :' + e);
         }
     },
-    
+
+    onSaveDone: function(data) {
+        console.log("Get data form server : " + data);
+        console.dir(data);
+        if (data.error) {
+            E.Notice.showMessage(data.error);
+            return;
+        }
+        
+        E.Notice.showMessage(i18n.SAVE_SUCCESS, 1000);
+        var diary = data.diary;
+        this.cache('diary', diary);
+        if (!!diary) {
+        }
+        if (data.callback) {
+            this.callback(data.callback);
+        }
+    },
+
     doDelete: function() {
         console.log('do delete');
     },
@@ -361,19 +402,28 @@ var Editor = {
                     if('parsererror' == textStatus) {
                         console.warn("Response is not a valid JSON Object," 
                             + " Cann't parse it. Response is: \n" ,jqXHR.responseText);
+                        E.Notice.showMessage(i18n.JSON_PARSE_ERROR);
                     }
-                    self.events.callListener('onError');
+                    self.hook('onError', arguments);
                 },
                 beforeSend: function(jqXHR, settings) {
-                    self.events.callListener('onBeforeSend', arguments);
                     if (settings.beforeSendMessage) {
                         E.Notice.showMessage(settings.beforeSendMessage);
                     }
+                    self.hook('onBeforeSend', arguments);
                 },
             };
         
         $.extend(this.settings.ajaxSetup, options);
         $.ajaxSetup(this.settings.ajaxSetup);
+    },
+    
+    cache: function(key, value) {
+        this.element.data(key, value);
+    },
+    
+    getCache: function(key) {
+        return this.element.data(key);
     },
     
     // set/get Title

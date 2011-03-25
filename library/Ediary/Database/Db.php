@@ -52,7 +52,7 @@ class Ediary_Database_Db
     /**
      * Database Connection
      *
-     * @var Zend_Db_Adapter_Abstracta
+     * @var Zend_Db_Adapter_Abstract 
      */
     private $conn = null;
 
@@ -291,12 +291,22 @@ class Ediary_Database_Db
         }
     }
 
-    public static function formator($timestamp) {
-        return date('Y-m-d H:i:s');
+    /**
+     * Format a data, like : '0000-00-00 00:00:00'
+     * 
+     * @param int $timestamp unix-timestamp
+     * @return string '0000-00-00 00:00:00'
+     */
+    public static function formator($timestamp = null) {
+        return date('Y-m-d H:i:s', $timestamp);
     }
     
     public static function now() {
         return self::formator(time());
+    }
+    
+    public static function today() {
+         return self::formator(mktime(0,0,0,date("m"),date("d"),date("Y")));
     }
 
     /**
@@ -311,6 +321,7 @@ class Ediary_Database_Db
     }
     
     /**
+     * TODO: Maximum function nesting level of '100' 
      * addslashes for array
      * 
      * @param Array $array
@@ -319,7 +330,7 @@ class Ediary_Database_Db
     public static function addMagicQuotes( $array ) {
         foreach ( (array) $array as $k => $v ) {
             if ( is_array( $v ) ) {
-                $array[$k] = add_magic_quotes( $v );
+                $array[$k] = self::addMagicQuotes( $v );
             } else {
                 $array[$k] = self::quote( $v );
             }
@@ -327,6 +338,13 @@ class Ediary_Database_Db
         return $array;
     }
     
+    /**
+     * 
+     * @param unknown_type $sql
+     * @param unknown_type $bind
+     * @param unknown_type $fetchMode
+     * @return Array or false
+     */
     public function fetchRow($sql, $bind = array(), $fetchMode = null) {
         return $this->conn->fetchRow($this->prefixTables($sql), $bind, $fetchMode);
     }

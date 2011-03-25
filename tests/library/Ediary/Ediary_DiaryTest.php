@@ -97,5 +97,21 @@ class Ediary_DiaryTest extends ControllerTestCase
         $diaryFined = Ediary_Diary::find($diaryId);
         $this->assertEquals($diaryId, $diaryFined->id);
     }
+    
+    public function testFindByDate() {
+        $diary = Ediary_Diary::create( $this->data );
+        $diaryId = $diary->id;
+        $today = Ediary_Database_Db::today();
+        
+        var_dump($this->data['user_id']);
+        
+//        $start = xdebug_time_index();
+        $diaryFined = Ediary_Diary::findByDate($today, $this->data['user_id']);
+//        $end = xdebug_time_index();
+//        var_dump($end - $start);
+
+        $this->assertNotNull($diaryFined);
+        $this->assertEquals($diaryId, $diaryFined->id);
+    }
 }
 ?>

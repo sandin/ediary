@@ -116,7 +116,37 @@ window.Ediary = Ediary;
 
 // i18n module
 Ediary.extend('i18n', function(E) {
-    var cn = {
+    var i18n = {
+        languages: {},
+        
+        /**
+         * @param String key language package name
+         * @param Object value language package object, like { NAME : '中文翻译'}
+         */
+        extend: function(key, value) {
+            if (typeof this.languages[key] == 'undefined') {
+                this.languages[key] = value;
+            }
+            return value;
+        },
+        
+        /**
+         *@param String key language package name
+         */
+        get: function(key) {
+            if (typeof this.languages[key] !== 'undefined') {
+                return this.languages[key];
+            }
+        }
+    };
+    E.i18n = i18n;
+});
+
+
+// validator module
+Ediary.extend('Validator', function(E){
+    
+    E.i18n.extend('Validator', {
         USERNAME_INVALID: "用户名只能输入字符, 数字和空格",
         EMAIL_IS_NULL : "请输入您的邮箱地址",
         EMAIL_INVALID : "请输入正确的邮箱格式",
@@ -125,14 +155,9 @@ Ediary.extend('i18n', function(E) {
         PASSWORD_INVALID : "密码只允许数字,字母和下划线",
         PASSWORD_TOO_SHORT : "密码至少8位数",
         PASSWORD_NOT_SAME : "两次输入的密码不一样"
-    };
-    
-    E.i18n = cn; // set language 
-});
-
-
-// validator module
-Ediary.extend('Validator', function(E){
+        
+    });
+    var i18n = E.i18n.get('Validator');
 
     // Need jQuery Validate Plugin
     if (typeof jQuery.validator == 'undefined') {
@@ -176,18 +201,18 @@ Ediary.extend('Validator', function(E){
         },
         messages : {
             email : {
-                required : E.i18n.EMAIL_IS_NULL,
-                email    : E.i18n.EMAIL_INVALID,
-                remote   : E.i18n.EMAIL_IS_EXISTS
+                required : i18n.EMAIL_IS_NULL,
+                email    : i18n.EMAIL_INVALID,
+                remote   : i18n.EMAIL_IS_EXISTS
             },
             password : {
-                required  : E.i18n.PASSWORD_IS_NULL,
-                alnum     : E.i18n.PASSWORD_INVALID,
-                minlength : E.i18n.PASSWORD_TOO_SHORT
+                required  : i18n.PASSWORD_IS_NULL,
+                alnum     : i18n.PASSWORD_INVALID,
+                minlength : i18n.PASSWORD_TOO_SHORT
             },
             rePassword: {
-                required  : E.i18n.PASSWORD_IS_NULL,
-                equalTo   : E.i18n.PASSWORD_NOT_SAME 
+                required  : i18n.PASSWORD_IS_NULL,
+                equalTo   : i18n.PASSWORD_NOT_SAME 
             }
         },
     };
@@ -383,6 +408,10 @@ var Notice = {
         }
     },
     
+    getMessage: function() {
+        return this.element.html();
+    },
+    
     /**
      * Set Dom Element's html
      * 
@@ -390,6 +419,8 @@ var Notice = {
      * @param String message
      */
     _setMessage : function(message) {
+        if (!!this.timer) clearTimeout(this.timer);
+        this.element.show();
         this.element.html(message);
     },
     

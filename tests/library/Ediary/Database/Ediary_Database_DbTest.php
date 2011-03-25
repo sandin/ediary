@@ -92,6 +92,12 @@ class Ediary_Database_DbTest extends ControllerTestCase
     public function testGetDbName() {
         $this->assertNotNull( $this->object->getConfig()->dbname );
     }
+    
+    public function testToday() {
+        $today = Ediary_Database_Db::today();
+        $today_expect = date('Y-m-d') . ' 00:00:00';
+        $this->assertEquals($today_expect, $today);
+    }
 
 }
 ?>
