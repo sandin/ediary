@@ -19,7 +19,7 @@
 
     <!-- 压缩JS/CSS -->
     <target name="minify" description="minfify files">
-        <echo message="Building minified" />
+        <echo message="正在压缩JS/CSS..." />
 
         <!-- minify javascript files -->
         <apply executable="java" parallel="false">
@@ -54,22 +54,19 @@
 
     <!-- 生成文档 -->
 	<target name="docs" depends="init" description="create api docs">
-		<delete dir="${dir.build}/${dir.docs}" />
-		<mkdir dir="${dir.build}/${dir.docs}" />
-		<exec executable="asciidoc" output="${dir.build}/${dir.docs}/asciidoc.log">
-			<arg line="-a" />
+        <echo message="正在生成文档..." />
+        <delete dir="${docs.dir}/html" />
+        <mkdir dir="${docs.dir}/html" />
+
+        <apply executable="${asciidoc}" parallel="false">
+			<fileset dir="${docs.dir}" includes="*.asciidoc.txt" />
+	        <arg line="-a" />
 			<arg line="toc" />
 			<arg line="-n" />
-			<arg line="-o ${dir.build}/${dir.docs}/document.html" />
-			<arg line="${dir.docs}/document.asciidoc.txt" />
-		</exec>
-        <exec executable="${asciidoc}" output="${dir.build}/${dir.docs}/asciidoc.log">
-			<arg line="-a" />
-			<arg line="toc" />
-			<arg line="-n" />
-			<arg line="-o ${dir.build}/${dir.docs}/document_js.html" />
-			<arg line="${dir.docs}/document_js.asciidoc.txt" />
-		</exec>
+			<arg line="-o" />
+			<mapper type="glob" from="*.asciidoc.txt" to="${docs.dir}/html/*.html" />
+			<targetfile/>
+        </apply>
 	</target>
 
 </project>
