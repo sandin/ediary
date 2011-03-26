@@ -8,15 +8,6 @@ class Diary_ListController extends Zend_Controller_Action
     {
         /* Initialize action controller here */
         $this->_user = Zend_Registry::get('user');
-
-        //TODO: DELETE ME ********************************
-        $hack = new stdClass();
-        $hack->username = 'admin';
-        $hack->id = 3;
-        $hack->email = "admin@lds.com";
-        $this->_user = $hack;
-        //TODO: DELETE ME ********************************
-        
         if (!isset($this->_user)) {
             $this->_redirect("/login");
         }

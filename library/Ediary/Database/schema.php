@@ -31,7 +31,7 @@ CREATE TABLE $imdb->users (
 
   PRIMARY KEY (id),
   UNIQUE KEY user_email (email)
-) $imdb->tableSet;
+) $imdb->tableSet AUTO_INCREMENT = 10000000;
 
 DROP TABLE IF EXISTS $imdb->diarys;
 CREATE TABLE $imdb->diarys (
@@ -42,7 +42,7 @@ CREATE TABLE $imdb->diarys (
   mood		varchar(11)     NOT NULL default '',
   status	varchar(20)     NOT NULL default 'archive',
   created_at datetime       NOT NULL default '0000-00-00 00:00:00',
-  saved_at	 datetime        NOT NULL default '0000-00-00 00:00:00',
+  saved_at	 datetime       NOT NULL default '0000-00-00 00:00:00',
 
   user_id	   bigint(20)      unsigned NOT NULL default '0',
   journal_id   bigint(20)      unsigned NOT NULL default '0',
@@ -50,7 +50,7 @@ CREATE TABLE $imdb->diarys (
   PRIMARY KEY (id),
   KEY diary_author (user_id),
   KEY journal (journal_id)
-) $imdb->tableSet;
+) $imdb->tableSet AUTO_INCREMENT = 10000000;
 
 DROP TABLE IF EXISTS $imdb->journals;
 CREATE TABLE $imdb->journals (

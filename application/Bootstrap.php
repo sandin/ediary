@@ -54,6 +54,14 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         //TODO: loadUser
         //var_dump($user);
         Zend_Registry::set('user', $user);
+        
+        //TODO: DELETE ME ****** HACK **************************
+        $hack = new stdClass();
+        $hack->username = 'admin';
+        $hack->id = 3;
+        $hack->email = "admin@lds.com";
+        Zend_Registry::set('user', $hack);
+        //TODO: DELETE ME ****** HACK **************************
     }
 
     protected function _initDatebase() {
@@ -183,11 +191,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 			)
 		);
 		
-		// Register
+		// Diarys list
 		$router->addRoute(
 			'diarys',
 			new Zend_Controller_Router_Route(
-				'diarys/*',
+				'diary/list/*',
 				array(
 				    'module' => 'diary',
 				    'controller' => 'list',
@@ -195,6 +203,21 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 				)
 			)
 		);
+		
+		// Single diary
+		$router->addRoute(
+			'diary',
+			new Zend_Controller_Router_Route(
+				'diary/:id/*',
+				array(
+				    'module' => 'diary',
+				    'controller' => 'index',
+				    'action' => 'index'
+				),
+				array('id' => '\d+')
+			)
+		);
+		
     }
 
     protected function _initExceptionHandler() {
@@ -216,8 +239,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // Register Helpers
         $view->addHelperPath(APPLICATION_PATH. '/../library/Ediary/View/Helper', 'Ediary_View_Helper');
         
+        // shortcut for view script
         $view->user = Zend_Registry::get('user');
-
+        
         return $view;
     }
 

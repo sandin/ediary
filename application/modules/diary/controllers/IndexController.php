@@ -15,19 +15,33 @@ class Diary_IndexController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        // action body
-        $diary = Ediary_Diary::findByDate(Ediary_Database_Db::today(), $this->_user->id);
-        if ($diary != null) {
-            // Writed alreay, Just display it
-            $this->view->diary = $diary->toArray(true);
+        $diary = null;
+        $diary_id = $this->_getParam('id');
+        
+        if (isset($diary_id) && is_numeric($diary_id)) {
+            // Open a particular diary
+            $diary = Ediary_Diary::find($this->_getParam('id'));
+            if (!isset($diary) || $diary->user_id != $this->_user->id) {
+                //TODO: 
+                echo _t("该日记不存在, 或您没有权限打开它.");
+                exit();
+            }
         } else {
-            // Display Pad to write diary
-            $this->view->diary = array(
-            	'id' => '-1',
-                'title' => 'today',
-                'content' => ''
-            );
+            // Open today's diary
+            $diary = Ediary_Diary::findByDate(Ediary_Database_Db::today(), $this->_user->id);
+            if (null == $diary) {
+                // Today did not write a diary, create a new one
+                $diary = new Ediary_Diary(array(
+               		'id' => '-1',
+                    'title' => Ediary_Database_Db::today(),
+                    'content' => ''
+                ));
+            }
         }
+        
+        $this->view->diary = $diary->toArray(true);
+        
+       
     }
     
     private function _parsePost() {

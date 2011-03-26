@@ -1,0 +1,32 @@
+<?php 
+/*
+array(
+ array (
+  'id' => string '896' (length=3)
+  'title' => string 'title' (length=5)
+  'content' => string 'content' (length=7)
+  'weather' => string 'sunshine' (length=8)
+  'mood' => string 'normal' (length=6)
+  'status' => string '0' (length=1)
+  'created_at' => string '2011-03-25 22:01:55' (length=19)
+  'saved_at' => string '2011-03-25 22:01:55' (length=19)
+  'user_id' => string '3' (length=1)
+  'journal_id' => string '1' (length=1)
+ )
+);
+*/
+?>
+<?php if (count($this->paginator)): ?>
+<div class="diarys_list">
+    <?php foreach ($this->paginator as $item): ?>
+	<div class="diary_item">
+		<h4><a href="<?php echo $this->baseUrl("/diary/") . $item['id'];?>"><?php echo $item['title']?></a></h4>
+		<div class="diary_item_mete"><span><?php echo $item['created_at']?></span></div>
+		<div class="diary_item_content"><?php echo $item['content']?></div>
+	</div>
+	<hr />
+    <?php endforeach; ?>
+</div>
+<?php else: ?>
+<p>暂无日记.</p>
+<?php endif; ?>

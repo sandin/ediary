@@ -1,15 +1,52 @@
+<div class="content">
 
-<div class="diary_list_box">
+    <div class="content_box diary_list_box">
+    	<div class="contentBox_tabNav">
+			<a href="#" class="contentBox_tabNav_tab first current">我的日记</a>
+        </div>
+        <?php echo $this->partial('template_diarys_list.phtml', array('paginator' => $this->paginator))?>
+        <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_control.phtml'); ?>
+    </div><!-- /diary_list_box -->
+</div><!-- /content -->
+
+<div class="sidebar">
+    <div class="content_box info_box">
+        <div class="top">
+            <img class="avatar" src="http://www.gravatar.com/avatar/98b3fc3ad16e35c181df5a0e4fbcb3d2?s=45">
+            <p class="username">cenkee</p>
+
+            <p class="joinTime">2011年02月10日加入</p>
+            <p class="howSetAvatar"><a href="http://blog.bookfor.us/archives/40/" target="_blank">积分充值</a></p>			
+            <p class="config">
+            <a title="修改密码" href="newpassword.html">
+                <img src="http://bookfor.us/include/style/img/config_icon.png">
+            </a>
+            </p>
+            <p class="clearfix"></p>
+
+            <div class="infoBox_numbers">
+                <p class="infoBox_numbers_donate">
+                <span class="infoBox_numbers_left">
+                    日记本<br>
+                    <label class="infoBox_numbers_number">10</label>
+                </span>
+                <span class="infoBox_numbers_left">
+                    日记<br>
+
+                    <label class="infoBox_numbers_number">1581</label>
+                </span>
+                <span class="infoBox_numbers_left">
+                    积分<br>
+                    <label class="infoBox_numbers_number">0</label>
+                </span>
+                </p>
+                <p class="clearfix"></p>
+            </div>
+
+        </div>
+        <p class="bottom bio"></p>
+    </div>
+</div><!-- /sidebar -->
 
 
-<?php if (count($this->paginator)): ?>
-<ul>
-<?php foreach ($this->paginator as $item): ?>
-  <li><?php var_dump($item); ?></li>
-<?php endforeach; ?>
-</ul>
-<?php endif; ?>
 
-<?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_control.phtml'); ?>
-                                    
-</div><!-- /diary_list_box -->

@@ -311,10 +311,18 @@ class Ediary_Database_Db
         return date('Y-m-d H:i:s', $timestamp);
     }
     
+    /**
+     * Get current data/time like '0000-00-00 00:00:00'
+     * @return string
+     */
     public static function now() {
         return self::formator(time());
     }
     
+    /**
+     * Get today data like '0000-00-00 00:00:00'
+     * @return string
+     */
     public static function today() {
          return self::formator(mktime(0,0,0,date("m"),date("d"),date("Y")));
     }

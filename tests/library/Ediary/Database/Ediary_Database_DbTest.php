@@ -25,7 +25,7 @@ class Ediary_Database_DbTest extends ControllerTestCase
         $this->object = Ediary_Database_Db::getInstance()->setConnection($conn);
         $this->assertTrue( $this->object->connect() );
         
-        // THIS WILL DROP TABLES AND RECREATE THEM
+        // DEBUG: THIS WILL DROP TABLES AND RECREATE THEM
         //Ediary_Database_Db::getInstance()->upgrade();
     }
 

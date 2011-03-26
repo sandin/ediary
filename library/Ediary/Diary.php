@@ -77,7 +77,7 @@ class Ediary_Diary extends Ediary_Query_Record
      * Get a Diary
      * 
      * @param String $id diary ID
-     * @return Ediary_Diary Diary Object
+     * @return Ediary_Diary Diary or null
      */
     public static function find($id) {
         $diary = self::findById($id);
