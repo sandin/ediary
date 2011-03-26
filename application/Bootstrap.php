@@ -182,6 +182,19 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 				)
 			)
 		);
+		
+		// Register
+		$router->addRoute(
+			'diarys',
+			new Zend_Controller_Router_Route(
+				'diarys/*',
+				array(
+				    'module' => 'diary',
+				    'controller' => 'list',
+				    'action' => 'index',
+				)
+			)
+		);
     }
 
     protected function _initExceptionHandler() {

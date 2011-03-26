@@ -107,6 +107,16 @@ class Ediary_Database_Db
             $this->$table = $this->_prefix . $table ;
         }
     }
+    
+    /**
+     * Add prefix to the table name
+     * 
+     * @param String $tableName
+     * @return string prefixed
+     */
+    public function prefix($tableName) {
+        return $this->_prefix . $tableName;
+    }
 
     /**
      * Set Database Connection
@@ -339,20 +349,38 @@ class Ediary_Database_Db
     }
     
     /**
-     * 
-     * @param unknown_type $sql
-     * @param unknown_type $bind
-     * @param unknown_type $fetchMode
-     * @return Array or false
+     * Fetches the first row of the SQL result.
+     * Uses the current fetchMode for the adapter.
+     *
+     * @param string|Zend_Db_Select $sql An SQL SELECT statement.
+     * @param mixed $bind Data to bind into SELECT placeholders.
+     * @param mixed                 $fetchMode Override current fetch mode.
+     * @return array
      */
     public function fetchRow($sql, $bind = array(), $fetchMode = null) {
         return $this->conn->fetchRow($this->prefixTables($sql), $bind, $fetchMode);
     }
     
+    /**
+     * Fetches all SQL result rows as a sequential array.
+     * Uses the current fetchMode for the adapter.
+     *
+     * @param string|Zend_Db_Select $sql  An SQL SELECT statement.
+     * @param mixed                 $bind Data to bind into SELECT placeholders.
+     * @param mixed                 $fetchMode Override current fetch mode.
+     * @return array
+     */
     public function fetchAll($sql, $bind = array(), $fetchMode = null) {
         return $this->conn->fetchAll($this->prefixTables($sql), $bind, $fetchMode);
     }
     
+    /**
+     * Fetches the first column of the first row of the SQL result.
+     *
+     * @param string|Zend_Db_Select $sql An SQL SELECT statement.
+     * @param mixed $bind Data to bind into SELECT placeholders.
+     * @return string
+     */
     public function fetchOne($sql, $bind = array()) {
         return $this->conn->fetchOne($this->prefixTables($sql), $bind);
     }

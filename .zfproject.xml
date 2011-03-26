@@ -117,6 +117,9 @@
             <controllerFile controllerName="Do">
               <actionMethod actionName="index"/>
             </controllerFile>
+            <controllerFile controllerName="List">
+              <actionMethod actionName="index"/>
+            </controllerFile>
           </controllersDirectory>
           <formsDirectory enabled="false"/>
           <layoutsDirectory enabled="false"/>
@@ -127,6 +130,9 @@
                 <viewScriptFile forActionName="index"/>
               </viewControllerScriptsDirectory>
               <viewControllerScriptsDirectory forControllerName="Do">
+                <viewScriptFile forActionName="index"/>
+              </viewControllerScriptsDirectory>
+              <viewControllerScriptsDirectory forControllerName="List">
                 <viewScriptFile forActionName="index"/>
               </viewControllerScriptsDirectory>
             </viewScriptsDirectory>
@@ -184,6 +190,7 @@
           <testApplicationControllerFile filesystemName="LoginControllerTest.php"/>
           <testApplicationControllerFile filesystemName="IndexControllerTest.php"/>
           <testApplicationControllerFile filesystemName="DoControllerTest.php"/>
+          <testApplicationControllerFile filesystemName="ListControllerTest.php"/>
         </testApplicationControllerDirectory>
       </testApplicationDirectory>
       <testLibraryDirectory>

@@ -103,8 +103,6 @@ class Ediary_DiaryTest extends ControllerTestCase
         $diaryId = $diary->id;
         $today = Ediary_Database_Db::today();
         
-        var_dump($this->data['user_id']);
-        
 //        $start = xdebug_time_index();
         $diaryFined = Ediary_Diary::findByDate($today, $this->data['user_id']);
 //        $end = xdebug_time_index();
@@ -112,6 +110,30 @@ class Ediary_DiaryTest extends ControllerTestCase
 
         $this->assertNotNull($diaryFined);
         $this->assertEquals($diaryId, $diaryFined->id);
+    }
+    
+    public function testFindByUser() {
+        $diary = Ediary_Diary::create( $this->data );
+        $diaryId = $diary->id;
+        $user_id = $diary->user_id;
+        
+        $diarys = Ediary_Diary::findByUser($user_id);
+        
+        $this->assertNotNull($diarys);
+        $this->assertTrue(is_array($diarys));
+        $this->assertTrue(count($diarys) > 0);
+        foreach ($diarys as $d) {
+            $this->assertEquals($d['user_id'], $user_id);
+        }
+        
+        // test just get select 
+        $diary = Ediary_Diary::create( $this->data );
+        $prePage = 2; // just create 2 diarys in this test
+        
+        // get 2 items in page 1
+        $diarys2 = Ediary_Diary::getDiarysPaginator($user_id, 1, $prePage);
+        $this->assertNotNull($diarys2);
+        $this->assertEquals($diarys2->getCurrentItemCount(), $prePage);
     }
 }
 ?>

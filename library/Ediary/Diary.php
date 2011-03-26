@@ -115,6 +115,32 @@ class Ediary_Diary extends Ediary_Query_Record
     }
     
     /**
+     * Find Diarys by User id
+     * @param String $user_id
+     * @return Array diarys
+     */
+    public static function findByUser($user_id) {
+        $db = self::getDb();
+        $select = $db->select()
+                     ->from($db->prefix('diarys'))
+                     ->where('user_id = ?', $user_id);
+        return $db->fetchAll($select->__toString());
+    }
+    
+    /**
+     * Get the user's all diarys by page
+     * 
+     * @param String $user_id
+     * @param int $currentPageNumber
+     * @param int $itemCountPerPage
+     * @return Zend_Paginator
+     */
+    public static function getDiarysPaginator($user_id, $currentPageNumber = 1, $itemCountPerPage = 10) {
+        return Ediary_Paginator::factory('{diarys}', 'user_id = ?', $user_id,
+                                 $currentPageNumber, $itemCountPerPage);
+    }
+    
+    /**
      * Delete current diary
      * 
      * @return boolean success or not

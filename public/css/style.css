@@ -895,6 +895,19 @@ form.profile #forget_pw {
 	margin-bottom: 10px;
 }
 
+.pageBar {
+	margin: 10px 0;
+	text-align: center;
+}
+.pageBar a, 
+.pageBar span {
+	display: inline-block;
+	padding: 3px 5px;
+	margin-right: 5px; 
+}
+.pageBar {}
+.pageBar {}
+
 /* Debug {{{ 
 -----------------*/
 #wrapper,

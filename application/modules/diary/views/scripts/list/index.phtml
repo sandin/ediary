@@ -1,0 +1,15 @@
+
+<div class="diary_list_box">
+
+
+<?php if (count($this->paginator)): ?>
+<ul>
+<?php foreach ($this->paginator as $item): ?>
+  <li><?php var_dump($item); ?></li>
+<?php endforeach; ?>
+</ul>
+<?php endif; ?>
+
+<?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_control.phtml'); ?>
+                                    
+</div><!-- /diary_list_box -->

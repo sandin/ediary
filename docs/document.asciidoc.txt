@@ -220,6 +220,58 @@ Ediary_User::isValidPassword($password);
 .首页模板
 `/application/modules/default/views/script/index/index.phtml`
 
+
+=== 分页 ===
+
+默认使用封装了 `Zend_Paginator` 的 `Ediary_Paginator` 来进行分页, 配已模板系统则可以轻松的进行分页显示.
+
+.原型
+`Ediary_Paginator::factory($table, $where, $bind, $currentPageNumber = 1, $itemCountPerPage = 10)`
+
+.例子
+=======================================================
+例如: 取得user id为3这个用户的第1页日记列表(按每页20篇分页).
+[source]
+-----------------------------------------
+$paginator = Ediary_Paginator::factory('{diarys}', 'user_id = ?', 3, 1, 20);
+---------------------------------------------------------
+=======================================================
+
+==== 参数 ====
+
+.String $table
+表名, 如果提供的表名带大括号, 则会自动添加表前缀.
+
+.String $where
+参考 `Zend_Db_Select` 的参数 `$where` .
+
+.String|Array $bind
+绑定到 `$where` 语句的参数, 参考 `Zend_Db_Select` 的参数 `$bind` .
+
+.int $currentPageNumber = 1
+当前页数, 参考 `Zend_Paginator` 的参数 `$currentPageNumber` . 注意: 如果提供的不是一个数字, 则会 *抛出异常* , 因为该值可能使用的是$_GET['page'] , 建议是对$_GET['page'] 进行检验和过滤, 不要直接传递GET值.
+
+.int $itemCountPerPage = 10
+每页显示的项目数量, 参考 `Zend_Paginator` 的参数 `$itemCountPerPage` .
+
+==== 在视图中使用 ====
+
+[source]
+--------------------------------------------------------
+<?php if (count($this->paginator)): ?>
+<ul>
+<?php foreach ($this->paginator as $item): ?>
+  <li><?php echo $item; ?></li>
+<?php endforeach; ?>
+</ul>
+<?php endif; ?>
+
+<?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_control.phtml'); ?>
+                                   
+--------------------------------------------------------
+
+NOTE: 为复用考虑, 建议使用写好的独立模板来显示分页列表. 
+
 == library 库 ==
 
 根目录下的 `/library` 文件夹是自动设置到 `include_path` 里面的, 并且使用 `Zend frameword` 统一的命名约定.
@@ -247,8 +299,10 @@ Ediary_User::isValidPassword($password);
         - 天气, 前端取消天气的input,就是说用户不能去改变天气, 原因是天气是和日期关联的, 外部API可以将(日期/城市)转换为天气, 让用户去记录天气会造成操作的复杂, "你记,或者你不记,天气就在那里,不变不移".
     * 进行 `doSave` 这个动作前端和后端的协调.
     * `doSave` 动作前端单元测试.
-    
-首页-登录 -> today页面
+    * 决定取消 *日记本* 这个概念, 原因是: 任何一个人都不可能同时使用两个日记本来写日记, 而是使用完一个再使用另一个, 如果通过积分来决定用户是否有权限来开启另一个新的日记本, 假设增加积分只有两种可能:1.是充值;2.是写日记. 也就是说如果通过写一篇日记就可以增加一个积分的话, 那么在用户写完一本日记后, 肯定会有足够的积分来开启另一个日记本, 因此该积分制度并没有用处, 因为如果用户没有写完一本日记的话, 他也不会需要开启另一个日记本. 如果积分是一种增值方式, 需要购买才能开启另一个日记本的话, *写日记* 是本程序的基本功能, 而不应该是增值项目. 分日记本的唯一好处是 *分类* , 比如一个日记本就是一年的日记之类的, 那么就应该把日记本视作一种 *分类* .  而日记唯一需要进行的分类就是按月/季/年等方式, 比如用户需要查看一个某年的所有日记, 所以这里需要的 *分类* 概念又实际上是 *归档* ,按日期进行归档, 而这种归档完全可以根据日记的自带时间来进行, 而不需要另外的表来存储相关信息. 且更为灵活.
+    * 实现日记列表, 新建统一的分类模板函数 . theme, page.
+
+    首页-登录 -> today页面
 
 单日记页面
 今天写了日记(显示出来id=xxx)  || 今天没写日记(空白id=-1)
