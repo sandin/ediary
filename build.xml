@@ -7,16 +7,52 @@
 	<property file="build.properties" />
 
 	<target name="init">
-		<mkdir dir="${dir.build}" />
+		<mkdir dir="${build.dir}" />
 	</target>
 
 	<target name="default">
 	</target>
 
 	<target name="clean" description="clean up">
-		<delete dir="${dir.build}" />
+		<delete dir="${build.dir}" />
 	</target>
 
+    <!-- 压缩JS/CSS -->
+    <target name="minify" description="minfify files">
+        <echo message="Building minified" />
+
+        <!-- minify javascript files -->
+        <apply executable="java" parallel="false">
+            <fileset dir="${public.dir}/js">
+                <include name="ediary*.js" />
+                <exclude name="*.min.js" />
+            </fileset>
+			<arg line="-jar" />
+			<arg path="${closure-jar}" />
+			<arg value="--warning_level" />
+			<arg value="QUIET" />
+			<arg value="--js_output_file" />
+			<targetfile />
+			<arg value="--js" />
+            <mapper type="glob" from="*.js" to="${public.dir}/js/*.min.js" />
+		</apply>
+
+        <!-- minify css files -->
+        <apply executable="java" parallel="false">
+			<fileset dir="${public.dir}/css" includes="*.css" />
+			<arg line="-jar" />
+			<arg path="${yuicompressor-jar}" />
+			<arg line="--charset utf-8" />
+			<arg line="-v" />
+			<srcfile />
+			<arg line="-o" />
+			<mapper type="glob" from="*.css" to="${public.dir}/css/*.min.css" />
+			<targetfile/>
+		</apply>
+
+    </target>
+
+    <!-- 生成文档 -->
 	<target name="docs" depends="init" description="create api docs">
 		<delete dir="${dir.build}/${dir.docs}" />
 		<mkdir dir="${dir.build}/${dir.docs}" />
@@ -27,7 +63,7 @@
 			<arg line="-o ${dir.build}/${dir.docs}/document.html" />
 			<arg line="${dir.docs}/document.asciidoc.txt" />
 		</exec>
-		<exec executable="asciidoc" output="${dir.build}/${dir.docs}/asciidoc.log">
+        <exec executable="${asciidoc}" output="${dir.build}/${dir.docs}/asciidoc.log">
 			<arg line="-a" />
 			<arg line="toc" />
 			<arg line="-n" />

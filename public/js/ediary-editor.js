@@ -411,7 +411,7 @@ var Editor = {
                         E.Notice.showMessage(settings.beforeSendMessage);
                     }
                     self.hook('onBeforeSend', arguments);
-                },
+                }
             };
         
         $.extend(this.settings.ajaxSetup, options);
@@ -503,7 +503,7 @@ var Plugin = Class.extend({
         $.extend(this.extData, data);
     },
     
-    destroy: function() {}, 
+    destroy: function() {} 
 });
 E.Plugin = Plugin; // NAMESPACE
 

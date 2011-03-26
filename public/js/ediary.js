@@ -196,7 +196,7 @@ Ediary.extend('Validator', function(E){
             },
             rePassword: {
                 required: true,
-                equalTo : "#password",
+                equalTo : "#password"
             }
         },
         messages : {
@@ -214,7 +214,7 @@ Ediary.extend('Validator', function(E){
                 required  : i18n.PASSWORD_IS_NULL,
                 equalTo   : i18n.PASSWORD_NOT_SAME 
             }
-        },
+        }
     };
 
     // Login From Validator options

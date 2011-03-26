@@ -10,26 +10,25 @@ set_include_path(
     '.'
     . PATH_SEPARATOR . BASE_PATH . '/library'
     . PATH_SEPARATOR . get_include_path()
-    );
+);
 
-    defined('BOOT_PATH')
+defined('BOOT_PATH')
     || define('BOOT_PATH', realpath(dirname(__FILE__) . '/../'));
 
-    defined('PUBLIC_URL')
+defined('PUBLIC_URL')
     || define('PUBLIC_URL', 'http://' );
 
-    // Define application environment
-    define('APPLICATION_ENV', 'testing');
+// Define application environment
+define('APPLICATION_ENV', 'testing');
 
-    $_SERVER['SERVER_NAME'] = 'http://localhost';
+$_SERVER['SERVER_NAME'] = 'http://localhost';
 
 
-    /** Zend_Application */
-    require_once 'Zend/Application.php';
+/** Zend_Application */
+require_once 'Zend/Application.php';
 
-    // Create application, bootstrap, and run
-
-    require_once 'ControllerTestCase.php';
+// Create application, bootstrap, and run
+require_once 'ControllerTestCase.php';
 
 
 
