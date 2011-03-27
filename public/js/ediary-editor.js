@@ -24,7 +24,10 @@ E.i18n.extend('Editor', i18n);
  * 主编辑器
  */
 var Editor = {
+    
     version : 0.1,
+    
+    debug: true,
     
     // The Editor is ready or not
     isReady : false, 
@@ -112,6 +115,7 @@ var Editor = {
         window.tinyMCE.init({
             mode: 'exact',
             elements: this.bodyElem.attr('id'),
+            readonly: this.isReadonly() ? 1 : 0,
             width: this.bodyElem.width(),
             height: this.bodyElem.height(),
             plugins: "safari,paste,inlinepopups,spellchecker,insertdatetime,nonbreaking",
@@ -219,8 +223,6 @@ var Editor = {
             fn.call(this);
         }
     },
-    
-    
 
     // resize the editor when reach the bottom
     resize: function () {
@@ -237,7 +239,7 @@ var Editor = {
             // iframe's body height
             scrollHeight = $.browser.chrome ? $(rte.getBody()).insideHeight() : $(rte.getBody()).height();
             settings.margin = 40;
-        } else if (!this.isLocked()) {
+        } else if (!this.isReadonly()) {
             elem = this.bodyElem;
             elemHeight = elem.height();
             scrollHeight = elem.get(0).scrollHeight;
@@ -257,7 +259,7 @@ var Editor = {
     },
     
     // is read only
-    isLocked: function() {
+    isReadonly: function() {
         return this.titleElem.attr('readonly') || this.bodyElem.attr('readonly');
     },
 
@@ -277,13 +279,23 @@ var Editor = {
     },
     
     /**
-     * Set DOM elements' values
+     * Repaint the panel
      * 
-     * @param Object{title, content} values
+     * @param Object {title, content}, if it's null, will use the cache
      */
-    updateValues: function(values) {
-        this.setTitle(values.title);
-        this.setContent(values.content);
+    repaint: function(data) {
+        // If no data params, then use the cache data
+        var data = data || this.getCache('diary');
+        
+        if (data.title) {
+            this.setTitle(data.title);
+        }
+        if (data.content) {
+            this.setContent(data.content);
+        }
+        if (data.id) {
+            this.setId(data.id);
+        }
     },
     
     /**
@@ -299,8 +311,8 @@ var Editor = {
     },
     
     updateId: function($id) {
-        console.log('update Id');
-        $(this.settings.idElem).val(this.getCache('diary').id);
+        console.log('update Id by Server callback');
+        this.setId(this.getCache('diary').id);
     },
     
     // title&&body is empty
@@ -372,21 +384,60 @@ var Editor = {
         }
     },
 
+    // do save success callback
     onSaveDone: function(data) {
-        console.log("Get data form server : " + data);
-        console.dir(data);
-        if (data.error) {
-            E.Notice.showMessage(data.error);
-            return;
-        }
+        if (!this.checkData(data)) { return; }
         
         E.Notice.showMessage(i18n.SAVE_SUCCESS, 1000);
         var diary = data.diary;
-        this.cache('diary', diary);
-        if (!!diary) {
+    },
+    
+    // check error, cache response, callback
+    checkData: function(data) {
+        if (this.debug) {
+            console.log("Get data form server : " + data);
+            console.dir(data);
         }
+        if (null == data) return false; 
+        
+        // has error
+        if (data.error) {
+            E.Notice.showMessage(data.error);
+            return false;
+        }
+        // cache server response
+        if (data.diary) {
+            this.cache('diary', data.diary);
+        }
+        // call server callback
         if (data.callback) {
             this.callback(data.callback);
+        }
+        return true;
+    },
+    
+    // get a diary from server 
+    doGetDiary: function() {
+        var self = this;
+        $.ajax({
+            url: self.settings.getDiaryUrl,
+            type: 'POST',
+            dataType: 'json',
+            beforeSendMessage: '正在获取日记.',
+            success: function(data, textStatus, jqXHR) {
+                self.onGetDiaryDone(data);
+                self.hook('onGetDiaryDone', arguments);
+            }
+        });
+    },
+    
+    // use server response repaint the panel
+    onGetDiaryDone: function(data) {
+        if (! this.checkData(data)) { return; }
+        
+        if (data.diary) {
+//            this.repaint(data.diary);
+            this.repaint();
         }
     },
 
@@ -418,10 +469,13 @@ var Editor = {
         $.ajaxSetup(this.settings.ajaxSetup);
     },
     
+    // set/get Cache
     cache: function(key, value) {
+        if (this.debug) {
+            console.log('cache data ' + key + ' : ' + value);
+        }
         this.element.data(key, value);
     },
-    
     getCache: function(key) {
         return this.element.data(key);
     },
@@ -449,6 +503,14 @@ var Editor = {
         } else {
             return this.bodyElem.val();
         }
+    },
+    
+    // set/get ID
+    setId: function(id) {
+        $(this.settings.idElem).val(id);
+    },
+    getId: function(id) {
+        return $(this.settings.idElem).val();
     },
     
     // destroy the editor

@@ -50,7 +50,7 @@ test('testSetConntent', function() {
     equals(this.obj.getContent(), '<p>' + content + '</p>');
 });
 
-test('testUpdateValues', function() {
+test('testRepaint', function() {
     expect(4);
     
     // test data
@@ -66,7 +66,7 @@ test('testUpdateValues', function() {
     }
     
     // set elements values
-    obj.updateValues(values);
+    obj.repaint(values);
     equals(obj.getTitle(), values.title);
     equals(obj.getContent(), values.content);
     
@@ -76,6 +76,17 @@ test('testUpdateValues', function() {
         equals(newValues[key], values[key]);
     }
 });
+
+test('testSetId', function() {
+    expect(2);
+    
+    var obj = this.obj, id = "123";
+    
+    obj.setId(id);
+    equals($(obj.settings.idElem).val(), id);
+    equals(obj.getId(), id);
+    
+})
 
 test('testGetContent', function() {
     expect(4);
@@ -181,7 +192,17 @@ test('testCache', function() {
     same(obj.getCache('diary'), cache);
 });
 
-// 异步测试
+// 异步测试:
+// 模拟API服务器: "./data/diary.php"
+// 测试中的数据来源于模拟API服务器中定义的数据
+var response = { // 该测试数据需要和 diary.php 中的数据同步
+    diary :  {
+        title : 'diary_title',
+        content : 'diary_content',
+        id : '123'
+    },
+   callback : 'updateId'
+};
 
 test('testDoSave', function() {
     expect(3);
@@ -189,8 +210,7 @@ test('testDoSave', function() {
     
     var obj = this.obj,
         ajaxCount = 0;
-        newContent = "<p>new content</p>",
-        serverResponse = "diary_content"; // response of fackServer
+        newContent = "<p>new content</p>";
     
     //obj.doSave(); // will not post data, Case's content is not change.
     
@@ -210,7 +230,7 @@ test('testDoSave', function() {
         // check cache flush
         var diaryCache = obj.getCache('diary');
         ok(diaryCache !== null);
-        equals(diaryCache.content,  serverResponse);
+        equals(diaryCache.content,  response.diary.content);
         
         // check callback
         equals($(obj.settings.idElem).val(), diaryCache.id + "");
@@ -224,7 +244,7 @@ test('testDoSaveOnFail', function() {
     expect(1);
     stop();
     
-    var E = Ediary, obj = this.obj
+    var E = Ediary, obj = this.obj;
     
     obj.settings.saveUrl = E.baseUrl + '/data/diary.php?op=doSave&haserror=1'; 
     obj.doSave(true);
@@ -233,6 +253,26 @@ test('testDoSaveOnFail', function() {
         equals(E.Notice.getMessage(), E.i18n.get('Editor').JSON_PARSE_ERROR);
         start();
     }, 100);
+    
+});
+
+test('testGetDiary', function() {
+    expect(3);
+    stop();
+    
+    var E = Ediary, obj = this.obj;
+    
+    obj.settings.getDiaryUrl = E.baseUrl + '/data/diary.php?op=getDiary'; 
+    obj.doGetDiary();
+    
+    setTimeout(function() {
+        equals(obj.getTitle(), response.diary.title);
+        equals(obj.getContent(), '<p>' + response.diary.content + '</p>');
+        equals(obj.getId(), response.diary.id);
+        
+        start();
+    }, 200);
+    
     
 });
 

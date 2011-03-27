@@ -349,6 +349,82 @@ $.ajax({
 
 =========================================
 
+=== cache 缓存 ===
+
+编辑器可以将任何信息储存在编辑器独立的缓存中去, 该缓存会将数据储存在 `Editor.element` 上, 使用的是 `jQuery.data` , 使用方法:
+
+[source]
+----------------------------------
+// 缓存数据
+Editor.cache('key', {diary: data});
+
+// 取得缓存
+Editor.getCache('key);
+----------------------------------
+
+该缓存系统设计是用来缓存服务器返回的响应数据, 这样就可以避免重复请求, 可将当前数据和缓存中的服务器最后一次响应做比较, 即可得到最近的修改集.
+
+之所以使用 `jQUery.data` 将数据绑定在DOM元素上来作为缓存系统, 而不使用全局的缓存系统, 是为了让数据和编辑器的生命期相同, 当编辑器的DOM元素消亡时, 绑定上面的缓存也会随之消亡, 因此可以在同一页面存在多个编辑器, 而不必担心缓存冲突或内存溢出.
+
+=== repaint 重绘 ===
+
+编辑器可以重新绘制, 其Form元素的值将在同时被更新, 以此达到编辑器复用(重新显示另一片日记, 而不会重新初始化编辑器(也不用重新初始化富文本编辑器).
+
+直接调用:
+`repaint(data)` .
+
+[source]
+--------------------------------
+var data = {
+    title : 'title',
+    content: 'content',
+    id: 123
+};
+
+Editor.repaint(data);
+--------------------------------
+
+因为 `repaint` 是需要经常和 `AJAX` 结合使用, 比如向服务器请求某篇日记, 然后需要将该日记重新绘制到页面上去, 以更新已经打开的这个日记, 所有 `repaint()` 在不提供参数的情况下, 或自动将服务器返回的信息刷新到页面(使用的是 `cache` 中的缓存数据, 而cache中的缓存则是最后一次服务器返回的数据, 所以在 `ajax` 请求后直接调用 `repaint()` 即可实现该目的.
+
+
+=== AJAX ===
+
+`AJAX` 请求的统一模板为:
+
+[source]
+-------------------------------------
+$.ajax({
+    url: self.settings.saveUrl,
+    type: 'POST',
+    data: data,
+    dataType: 'json',
+    beforeSendMessage: i18n.SAVING, // 发送前消息
+    success: function(data, textStatus, jqXHR) {
+        // 钩子函数
+        self.hook('onSaveDone', arguments);
+        // 对响应数据进行检查并预处理
+        if (!self.checkData(data)) { return; }
+        // 通知用户请求结果
+        E.Notice.showMessage(i18n.SAVE_SUCCESS, 1000);
+    }
+});
+------------------------------------------------
+
+.url : self.settings.xxx
+推荐将请求的URL统一设置到settings里面, 不要硬编码到代码中.
+
+.beforeSendMessage: ''
+在该请求之前向全局通知器发送一条消息, 比如 "正在发送.." , 该消息为持久消息,不会自动消失, 因为在回调函数中通常会发送另一条消息来表示操作结果, 比如 "发送成功".
+
+.success: function
+在此回调函数中, 推荐调用钩子函数 `self.hook('hookName', arguments)` ,这样外部插件就可以使用改钩子函数进行外部回调.
+
+.checkData(data)
+    * 检查服务器返回的 `data` 中是否含有 `error` 错误信息, 如果然后该函数则会返回 `false` ,其他所以状态都返回 `true` .
+    * 调用服务器返回数据中的 `callback` 方法.
+    * 将数据器响应的 `diary` 数据储存到编辑器缓存中去. 使用 `getCache('diary') 可得到最后一次请求时服务器返回的数据.
+
+    
 === RTE 富文本编辑器 ===
 
 `Editor` 类并不自己实现底层的编辑器功能, 而是使用开源而成熟的 `TinyMCE` 来提供富文本编辑器功能.

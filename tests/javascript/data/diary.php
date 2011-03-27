@@ -1,11 +1,21 @@
 <?php
 header("Content-type: application/json; charset=utf-8"); 
 
+$data = array(
+   		'diary' =>  array(
+    		'title' => 'diary_title',
+        	'content' => 'diary_content',
+        	'id'    => 123),
+         'callback' => 'updateId'
+);
 
 if (isset($_GET['op'])) {
     switch($_GET['op']) {
         case 'doSave':
             doSave();
+            break;
+        case 'getDiary':
+        	getDiary();
             break;
         default: 
             break;
@@ -13,19 +23,19 @@ if (isset($_GET['op'])) {
 }
 
 function doSave() {
-    $diary = array(
-   		'diary' =>  array(
-    		'title' => 'diary_title',
-        	'content' => 'diary_content',
-        	'id'    => 123),
-         'callback' => 'updateId'
-    );
+    global $data;
     if (isset($_GET['badjson'])) {
-        echo $diary;
+        echo $data;
     } else if (isset($_GET['haserror'])) {
-        $diary['error'] = '无法解析服务器返回的数据';
-        echo json_encode($diary);
+        $data['error'] = '无法解析服务器返回的数据';
+        echo json_encode($data);
     } else {
-        echo json_encode($diary);
+        echo json_encode($data);
     }
+}
+
+function getDiary() {
+    global $data;
+    unset($data['callback']);
+    echo json_encode($data);
 }
