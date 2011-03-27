@@ -43,3 +43,21 @@
 2011-03-26T15:41:21+08:00 INFO (6): The application is already installed
 2011-03-26T15:41:23+08:00 INFO (6): The application is not installed, installing now.
 2011-03-26T16:50:57+08:00 INFO (6): The application is already installed
+2011-03-27T17:44:32+08:00 INFO (6): The application is already installed
+2011-03-27T17:44:32+08:00 INFO (6): Database has been upgraded.
+2011-03-27T17:44:33+08:00 INFO (6): The application is already installed
+2011-03-27T17:44:33+08:00 INFO (6): Database has been upgraded.
+2011-03-27T17:44:49+08:00 INFO (6): The application is not installed, installing now.
+2011-03-27T17:45:55+08:00 INFO (6): The application is already installed
+2011-03-27T17:45:57+08:00 INFO (6): The application is not installed, installing now.
+2011-03-27T17:46:12+08:00 INFO (6): The application is already installed
+2011-03-27T17:46:14+08:00 INFO (6): The application is not installed, installing now.
+2011-03-27T17:47:29+08:00 INFO (6): The application is already installed
+2011-03-27T17:47:29+08:00 INFO (6): Database has been upgraded.
+2011-03-27T17:47:29+08:00 INFO (6): The application is already installed
+2011-03-27T17:47:29+08:00 INFO (6): Database has been upgraded.
+2011-03-27T17:47:31+08:00 INFO (6): The application is not installed, installing now.
+2011-03-27T17:47:55+08:00 INFO (6): The application is not installed, installing now.
+2011-03-27T17:48:06+08:00 INFO (6): The application is already installed
+2011-03-27T17:48:07+08:00 INFO (6): The application is not installed, installing now.
+2011-03-27T21:50:03+08:00 INFO (6): The application is already installed

@@ -30,6 +30,8 @@ class Ediary_User extends Ediary_Query_Record
     private $mPassword = '';
     private $mSecurityCode = ''; 
     
+    private $metadata = array();
+    
     private $isLoad = false;
 
     public function __construct() {
@@ -406,5 +408,9 @@ class Ediary_User extends Ediary_Query_Record
         $db->setFetchMode(Zend_Db::FETCH_OBJ);
         return $db->fetchAll('SELECT * FROM {journals} WHERE user_id = ?', $this->mId);
     }
-
+    
+    public static function getMetadata($user_id) {
+        return Ediary_Metadata::getAll('usermeta', 'user_id', $user_id);
+    }
+    
 }

@@ -33,6 +33,18 @@ CREATE TABLE $imdb->users (
   UNIQUE KEY user_email (email)
 ) $imdb->tableSet AUTO_INCREMENT = 10000000;
 
+DROP TABLE IF EXISTS $imdb->usermeta;
+CREATE TABLE $imdb->usermeta (
+  umeta_id		bigint(20)	 unsigned NOT NULL auto_increment,
+  user_id 		bigint(20)   unsigned NOT NULL default '0',
+  meta_key		varchar(255) default NULL,
+  meta_value 	longtext,
+  
+  PRIMARY KEY  (umeta_id),
+  KEY user_id (user_id),
+  KEY meta_key (meta_key)
+) $imdb->tableSet;
+
 DROP TABLE IF EXISTS $imdb->diarys;
 CREATE TABLE $imdb->diarys (
   id		bigint(20)      unsigned NOT NULL auto_increment,

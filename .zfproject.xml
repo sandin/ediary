@@ -34,6 +34,9 @@
             <controllerFile controllerName="Login">
               <actionMethod actionName="index"/>
             </controllerFile>
+            <controllerFile controllerName="Settings">
+              <actionMethod actionName="index"/>
+            </controllerFile>
           </controllersDirectory>
           <formsDirectory enabled="false"/>
           <layoutsDirectory enabled="false"/>
@@ -62,6 +65,9 @@
               </viewControllerScriptsDirectory>
               <viewControllerScriptsDirectory forControllerName="Account">
                 <viewScriptFile forActionName="settings"/>
+              </viewControllerScriptsDirectory>
+              <viewControllerScriptsDirectory forControllerName="Settings">
+                <viewScriptFile forActionName="index"/>
               </viewControllerScriptsDirectory>
             </viewScriptsDirectory>
             <viewHelpersDirectory/>
@@ -191,6 +197,7 @@
           <testApplicationControllerFile filesystemName="IndexControllerTest.php"/>
           <testApplicationControllerFile filesystemName="DoControllerTest.php"/>
           <testApplicationControllerFile filesystemName="ListControllerTest.php"/>
+          <testApplicationControllerFile filesystemName="SettingsControllerTest.php"/>
         </testApplicationControllerDirectory>
       </testApplicationDirectory>
       <testLibraryDirectory>

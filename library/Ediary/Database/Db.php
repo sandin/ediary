@@ -29,13 +29,19 @@ class Ediary_Database_Db
      * Tables name
      * @var Array<String>
      */
-    private $tables = array('users', 'diarys', 'journals');
+    private $tables = array('users', 'usermeta', 'diarys', 'journals');
 
     /**
      * Table Name - users
      * @var String
      */
     public $users;
+    
+     /**
+     * Table Name - usermeta
+     * @var String
+     */
+    public $usermeta;
 
     /**
      * Table Name - diarys

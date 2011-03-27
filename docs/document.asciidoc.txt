@@ -176,6 +176,50 @@ Ediary_User::isValidPassword($password);
 `email` 为 `UNIQUE KEY` , 带索引并不允许重复.
 
 
+== metadata 元数据 ==
+
+`class Ediary_Metadata` 
+
+元数据设计用于储存以键值对为基础的表类型, 多用于非固定的设置/配置/格外数据等.
+
+.数据库模型
+[width="40%"]
+|=========================================================
+|umeta_id       | user_id    | meta_key     | meta_value
+|auto_increment | bigint(20) | varchar(255) | longtext
+|=========================================================
+
+NOTE: 这里的 `user_id` 只是一个例子, 每种数据的此列名都不相同, 例如 `Diary` 类的这里就是 `diary_id` .
+
+
+.对元数据进行增删改查
+
+[source]
+----------------------------------------
+// 实例化某种类型的元数据模型
+$usermeta = new Ediary_Metadata('usermeta', 'user_id', 3);
+
+// 添加
+$usermeta->insert('key', 'value');
+
+// 更新
+$usermeta->update('key', 'newValue');
+
+// 查询
+$key = $usermeta->find('key');
+
+// 删除
+$usermeta->delete('key');
+
+// 静态方法, 获取id为3的这个用户的的所有元数据
+$all_usermate = Ediary_Metadata::getAll('usermeta', 'user_id', 3);
+// 将会返回一个数组
+array(
+    array('key1' => 'value1'),
+    array('key2' => 'value2')
+)
+-----------------------------------------
+
 == Diary Module ==
 
 === DoController ===

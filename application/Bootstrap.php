@@ -153,8 +153,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         );
         
         // Login
-		$router->addRoute(
-			'login',
+		$router->addRoute('login',
 			new Zend_Controller_Router_Route(
 				'login/*',
 				array(
@@ -166,8 +165,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		);
 
 		// Logout
-		$router->addRoute(
-			'logout',
+		$router->addRoute('logout',
 			new Zend_Controller_Router_Route(
 				'logout/*',
 				array(
@@ -179,8 +177,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		);
 
 		// Register
-		$router->addRoute(
-			'register',
+		$router->addRoute('register',
 			new Zend_Controller_Router_Route(
 				'register/*',
 				array(
@@ -192,8 +189,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		);
 		
 		// Diarys list
-		$router->addRoute(
-			'diarys',
+		$router->addRoute('diarys',
 			new Zend_Controller_Router_Route(
 				'diary/list/*',
 				array(
@@ -205,8 +201,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		);
 		
 		// Single diary
-		$router->addRoute(
-			'diary',
+		$router->addRoute('diary',
 			new Zend_Controller_Router_Route(
 				'diary/:id/*',
 				array(

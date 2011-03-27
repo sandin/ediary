@@ -299,6 +299,9 @@ div.content_box h3 {
     font-size: 14px;
     font-weight: bold;
 }
+.content_box .innerBox {
+	padding: 10px;
+}
 
 #content .index_loginModel_header a {
     color: #999999;
@@ -375,7 +378,10 @@ div.blog_post_list {
 }
 
 div.content_box {
-    -moz-border-radius: 6px 6px 6px 6px;
+    border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
     -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
     background: none repeat scroll 0 0 #FFFFFF;
     border: 1px solid #C9CACD;
@@ -905,8 +911,9 @@ form.profile #forget_pw {
 	padding: 3px 5px;
 	margin-right: 5px; 
 }
-.pageBar {}
-.pageBar {}
+
+#form_setttings {
+}
 
 /* Debug {{{ 
 -----------------*/

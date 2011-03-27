@@ -310,6 +310,7 @@ var Editor = {
         };
     },
     
+    // update id dom element's value
     updateId: function($id) {
         console.log('update Id by Server callback');
         this.setId(this.getCache('diary').id);
@@ -343,6 +344,7 @@ var Editor = {
         }
     },
     
+    // stop auto-resize task
     stopResizer: function() {
         if (!! this.resizer) {
             clearInterval(this.resizer);
@@ -383,7 +385,6 @@ var Editor = {
             console.log('error by dosave :' + e);
         }
     },
-
     // do save success callback
     onSaveDone: function(data) {
         if (!this.checkData(data)) { return; }
@@ -392,16 +393,20 @@ var Editor = {
         var diary = data.diary;
     },
     
-    // check error, cache response, callback
+    /**
+     * Check if has a error message in response data
+     * if no error, when cache response, call callback
+     * 
+     * @param json data 
+     * @return boolan false only when has a error
+     */ 
     checkData: function(data) {
         if (this.debug) {
             console.log("Get data form server : " + data);
             console.dir(data);
         }
-        if (null == data) return false; 
-        
-        // has error
-        if (data.error) {
+        // has error or data is null
+        if (null == data || data.error) {
             E.Notice.showMessage(data.error);
             return false;
         }
