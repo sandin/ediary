@@ -19,7 +19,7 @@ array(
 <?php if (count($this->paginator)): ?>
 <div class="diarys_list">
 	
-	<table class="Table table_diary_list" width="100%"><tbody>
+	<table class="Table" id="table_diary_list" width="100%"><tbody>
 		<tr>
 			<th width="130">标题</th>
 			<th>内容</th>
@@ -28,12 +28,12 @@ array(
 			<th width="40">删除</th>
 		</tr>
         <?php foreach ($this->paginator as $item): ?>
-    	<tr>
-			<td><span class="diarys_list_id hide"><?php echo $item['id'];?></span><?php echo $item['title']?></td>
+    	<tr id="diarys_item_id_<?php echo $item['id'];?>">
+			<td><?php echo $item['title']?></td>
 			<td><?php echo $this->substr(trim(strip_tags($item['content'])), 50) ?></td>
 			<td><?php echo $item['saved_at']?></td>
-			<td><a class="icon_edit_16" href="#">delete</a></td>
-			<td><a class="icon_del_16" href="#">delete</a></td>
+			<td><a class="icon_edit_16" href="<?php echo $this->baseUrl("/diary/") . $item['id']; ?>"></a></td>
+			<td><a class="icon_del_16" href="#"></a></td>
 		</tr>
     <?php endforeach; ?>
 	</tbody></table>

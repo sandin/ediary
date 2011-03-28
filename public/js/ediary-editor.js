@@ -72,6 +72,7 @@ var Editor = {
            // dataType : 'json'
         },
         saveUrl: Ediary.baseUrl + '/diary/do/save',  // save action Url
+        getDiaryUrl:  E.url('/diary/do/get'),
         deleteUrl: ''                     // delete action Url
     },
     
@@ -295,18 +296,21 @@ var Editor = {
         // If no data params, then use the cache data
         var data = data || this.getCache('diary');
         
-        if (data.title) {
+        if (typeof data.title !== 'undefined') {
             this.setTitle(data.title);
         }
-        if (data.content) {
+        if (typeof data.content !== 'undefined') {
             this.setContent(data.content);
         }
-        if (data.id) {
+        if (typeof data.id !== 'undefined') {
             this.setId(data.id);
         }
-        if (data.saved_at) {
+        if (typeof data.saved_at !== 'undefined') {
             $(this.settings.updateElem).html(data.saved_at);
         }
+        
+        // debug
+        if (this.debug) { console.log('repaint with data: '); console.dir(data); }
     },
     
     /**
@@ -495,7 +499,10 @@ var Editor = {
             console.dir(data);
         }
         // has error or data is null
-        if (null == data || data.error) {
+        if (null == data) {
+            return false;
+        }
+        if ( data.error) {
             E.Notice.showMessage(data.error);
             return false;
         }
@@ -511,10 +518,11 @@ var Editor = {
     },
     
     // get a diary from server 
-    doGetDiary: function() {
+    doGetDiary: function(id) {
         var self = this;
         $.ajax({
             url: self.settings.getDiaryUrl,
+            data: {id : id},
             type: 'POST',
             dataType: 'json',
             beforeSendMessage: '正在获取日记.',
@@ -531,6 +539,7 @@ var Editor = {
         
         if (data.diary) {
             this.repaint(); // use server response data
+            E.Notice.showMessage('成功', 1000);
         }
     },
 
@@ -722,10 +731,38 @@ var OpenButton = Plugin.extend({
         this.element = $(o.element);
         this.element.bind('click', function(){
             console.log('click open btn');
+            console.log(self.tabElemId);
+            $(self.tabElemId).slideDown('slow');
             self.getList();
             return false;
         });
-        self.getList();
+        this.tabElemId = this.element.attr('href');
+        
+        this.bindLiveEvent();
+    },
+    
+    bindLiveEvent: function() {
+        var self = this;
+        $('#table_diary_list .icon_edit_16').live('click', function(e) {
+            var id = self._findId(this);
+            if (id) {
+                E.Editor.doGetDiary(id);
+                $(self.tabElemId).slideUp('slow');
+            }
+            return false;
+        });
+        
+        $('#table_diary_list .icon_del_16').live('click', function(e) {
+            console.log(self._findId(this));
+            return false;
+        });
+    },
+    
+    _findId: function(obj) {
+        $tr = $(obj).parent().parent();
+        if ($tr.length > 0) {
+            return parseInt($tr.attr('id').replace('diarys_item_id_', ''));
+        }
     },
     
     getList: function(page) {
@@ -739,7 +776,6 @@ var OpenButton = Plugin.extend({
             data: {page: page},
             beforeSendMessage: '正在请求...',
             success: function(data) {
-                $('#toolbar_extBox').slideDown();
                 $(o.boxElem).html(data);
                 E.Notice.showMessage("成功", 1000);
             }

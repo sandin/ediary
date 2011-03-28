@@ -920,6 +920,7 @@ form.profile #forget_pw {
 	color: #FFF;
 	width: 680px; /* 10+680+10 */
 	padding: 10px;
+	display: none; /* hide at first */
 }
 .diarys_list_toolbar {
 	margin-bottom: 5px;

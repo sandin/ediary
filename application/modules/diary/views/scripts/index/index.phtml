@@ -24,13 +24,13 @@ $(document).ready(function(){
 <div id="editor-toolbar" class="toolbar">
 	<ul class="toolbar-btns">
 		<li><a href="#toolbar-tabs-1" id="" class="menu">新建</a></li>
-		<li><a href="#toolbar-tabs-2" id="editor-btn-open" class="menu active">打开</a></li>
+		<li><a href="#toolbar-tabs-open" id="editor-btn-open" class="menu active">打开</a></li>
 		<li><a href="#" id="editor-btn-save" class="menu">保存</a></li>
 		<li><a href="#toolbar-tabs-3" class="menu">附件</a></li>
 	</ul>
 	<div id="toolbar-tabs-1" class="innerBox"></div>
 	
-	<div id="toolbar-tabs-2" class="innerBox">
+	<div id="toolbar-tabs-open" class="innerBox">
 		<div class="diarys_list_toolbar">
 			<label for="">从</label>
 			<input id="datepicker-start" type="text" name="" value="2010-11-12" />
@@ -78,6 +78,6 @@ $(document).ready(function(){
 </div><!-- /diary -->
 
 <?php 
-var_dump($this->diary);
+//var_dump($this->diary);
 
 ?>

@@ -83,8 +83,20 @@ class Diary_DoController extends Zend_Controller_Action
         }
     }
     
+    public function getAction() {
+        $input = new Zend_Filter_Input(array('id' => 'Int'), array(), $_POST);
+        if ($input->isValid() && !$input->hasMissing()) {
+            $id = $input->id;
+            $diary = Ediary_Diary::find($id);
+            if ($diary != null && $diary->user_id == $this->_user->id) {
+                echo json_encode( array('diary' => $diary->toArray(true)) );
+            }
+        }
+    }
+    
     private function createDiary($data) {
     }
+    
     private function updateDiary($data) {
     }
 
