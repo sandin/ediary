@@ -457,6 +457,18 @@ DELETE: 今后扩展时为了样式考虑,可以考虑不使用自带的toolbar 
 
 NOTE: 目前此功能没有进行单元测试.
 
+=== Auto Save 自动保存 ===
+
+在日记不是 `readonly` 的模式下, 编辑器会每隔 `Editor.AUTO_SAVE_INTERVAL` 秒自动保存:
+    * 当循环时刻到来时, 如果内容的字数或标题的字数发生了变化才会自动进行保存(这里有个BUG, 就是当用户只替换了某个字符将不会触发自动保存).
+    * 不管什么时候, 只要标题 `onChange` 事件被触发, 都会强制保存(不管内容是否修改) .
+
+.手动开启和关闭自动保存
+`Editor.startAutoSave()`
+
+`Editor.stopAutoSave()`
+
+
 === 参数 ===
 
 .target : '#editor'

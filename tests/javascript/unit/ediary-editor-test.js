@@ -132,15 +132,15 @@ test('testIsChaned', function() {
     // reset title/content
     function reset() {
         obj.titleElem.val("");
-        obj.bodyElem.val('');
+        obj.setContent('');
     }
     
-    equals(obj.titleLength, 0, 'title is empty at first');
-    equals(obj.bodyLength, 0, 'content is empty at first too.');
+    equals(obj.titleLength, obj.getTitle().length, 'title length is right');
+    equals(obj.contentLength, obj.getContent().length, 'content length is right.');
     
     // setup default value
     obj.titleElem.val("title");
-    obj.bodyElem.val('content');
+    obj.setContent('content');
     ok(obj.isChanged(), 'title and content both changed.');
     reset();
     
@@ -150,12 +150,12 @@ test('testIsChaned', function() {
     reset();
     
     // reset title
-    obj.titleElem.val("");
-    ok(obj.isChanged(), 'title and content reset.');
-    reset();
+    ok(!obj.isChanged(), 'title reset, seem like no change.');
     
     // just change content
-    obj.bodyElem.val("content");
+    obj.setContent('content-change');
+    obj.rteSave(); // save content into the textarea
+    //console.log('d', obj.getContent(), obj.contentLength);
     ok(obj.isChanged(), 'just content changed');
 });
 

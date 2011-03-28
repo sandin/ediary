@@ -107,15 +107,21 @@ em {color:red;}
    margin-bottom: 20px;
 }
 
-/* icon */
-.icon_loading_small {
+/* icon TODO: 合并小图 */
+.icon_16,
+.icon_loading_16,
+.icon_ok_16 {
 	display: inline-block;
 	text-indent: -9000px; /* hide text */
-}
-.icon_loading_small {
-	background: url("../images/icon_loading.gif") no-repeat;
+	vertical-align: text-bottom;
 	width: 16px;
 	height: 16px;
+}
+.icon_loading_16 {
+	background: url("../images/icon_loading.gif") no-repeat;
+}
+.icon_ok_16 {
+    background: url("../images/icon_ok_16x16.png") no-repeat;
 }
 
 /*}}}*/

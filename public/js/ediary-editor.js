@@ -25,6 +25,8 @@ E.i18n.extend('Editor', i18n);
  */
 var Editor = {
     
+    AUTO_SAVE_INTERVAL : 5*60*1000, // 5 min 
+    
     version : 0.1,
     
     debug: true,
@@ -41,17 +43,20 @@ var Editor = {
     // Body Element(jQuery Object)
     bodyElem : null, // <textarae>
     
-    // resize Interval
+    // auto resize task(Interval)
     resizer: null,
-    
-    // current title length
-    titleLength: -1,
-    
-    // current body length
-    bodyLength: -1,
     
     // auto save task(Interval)
     updater: null,
+    
+    // is saving now
+    saving: false,
+    
+    // title length on last save
+    titleLength: -1,
+    
+    // content length on last save
+    contentLength: -1,
     
     // Default Settings
     settings : {
@@ -61,6 +66,7 @@ var Editor = {
         idElem:        '#diary_id',           // diary id selector
         bodyElem:      '#diary_content',      // diary content selector
         containerElem: '.diary_container',    // diary content wrapper
+        updateElem:    '#diary_last_update',  // diary last update time selector  
         ajaxSetup: {                          // jQuery.Ajax.Options
            // dataType : 'json'
         },
@@ -86,23 +92,53 @@ var Editor = {
         // Cann't init the editor, Missing DOM element
         if (! this.checkDOMIsReady()) { return; }
         
-        // Setup
+        // Init
         this.element = $(o.element);
         this.bodyElem = $(o.bodyElem);
         this.titleElem = $(o.titleElem);
         this.containerElem = $(o.containerElem);
-        this.bodyLength = this.bodyElem.val().length;
-        this.titleLength = this.titleElem.val().length;
         
+        // Settup 
         this.initPlugins(); // init all plugins
         this.setupAjax();   // Setup Ajax
         this.setupTinyMCE();
         
-        // FIXME:
-        this.resizer = setInterval(function () { t.resize(); }, 500);
+        this.updateTitleContentLength();
+        this.cache('diary', this.getValues());
+        
+        // Event
+        this.bindEvent();
+        
+        // Tasks FIXME:
+        if (! this.isReadonly()) {
+            this.resizer = setInterval(function () { t.resize(); }, 500);
+            this.startAutoSave()
+        }
         
         this.isReady = true;
         return this;
+    },
+    
+    bindEvent: function() {
+        var self = this;
+        
+        // Force save when title onChange
+        this.titleElem.bind('change', function(){
+            console.log('on title change');
+            self.doSave(true);
+        });
+        
+        // Show confirm dialog before close this page
+        $(window).bind('beforeunload', function(e) {
+            if (self.isChanged()) {
+                return '日记没有保存, 确定离开?';
+            }
+        });
+    },
+    
+    updateTitleContentLength: function() {
+        this.titleLength = this.getTitle().length;
+        this.contentLength = this.getContent().length;
     },
     
     setupTinyMCE: function() {
@@ -224,40 +260,6 @@ var Editor = {
         }
     },
 
-    // resize the editor when reach the bottom
-    resize: function () {
-        var rte = this.getRTEditor(),
-            elem, elemHeight, scrollHeight, newHeight,
-            settings = {
-                minHeight: 815,
-                increment: 815,
-                margin: 0
-        };
-        if (rte) {
-            elem = $('iframe', $(rte.getContentAreaContainer()));
-            elemHeight = elem.height(); // iframe height
-            // iframe's body height
-            scrollHeight = $.browser.chrome ? $(rte.getBody()).insideHeight() : $(rte.getBody()).height();
-            settings.margin = 40;
-        } else if (!this.isReadonly()) {
-            elem = this.bodyElem;
-            elemHeight = elem.height();
-            scrollHeight = elem.get(0).scrollHeight;
-        }
-        if (elem) {
-            if ((elemHeight < scrollHeight + settings.margin) || (elemHeight - settings.increment > scrollHeight + settings.margin)) {
-                newHeight = Math.ceil((scrollHeight + settings.margin) / settings.increment) * settings.increment;
-            }
-            //console.log($(rte.getBody()));
-            //console.log('scrool', scrollHeight);
-            if (newHeight) {
-                newHeight = Math.max(settings.minHeight, newHeight);
-                elem.css('height', newHeight + "px");
-                this.containerElem.css('height', newHeight + "px");
-            }
-        }
-    },
-    
     // is read only
     isReadonly: function() {
         return this.titleElem.attr('readonly') || this.bodyElem.attr('readonly');
@@ -296,6 +298,9 @@ var Editor = {
         if (data.id) {
             this.setId(data.id);
         }
+        if (data.saved_at) {
+            $(this.settings.updateElem).html(data.saved_at);
+        }
     },
     
     /**
@@ -306,7 +311,9 @@ var Editor = {
     getValues: function() {
         return {
             title : this.getTitle(),
-            content : this.getContent()
+            content : this.getContent(),
+            id : this.getId(),
+            saved_at :  $(this.settings.updateElem).html()
         };
     },
     
@@ -316,16 +323,17 @@ var Editor = {
         this.setId(this.getCache('diary').id);
     },
     
-    // title&&body is empty
+    // title and body both are empty
     isEmpty: function() {
        return ( 0 == this.titleElem.val().length 
              && 0 == this.bodyElem.val().length );
     },
     
-    // title||body is changed
+    // title or body has been changed
     isChanged: function() {
+        //this.rteSave(); // make sure rte has been saved.
         return ( this.titleElem.val().length !== this.titleLength 
-              || this.bodyElem.val().length !== this.bodyLenght ); 
+              || this.bodyElem.val().length !== this.contentLength ); 
     },
     
     // start auto-save task
@@ -344,6 +352,40 @@ var Editor = {
         }
     },
     
+     // resize the editor when reach the bottom
+    resize: function () {
+        var rte = this.getRTEditor(),
+            elem, elemHeight, scrollHeight, newHeight,
+            settings = {
+                minHeight: 815,
+                increment: 815,
+                margin: 0
+        };
+        if (rte) {
+            elem = $('iframe', $(rte.getContentAreaContainer()));
+            elemHeight = elem.height(); // iframe height
+            // iframe's body height
+            scrollHeight = $.browser.chrome ? $(rte.getBody()).insideHeight() : $(rte.getBody()).height();
+            settings.margin = 40;
+        } else if (!this.isReadonly()) {
+            elem = this.bodyElem;
+            elemHeight = elem.height();
+            scrollHeight = elem.get(0).scrollHeight;
+        }
+        if (elem) {
+            if ((elemHeight < scrollHeight + settings.margin) || (elemHeight - settings.increment > scrollHeight + settings.margin)) {
+                newHeight = Math.ceil((scrollHeight + settings.margin) / settings.increment) * settings.increment;
+            }
+            //console.log($(rte.getBody()));
+            //console.log('scrool', scrollHeight);
+            if (newHeight) {
+                newHeight = Math.max(settings.minHeight, newHeight);
+                elem.css('height', newHeight + "px");
+                this.containerElem.css('height', newHeight + "px");
+            }
+        }
+    },
+    
     // stop auto-resize task
     stopResizer: function() {
         if (!! this.resizer) {
@@ -352,21 +394,24 @@ var Editor = {
         }
     },
     
+    // Save the content into the textarea
+    rteSave: function() {
+        var rte = this.getRTEditor();
+        if (rte && rte.isDirty()) {
+            rte.save();
+        }
+    },
+    
     // do save action
     doSave: function(force) {
         try {
             var self = this,
-            force = force || false,
-            rte = this.getRTEditor(),
-            $form = $(this.settings.formElem);
+                force = force || false,
+                $form = $(this.settings.formElem);
 
-            // Save the content into the textarea
-            if (rte && rte.isDirty()) {
-                rte.save();
-            }
-
+            this.rteSave();
             // force save or (is not empty and changed)
-            if ( force || (!this.isEmpty() && this.isChanged()) ) {
+            if ( force || (!this.isEmpty() && this.isChanged() && !this.saving) ) {
                 console.log('do save');
                 // Send data to Server
                 $.ajax({
@@ -374,8 +419,14 @@ var Editor = {
                     type: 'POST',
                     data: $form.serialize(),
                     dataType: 'json',
-                    beforeSendMessage: i18n.SAVING,
+                    beforeSend: function(jqXHR, settings) {
+                        self.saving = true;
+                        E.Notice.showMessage(i18n.SAVING);
+                        self.updateStatus(false);
+                        self.hook('onBeforeSend', arguments);
+                    },
                     success: function(data, textStatus, jqXHR) {
+                        self.saving = false;
                         self.onSaveDone(data);
                         self.hook('onSaveDone', arguments);
                     }
@@ -389,8 +440,34 @@ var Editor = {
     onSaveDone: function(data) {
         if (!this.checkData(data)) { return; }
         
-        E.Notice.showMessage(i18n.SAVE_SUCCESS, 1000);
         var diary = data.diary;
+        if (diary) {
+            var update = {
+                'saved_at' : diary.saved_at
+            };
+            this.repaint(update);
+            this.updateTitleContentLength();
+            this.updateStatus(true);
+            E.Notice.showMessage(i18n.SAVE_SUCCESS, 1000);
+        }
+    },
+    
+    /**
+     * update last time status
+     * 
+     * @param $isDone true: just start request, show loading icon
+     *                false: request done, remove loading icon
+     */
+    updateStatus: function($isDone) {
+        $isDone = $isDone || false,
+                  $status = $(this.settings.updateElem).prev();
+        if ($isDone) {
+            $status.removeClass('icon_loading_16');
+            $status.addClass('icon_ok_16');
+        } else {
+            $status.removeClass('icon_ok_16');
+            $status.addClass('icon_loading_16');
+        }
     },
     
     /**
@@ -603,7 +680,7 @@ var SaveButton = Plugin.extend({
     
     clickHandler : function(e) {
         console.log('click save btn');
-        E.Editor.doSave();
+        E.Editor.doSave(true); // force save
         return false;
     },
     
