@@ -110,7 +110,9 @@ em {color:red;}
 /* icon TODO: 合并小图 */
 .icon_16,
 .icon_loading_16,
-.icon_ok_16 {
+.icon_ok_16,
+.icon_del_16,
+.icon_edit_16 {
 	display: inline-block;
 	text-indent: -9000px; /* hide text */
 	vertical-align: text-bottom;
@@ -123,6 +125,13 @@ em {color:red;}
 .icon_ok_16 {
     background: url("../images/icon_ok_16x16.png") no-repeat;
 }
+.icon_del_16 {
+    background: url("../images/icon_uidesignicons_delete.png") no-repeat;
+}
+.icon_edit_16 {
+    background: url("../images/icon_edit_16x16.png") no-repeat;
+}
+	
 
 /*}}}*/
 
@@ -898,16 +907,22 @@ form.profile #forget_pw {
     width: 42px;
     margin-bottom: 3px;
 }
+.toolbar-btns li {
+	display: inline;
+}
 .toolbar a.active {
 }
 	
-.toolbar_extBox {
+#toolbar_extBox {
+}
+.toolbar .innerBox {
 	background: #50514D;
 	color: #FFF;
-	width: 700px;
-}
-.toolbar_extBox .innerBox {
+	width: 680px; /* 10+680+10 */
 	padding: 10px;
+}
+.diarys_list_toolbar {
+	margin-bottom: 5px;
 }
 
 .redirectBox {
@@ -933,6 +948,21 @@ form.profile #forget_pw {
 
 #form_setttings {
 }
+
+.Table { }
+.Table td, .Table th {
+	padding: 2px;
+}
+.Table { }
+
+.table_diary_list {}
+.table_diary_list th {
+	text-align: left;
+}
+.table_diary_list {}
+.table_diary_list {}
+	
+	
 
 /* Debug {{{ 
 -----------------*/

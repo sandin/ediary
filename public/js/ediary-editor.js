@@ -701,6 +701,57 @@ var SaveButton = Plugin.extend({
 });
 E.SaveButton = SaveButton; // NAMESPACE
 
+/**
+ * Class SaveButton extends Plugin
+ * 保存按钮 - 插件
+ */
+var OpenButton = Plugin.extend({
+    options: {
+        element: '#editor-btn-open',
+        listUrl: E.url('/diary/list/get'),
+        boxElem: '#toolbar_extBox_list' 
+    },
+    
+    init: function() {
+        this._super();
+    
+        $.extend(this.options, this.extData);
+        var o = this.options, 
+            self = this;
+
+        this.element = $(o.element);
+        this.element.bind('click', function(){
+            console.log('click open btn');
+            self.getList();
+            return false;
+        });
+        self.getList();
+    },
+    
+    getList: function(page) {
+        var self = this,
+            o = this.options
+            page = page || 1;
+        $.ajax({
+            url: o.listUrl,
+            type: 'post',
+            dataType: 'html',
+            data: {page: page},
+            beforeSendMessage: '正在请求...',
+            success: function(data) {
+                $('#toolbar_extBox').slideDown();
+                $(o.boxElem).html(data);
+                E.Notice.showMessage("成功", 1000);
+            }
+        });
+    },
+    
+    destroy : function() {
+        this.element.unbind();
+    }
+});
+E.OpenButton = OpenButton; // NAMESPACE
+
 })(jQuery, Ediary, window);
 
 
@@ -736,6 +787,7 @@ var Pad = {
         
         // add Plugins 
         editor.addPlugin('SaveButton', new E.SaveButton());
+        editor.addPlugin('OpenButton', new E.OpenButton());
     },
     
     destroy: function() {

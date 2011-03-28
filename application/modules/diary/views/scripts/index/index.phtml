@@ -1,27 +1,50 @@
 <?php
 $this->loadJquery();
+$this->headLink()->appendStylesheet("/css/smoothness/jquery-ui-1.8.11.custom.css");
+$this->headScript()->appendFile("/js/jquery-ui-1.8.11.custom.min.js");
 $this->headScript()->appendFile("/js/ediary.js?v=1");
 $this->headScript()->appendFile("/js/ediary-editor.js?v=1");
 $this->headScript()->appendFile("/js/tiny_mce/tiny_mce.js");
 $this->inlineScript()->appendScript('
 $(document).ready(function(){
 	Ediary.Pad.init();
+	
+	var params = { 
+		dateFormat: "yy-mm-dd",
+		dayNamesMin: ["日", "一", "二", "三", "四", "五", "六"],
+		monthNames: ["一月", "二月", "三月", "四月", "五月", "六月","七月","八月","九月","十月","十一月","十二月"]
+		
+	};
+	$("#datepicker-start").datepicker(params);
+	$("#datepicker-end").datepicker(params);
 });
 ');
 ?>
 <!-- Toolbar -->
-<div class="toolbar">
-	<a href="#" id="" class="menu">新建</a>
-	<a href="#" id="" class="menu active">打开</a>
-	<a href="#" id="editor-btn-save" class="menu">保存</a>
-	<a href="#" class="menu">附件</a>
-	<div class="toolbar_extBox">
-		<div class="innerBox">
-			asfdnoifad<br />
-			asfdnoifad<br />
-			asfdnoifad<br />
-			asfdnoifad<br />
+<div id="editor-toolbar" class="toolbar">
+	<ul class="toolbar-btns">
+		<li><a href="#toolbar-tabs-1" id="" class="menu">新建</a></li>
+		<li><a href="#toolbar-tabs-2" id="editor-btn-open" class="menu active">打开</a></li>
+		<li><a href="#" id="editor-btn-save" class="menu">保存</a></li>
+		<li><a href="#toolbar-tabs-3" class="menu">附件</a></li>
+	</ul>
+	<div id="toolbar-tabs-1" class="innerBox"></div>
+	
+	<div id="toolbar-tabs-2" class="innerBox">
+		<div class="diarys_list_toolbar">
+			<label for="">从</label>
+			<input id="datepicker-start" type="text" name="" value="2010-11-12" />
+			<label for="">到</label>
+			<input id="datepicker-end" type="text" name="" value="2010-11-14" />
+			<label for="">查看</label>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="text" name="" value="" />
+			<label for="">搜索</label>
 		</div>
+		<div id="toolbar_extBox_list"></div><!-- AJAX ZONE -->
+	</div><!-- /tabs -->
+	
+	<div id="toolbar-tabs-3" class="innerBox">
 	</div>
 </div><!-- /toolbar -->
 

@@ -1,0 +1,43 @@
+<?php 
+/*
+array(
+ array (
+  'id' => string '896' (length=3)
+  'title' => string 'title' (length=5)
+  'content' => string 'content' (length=7)
+  'weather' => string 'sunshine' (length=8)
+  'mood' => string 'normal' (length=6)
+  'status' => string '0' (length=1)
+  'created_at' => string '2011-03-25 22:01:55' (length=19)
+  'saved_at' => string '2011-03-25 22:01:55' (length=19)
+  'user_id' => string '3' (length=1)
+  'journal_id' => string '1' (length=1)
+ )
+);
+*/
+?>
+<?php if (count($this->paginator)): ?>
+<div class="diarys_list">
+	
+	<table class="Table table_diary_list" width="100%"><tbody>
+		<tr>
+			<th width="130">标题</th>
+			<th>内容</th>
+			<th width="150">最后更新</th>
+			<th width="40">编辑</th>
+			<th width="40">删除</th>
+		</tr>
+        <?php foreach ($this->paginator as $item): ?>
+    	<tr>
+			<td><span class="diarys_list_id hide"><?php echo $item['id'];?></span><?php echo $item['title']?></td>
+			<td><?php echo $this->substr(trim(strip_tags($item['content'])), 50) ?></td>
+			<td><?php echo $item['saved_at']?></td>
+			<td><a class="icon_edit_16" href="#">delete</a></td>
+			<td><a class="icon_del_16" href="#">delete</a></td>
+		</tr>
+    <?php endforeach; ?>
+	</tbody></table>
+</div><!-- /diarys_list -->
+<?php else: ?>
+<p>暂无日记.</p>
+<?php endif; ?>

@@ -1,0 +1,8 @@
+
+<div class="diary_list_box">
+    <?php echo $this->partial('template_diarys_list_ajax.phtml', array('paginator' => $this->paginator))?>
+    <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_control.phtml'); ?>
+</div><!-- /diary_list_box -->
+
+
+
