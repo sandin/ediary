@@ -39,11 +39,7 @@ class Diary_IndexController extends Zend_Controller_Action
             }
         }
         
-        var_dump($diary->toArray(true));
-        
         $this->view->diary = $diary->toArray(true);
-        
-       
     }
     
     private function _parsePost() {

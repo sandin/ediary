@@ -844,6 +844,7 @@ form.profile #forget_pw {
     overflow: hidden;
 }
 #diary_content {
+    width: 572px;
 }
 .diary_header {
 	position: relative;
@@ -885,16 +886,28 @@ form.profile #forget_pw {
 
 .toolbar {
 	margin-left: 125px;
+    margin-bottom: 3px;
 }
 .toolbar .menu {
-    background: none repeat scroll 0 0 #50514D;
-    color: #FFFFFF;
+    background: #50514D;
+    color: #FFF;
     display: inline-block;
     height: 26px;
     line-height: 26px;
-    margin-bottom: 3px;
     text-align: center;
     width: 42px;
+    margin-bottom: 3px;
+}
+.toolbar a.active {
+}
+	
+.toolbar_extBox {
+	background: #50514D;
+	color: #FFF;
+	width: 700px;
+}
+.toolbar_extBox .innerBox {
+	padding: 10px;
 }
 
 .redirectBox {

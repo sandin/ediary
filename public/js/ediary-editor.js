@@ -25,7 +25,8 @@ E.i18n.extend('Editor', i18n);
  */
 var Editor = {
     
-    AUTO_SAVE_INTERVAL : 5*60*1000, // 5 min 
+    //AUTO_SAVE_INTERVAL : 5*60*1000, // 5 min 
+    AUTO_SAVE_INTERVAL : 0.5*60*1000, // 0.5 min 
     
     version : 0.1,
     
@@ -112,13 +113,14 @@ var Editor = {
         // Tasks FIXME:
         if (! this.isReadonly()) {
             this.resizer = setInterval(function () { t.resize(); }, 500);
-            this.startAutoSave()
+            this.startAutoSave(true);
         }
         
         this.isReady = true;
         return this;
     },
     
+    // Bind Event 
     bindEvent: function() {
         var self = this;
         
@@ -130,17 +132,20 @@ var Editor = {
         
         // Show confirm dialog before close this page
         $(window).bind('beforeunload', function(e) {
+            self.rteSave(true);
             if (self.isChanged()) {
                 return '日记没有保存, 确定离开?';
             }
         });
     },
     
+    // Save current title/content length by DOM elem' value
     updateTitleContentLength: function() {
-        this.titleLength = this.getTitle().length;
-        this.contentLength = this.getContent().length;
+        this.titleLength = this.titleElem.val().length;
+        this.contentLength = this.bodyElem.val().length;
     },
     
+    // Setup TinyMCE
     setupTinyMCE: function() {
         var t = this;
         
@@ -253,6 +258,7 @@ var Editor = {
         this.events.callListener(hookName, args);
     },
     
+    // callback by server
     callback: function(callbackName) {
         if (typeof this[callbackName] === 'function') {
             var fn = this[callbackName];
@@ -331,7 +337,8 @@ var Editor = {
     
     // title or body has been changed
     isChanged: function() {
-        //this.rteSave(); // make sure rte has been saved.
+        //this.rteSave(true); // make sure rte has been saved.
+        //console.log(this.bodyElem.val(),  this.contentLength);
         return ( this.titleElem.val().length !== this.titleLength 
               || this.bodyElem.val().length !== this.contentLength ); 
     },
@@ -352,7 +359,7 @@ var Editor = {
         }
     },
     
-     // resize the editor when reach the bottom
+    // resize the editor when reach the bottom
     resize: function () {
         var rte = this.getRTEditor(),
             elem, elemHeight, scrollHeight, newHeight,
@@ -395,9 +402,11 @@ var Editor = {
     },
     
     // Save the content into the textarea
-    rteSave: function() {
-        var rte = this.getRTEditor();
-        if (rte && rte.isDirty()) {
+    rteSave: function(force) {
+        console.log('rte save.');
+        var force = force || false,
+            rte = this.getRTEditor();
+        if (force || (rte && rte.isDirty()) ) {
             rte.save();
         }
     },
@@ -429,6 +438,9 @@ var Editor = {
                         self.saving = false;
                         self.onSaveDone(data);
                         self.hook('onSaveDone', arguments);
+                    },
+                    complete: function() {
+                        self.updateTitleContentLength();
                     }
                 });
             }
@@ -458,10 +470,10 @@ var Editor = {
      * @param $isDone true: just start request, show loading icon
      *                false: request done, remove loading icon
      */
-    updateStatus: function($isDone) {
-        $isDone = $isDone || false,
-                  $status = $(this.settings.updateElem).prev();
-        if ($isDone) {
+    updateStatus: function(isDone) {
+        var isDone = isDone || false,
+            $status = $(this.settings.updateElem).prev();
+        if (isDone) {
             $status.removeClass('icon_loading_16');
             $status.addClass('icon_ok_16');
         } else {
@@ -518,8 +530,7 @@ var Editor = {
         if (! this.checkData(data)) { return; }
         
         if (data.diary) {
-//            this.repaint(data.diary);
-            this.repaint();
+            this.repaint(); // use server response data
         }
     },
 
