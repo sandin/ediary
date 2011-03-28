@@ -389,13 +389,17 @@ class Ediary_User extends Ediary_Query_Record
      * @param String $password
      * @return stdClass auth result { boolean result, String message }
      */
-    public static function login($email, $password) {
+    public static function login($email, $password, $rememberMe = false) {
         $securityCode = self::getSecurtiyCode($email);
         $encodedPassword = self::encryptPassword($password, $securityCode);
         
         // auth user
-        $result = Ediary_Auth_Database::authenticate($email, $encodedPassword);
+        $result = Ediary_Auth_Database::authenticate($email, $encodedPassword, $rememberMe);
         return $result;
+    }
+    
+    public static function logout() {
+        Ediary_Auth_Database::logout();
     }
     
     /**

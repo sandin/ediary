@@ -45,6 +45,40 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             //exit;
         }
     }
+
+    protected function _initDatebase() {
+        $resources = $this->getPluginResource('db');
+        $dbAdapter = $resources->getDbAdapter();
+        
+        $db = Ediary_Database_Db::getInstance()->setConnection($dbAdapter);
+        $db->setPrefix(Ediary_Config::getPerfix());
+
+        Zend_Db_Table::setDefaultAdapter($dbAdapter);
+    }
+    
+    protected function _initSession()
+    {
+        $db = Ediary_Database_Db::getInstance();
+        Zend_Db_Table_Abstract::setDefaultAdapter($db->getConnection());
+        
+        //配置SessionDB字段
+        $config = array(
+	  		'name'           => $db->prefix('sessions'),
+	  		'primary'        => 'id',
+	  		'modifiedColumn' => 'modified',
+	  		'dataColumn'     => 'data',
+	  		'lifetimeColumn' => 'lifetime'
+	    );
+	    // must before setSaveHandler
+	    Zend_Session::setOptions(array('gc_maxlifetime' => strval(60*60*24*30))); // a month
+	    Zend_Session::setSaveHandler(new Zend_Session_SaveHandler_DbTable($config));
+	    /*
+	    if(!isset($_SESSION)){
+	        Zend_Session::start();
+	    }
+	    */
+	    //var_dump(Zend_Session::getOptions());
+    }
     
     protected function _initAuth() {
         $auth = Zend_Auth::getInstance();
@@ -55,6 +89,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         //var_dump($user);
         Zend_Registry::set('user', $user);
         
+        /*
         //TODO: DELETE ME ****** HACK **************************
         $hack = new stdClass();
         $hack->username = 'admin';
@@ -62,16 +97,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $hack->email = "admin@lds.com";
         Zend_Registry::set('user', $hack);
         //TODO: DELETE ME ****** HACK **************************
-    }
-
-    protected function _initDatebase() {
-        $resources = $this->getPluginResource('db');
-        $dbAdapter = $resources->getDbAdapter();
-        
-        $db = Ediary_Database_Db::getInstance()->setConnection($dbAdapter);
-        $db->setPrefix(Ediary_Config::getPerfix());
-
-        Zend_Db_Table::setDefaultAdapter($dbAdapter);
+         */
     }
     
     protected function _initCache() {
@@ -114,9 +140,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         Zend_Registry::set(Ediary_Application::TRANSLATE, $translate);
 
         Zend_Validate_Abstract::setDefaultTranslator($translate);
-    }
-
-    protected function _initSession() {
     }
 
     protected function _initControllers() {

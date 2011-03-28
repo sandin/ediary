@@ -32,7 +32,9 @@ class User_AccountController extends Zend_Controller_Action
             return $this->view->form = $form;
 		}
 		
-		$auth_result = Ediary_User::login($_POST['email'], $_POST['password']);
+		// Post data is OK, Log in.
+		$rememberMe = isset($_POST['rememberMe']) ? true : false;
+		$auth_result = Ediary_User::login($_POST['email'], $_POST['password'], $rememberMe);
 		
 		if (! $auth_result->result ) {
 		    // Auth fail, email/password wrong
@@ -53,7 +55,7 @@ class User_AccountController extends Zend_Controller_Action
     {
         // action body
         $this->_helper->viewRenderer->setNoRender();
-        Zend_Auth::getInstance()->clearIdentity();
+        Ediary_User::logout();
 		$this->_redirect('/');
     }
 

@@ -83,7 +83,7 @@ class Ediary_MetadataTest extends ControllerTestCase
         $usermeta = Ediary_Metadata::getAll('usermeta', 'user_id', 3);
         $this->assertTrue(is_array($usermeta));
         $this->assertEquals(count($usermeta),2);
-        var_dump($usermeta);
+        //var_dump($usermeta);
     }
     
 }

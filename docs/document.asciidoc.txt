@@ -220,6 +220,16 @@ array(
 )
 -----------------------------------------
 
+== Session 会话持久化 ==
+
+`session` 信息不使用php原生的file做储存媒介, 而使用本程序自带的数据库做session信息存储器, 使用方法和原生态的session方法一致, 只是不以文件的形式存储在系统的session缓存目录, 而是存储在本数据库的 `sessions` 表中.
+
+在 `login` 动作的时候如果提供 `$_POST["remeberMe"]` 参数(参数的值任意), 则会将该 `sessionID` 储存到客户端的 `cookie` 中去, 过期时间为一个月. 并且将该 `session` 的过期时间也同样设置为一个月.
+
+在 `logout` 动作的时候会删除设置在客户端的 `cookie` 和服务器端(数据库) 中的 `session` .
+
+因为 `session` 存储在数据表中, 所以其生命期不再由 `session.gc_maxlifetime`  或 服务器系统(比如清空session缓存目录) 来决定, 其持久化的层度只由本应用程序决定, 独立于运行在同一台服务器上的其他所有程序.
+
 == Diary Module ==
 
 === DoController ===

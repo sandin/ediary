@@ -2,7 +2,7 @@
 class Ediary_Auth_Database 
 {
     
-    public static function authenticate($email, $password) {
+    public static function authenticate($email, $password, $rememberMe = false) {
         $result = new stdClass();
         $result->result  = false;
         $result->message = '';
@@ -43,12 +43,26 @@ class Ediary_Auth_Database
 
             // set a cookie to save user info
             $user_email = $result->getIdentity();
-            setcookie('ue', $user_email, time() + 2592000, '/', false);
-            //TODO: remeberMe
-            Zend_Session::rememberMe(2592000);
+            // rememberMe
+            if ($rememberMe) {
+                setcookie('ue', $user_email, time() + 2592000, '/', false);
+                Zend_Session::rememberMe(2592000);
+            }
             $result->result = true;
         }
         
         return $result;
+    }
+    
+    public static function logout() {
+        $user = Zend_Auth::getInstance()->getIdentity();
+        if (isset($user)) {
+            $email = $user->email;
+            if (isset($email)) {
+                setcookie('ue', $email, -1, '/', false);
+                Zend_Auth::getInstance()->clearIdentity();
+                Zend_Session::forgetMe();
+            }
+        }
     }
 }

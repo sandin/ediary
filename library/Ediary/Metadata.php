@@ -51,6 +51,7 @@ class Ediary_Metadata
     
     /**
      * Get all metadata 
+     * 
      * @param String $tableName table name without prefix
      * @param String $objectField field name of object id, like "user_id" 
      * @param String $objectId object id
@@ -93,10 +94,18 @@ class Ediary_Metadata
         return $db->delete($this->_table, $where);
     }
     
+    /**
+     * Alias of $this->delete(null);
+     * 
+     * @return The number of affected rows
+     */
     public static function deleteAll() {
         return $this->delete();
     }
     
+    /**
+     * For Zend_Db insert and update 
+     */
     private function _createValues($key, $value) {
         return  array(
             $this->_objectField => $this->_objectId,
