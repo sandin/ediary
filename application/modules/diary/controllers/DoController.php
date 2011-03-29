@@ -82,7 +82,8 @@ class Diary_DoController extends Zend_Controller_Action
                 $response['diary'] = $diary->toArray();
             }
             
-            echo json_encode($response);
+            //echo json_encode($response);
+            echo $this->view->json($response);
         }
     }
     
@@ -95,7 +96,8 @@ class Diary_DoController extends Zend_Controller_Action
             $id = $input->id;
             $diary = Ediary_Diary::find($id);
             if ($diary != null && $diary->user_id == $this->_user->id) {
-                echo json_encode( array('diary' => $diary->toArray(true)) );
+                //echo json_encode( array('diary' => $diary->toArray(true)) );
+                echo $this->view->json( array('diary' => $diary->toArray(true)) );
             }
         }
     }
@@ -129,7 +131,7 @@ class Diary_DoController extends Zend_Controller_Action
             $page = (isset($input->page)) ? $input->page : 1;
             $count = (isset($input->count)) ? $input->count : 10;
             $paginator = Ediary_Diary::getDiarysPaginator($this->_user->id, $page, $count);
-            echo $paginator->toJson();
+            echo $this->view->json($paginator);
         }
     }
     

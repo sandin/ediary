@@ -782,7 +782,7 @@ var OpenButton = Plugin.extend({
         $.ajax({
             url: o.getUserDiaryUrl,
             type: 'post',
-            dataType: 'json',
+            dataType: 'text json',
             data: data,
             success: function(data) {
                 console.log(data);
