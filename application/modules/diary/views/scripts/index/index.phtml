@@ -43,7 +43,23 @@ $(document).ready(function(){
 			&nbsp;&nbsp;&nbsp;&nbsp;
 			<a id="diarys_list_flash" href="#" class="">刷新</a>
 		</div>
-		<div id="toolbar_extBox_list"></div><!-- AJAX ZONE -->
+		<table class="Table" id="table_diary_list" width="100%">
+			<thead>
+				<tr>
+					<th width="130">标题</th>
+					<th>内容</th>
+					<th width="150">最后更新</th>
+					<th width="40">编辑</th>
+					<th width="40">删除</th>
+				</tr>
+			</thead>
+			<tbody></tbody> <!-- AJAX ZONE -->
+		</table>
+		<div class="diarys_list_footer">
+			<a id="diarys_list_pre_page" href="#">上一页</a>
+			<a id="diarys_list_next_page" href="#">下一页</a>
+			<span id="diarys_list_pages"></span>
+		</div>
 	</div><!-- /tabs -->
 	
 	<div id="toolbar-tabs-3" class="innerBox">

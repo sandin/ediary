@@ -714,49 +714,65 @@ E.SaveButton = SaveButton; // NAMESPACE
  * 保存按钮 - 日记列表 - 插件
  */
 var OpenButton = Plugin.extend({
+    
     options: {
-        element: '#editor-btn-open',
-        listUrl: E.url('/diary/list/get'),
-        getUserDiaryUrl: E.url('diary/do/user_diarys'),
-        delUrl: E.url('/diary/do/delete'),
-        boxElem: '#toolbar_extBox_list' 
+        count: 10,
+        // elements 
+        element:       '#editor-btn-open',
+        tableElem:     '#table_diary_list', // will cache the repsonse data
+        tbodyElem:     '#table_diary_list>tbody',
+        editBtnElem :  '#table_diary_list .icon_edit_16',
+        delBtnElem  :  '#table_diary_list .icon_del_16',
+        boxElem:       '#toolbar_extBox_list',
+        flashElem:     '#diarys_list_flash',
+        pageElem:      '#diarys_list_pages',
+        nextPageElem:  '#diarys_list_next_page',
+        prePageElem:   '#diarys_list_pre_page',
+        // urls
+        listUrl:         E.url('/diary/list/get'),
+        getUserDiaryUrl: E.url('/diary/do/user_diarys'),
+        delUrl:          E.url('/diary/do/delete')
     },
     
     init: function() {
         this._super();
-    
         $.extend(this.options, this.extData);
+        
         var o = this.options, 
             self = this;
 
         this.element = $(o.element);
-       
         this.tabElemId = this.element.attr('href');
-        
-        this.bindLiveEvent();
+        this.bindEvent();
         
         // debug 
         this.element.trigger('click');
     },
     
-    bindLiveEvent: function() {
-        var self = this;
+    // bind event
+    bindEvent: function() {
+        var self = this,
+            o = this.options;
         
         // open button
-        this.element.bind('click', function(){
+        this.element.click(function(){
             $(self.tabElemId).slideDown('slow');
-            self.getList();
+            self.doGetDiarys({page: 1, count: o.count});
             return false;
         });
         
         // flash button
-        $('#diarys_list_flash').bind('click', function() {
-            self.getList();
+        $(o.flashElem).click(function() {
+            var data = {
+                count: o.count,
+                page : $(o.tableElem).data('last').current_page || 1
+            };
+            self.doGetDiarys(data);
             return false;
         });
         
         // edit button
-        $('#table_diary_list .icon_edit_16').live('click', function(e) {
+        $(o.editBtnElem).live('click', function(e) {
             var id = self._findId(this);
             if (id) {
                 E.Editor.doGetDiary(id);
@@ -766,15 +782,59 @@ var OpenButton = Plugin.extend({
         });
         
         // delete button
-        $('#table_diary_list .icon_del_16').live('click', function(e) {
+        $(o.delBtnElem).live('click', function(e) {
             var target = this;
             self.doDelete(self._findId(this), function(){
                 $(target).parent().parent().hide(); // hide this row
             });
             return false;
         });
+        
+        // next page button
+        $(o.nextPageElem).click(function() {
+            var nextPage = self._nextPage();
+            if (nextPage) {
+                self.doGetDiarys({count: 10, page: nextPage});
+            }
+            return false;
+        });
+        
+        // pre page button
+        $(o.prePageElem).click(function() {
+            var prePage = self._nextPage(true);
+            if (prePage) {
+                self.doGetDiarys({count: 10, page: prePage});
+            }
+            return false;
+        });
     },
     
+    /**
+     * @param pre boolean false: get next page number
+     *                    true : get pre page number
+     */
+    _nextPage: function(pre) {
+        var o = this.options, 
+            pre = pre || false,
+            data = $(o.tableElem).data('last');
+        if (data) {
+            if (pre) {
+                // pre page
+                if (data.current_page !== 1) {
+                    return parseInt(data.current_page) - 1;
+                }
+            } else {
+                // next page
+                if (data.current_page * o.count < data.total_diarys) {
+                    return parseInt(data.current_page) + 1;
+                }
+            }
+            
+        }
+        return false;
+    },
+    
+    // find current row diary id
     _findId: function(obj) {
         $tr = $(obj).parent().parent();
         if ($tr.length > 0) {
@@ -782,11 +842,11 @@ var OpenButton = Plugin.extend({
         }
     },
     
+    // delete a diary
     doDelete: function(id, callback) {
         var self = this,
             o = this.options,
             data = {id : id};
-            
         $.ajax({
             url: o.delUrl,
             type: 'post',
@@ -797,39 +857,44 @@ var OpenButton = Plugin.extend({
                     console.log(data);
                     callback();
                 }
+                E.Notice.showMessage("成功", 1000);
             }
         });
-        
     },
     
+    // request a list of diarys
     doGetDiarys: function(data) {
         var self = this, 
             o = this.options,
-            data = {
-                count: 5,
-                page: 1
-        };
-        
-        $('#table_diary_list').data('post', data);
-        
+            post = data ||  {count: 10, page: 1};
         $.ajax({
             url: o.getUserDiaryUrl,
             type: 'post',
             dataType: 'json',
-            data: data,
+            data: post,
             success: function(data) {
                 console.log(data);
                 if (data.diarys) {
-                    self.updateTable(data.diarys);
+                    self.updateTable(data, post);
+                    E.Notice.showMessage("成功", 1000);
+                    // save response except diarys list
+                    delete data.diarys;
+                    $(o.tableElem).data('last', data);
                 }
                 E.Notice.showMessage("成功", 1000);
             }
         });
     },
     
-    updateTable: function(jdata) {
-        for ( var i in jdata ) {
-            var diary = jdata[i],
+    // update Table Dom 
+    updateTable: function(data, post) {
+        var o = this.options, 
+            tbody = $(o.tbodyElem).empty(),
+            pagebar = $(o.pageElem).empty(),
+            diarys = data.diarys;
+        
+        for ( var i in diarys ) {
+            var diary = diarys[i],
                 html = '<td>' + diary.title + '</td>'
                      + '<td>' + diary.content + '</td>'
                      + '<td>' + diary.saved_at + '</td>'
@@ -838,10 +903,16 @@ var OpenButton = Plugin.extend({
                 tr = $('<tr></tr>')
                      .attr('id', 'diarys_item_id_' + diary.id)
                      .html(html)
-                     .appendTo("#table_diary_list>tbody");
+                     .appendTo(tbody);
         }
+        
+        var start = (data.current_page * post.count) - post.count + 1,
+            end = start + diarys.length - 1,
+            pageHtml = start + " - " + end + " of " + data.total_diarys;
+        pagebar.html(pageHtml);
     },
     
+    /** @deprecated */
     getList: function(page) {
         var self = this,
             o = this.options

@@ -87,3 +87,8 @@
 2011-03-29T09:40:05+08:00 INFO (6): The application is not installed, installing now.
 2011-03-29T10:52:34+08:00 INFO (6): The application is already installed
 2011-03-29T10:54:33+08:00 INFO (6): The application is already installed
+2011-03-29T13:06:55+08:00 INFO (6): The application is already installed
+2011-03-29T14:49:06+08:00 INFO (6): The application is already installed
+2011-03-29T14:49:24+08:00 INFO (6): The application is already installed
+2011-03-29T14:49:26+08:00 INFO (6): The application is not installed, installing now.
+2011-03-29T14:52:05+08:00 INFO (6): The application is already installed

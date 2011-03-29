@@ -87,7 +87,7 @@ class DoControllerTest extends ControllerTestCase
                       ));
         $this->dispatch("/diary/do/delete");
         $response = Zend_Json::decode($this->getResponse()->getBody());
-        $this->assertFalse($response['result']);  // cann't delete 
+        $this->assertNull($response['result']);  // cann't delete 
     }
 
 

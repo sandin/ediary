@@ -20,6 +20,9 @@ class Diary_ListController extends Zend_Controller_Action
         $this->view->paginator = Ediary_Diary::getDiarysPaginator($this->_user->id, $page);
     }
     
+    /**
+     * @deprecated use /diary/do/user_diarys instead
+     */
     public function getAction()
     {
         // AJAX MODE, JUST NEED partial html

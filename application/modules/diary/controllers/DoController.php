@@ -41,10 +41,25 @@ class Diary_DoController extends Zend_Controller_Action
 
     /**
      * Create or Update diary
+     * 
+     * REQUEST:
+     *  diary: {
+     *  	id: int,
+     *  	title: string,
+     *  	content: string
+     *  }
+     *  
+     * RESPONSE:
+     * {
+     * 	diary: diary object,
+     *  callback: calback function name, 
+     *  error: error message,
+     * }
+     * or NULL
      */
     public function saveAction()
     {
-        // NEED POST [id, title, content]
+        // NEED POST diary [id, title, content]
         if (! isset($_POST['diary']) ) {
             return;
         }
@@ -89,9 +104,18 @@ class Diary_DoController extends Zend_Controller_Action
     
     /**
      * Get a particular diary by ID
+     * 
+     * REQUEST:
+     *  id int diary id [required]
+     *  
+     * RESPONSE:
+     * {
+     *  diary : diary object
+     * }
+     * or NULL
      */
     public function getAction() {
-        $input = new Zend_Filter_Input(array('id' => 'Int'), array(), $_POST);
+        $input = new Zend_Filter_Input(array('id' => 'Int'), array(), $this->getRequest()->getParams());
         if ($input->isValid() && !$input->hasMissing()) {
             $id = $input->id;
             $diary = Ediary_Diary::find($id);
@@ -105,11 +129,20 @@ class Diary_DoController extends Zend_Controller_Action
     /**
      * Get a particular user's diarys
      * 
-     * POST/GET: 
+     * REQUEST:
      * 	count int diarys number
      *  page  int page number
      *  since Date 'yyyy-mm-dd' 
      *  max   Date 'yyyy-mm-dd'
+     *  
+     * RESPONSE:
+     *  {
+     *  	'diarys' : [] // diarys list
+     *  	'current_page' : int
+     *  	'total_page'   : int
+     *  	'total_diarys' : int
+     *  } 
+     *  or return NULL on fail
      * 
      */
     public function userdiarysAction() {
@@ -122,17 +155,24 @@ class Diary_DoController extends Zend_Controller_Action
         $validatorRules = array();
         $input = new Zend_Filter_Input($filterRules, $validatorRules, $this->_request->getParams());
         
-        /*
-        var_dump($input->since);
-        var_dump($input->count);
-        var_dump($input->page);
-        */
+        //var_dump($input->since);
         if ($input->isValid()) {
             $page = (isset($input->page)) ? $input->page : 1;
             $count = (isset($input->count)) ? $input->count : 10;
             $paginator = Ediary_Diary::getDiarysPaginator($this->_user->id, $page, $count);
+            
+            $diarys = array();
+            foreach ($paginator as $item) {
+                $diarys[] = array(
+                    'id'       => $item['id'],
+                    'title'    => $this->view->escape($item['title']),
+                    'content'  => $this->view->substr(trim(strip_tags($item['content'])), 50),
+                    'saved_at' => $item['saved_at']
+                );
+            }
+            
             $response = array(
-            	'diarys' => (array)$paginator->getCurrentItems(),
+            	'diarys' => $diarys,
                 'current_page' => $paginator->getCurrentPageNumber(),
                 'total_page' => $paginator->count(),
                 'total_diarys' => $paginator->getTotalItemCount()
@@ -141,17 +181,25 @@ class Diary_DoController extends Zend_Controller_Action
         }
     }
     
+    /**
+     * Delete a particular diary
+     * 
+     * REQUEST:
+     * 	id int diary id
+     * 
+     * RESPONSE:
+     * 	{'result' : true} on success
+     *  or return NULL on fail
+     */
     public function deleteAction() {
-        $result = false;
         $input = new Zend_Filter_Input(array('id' => 'Int'), array(), $this->_request->getParams());
-        
         if ($input->isValid() && !$input->hasMissing()) {
             $diary = Ediary_Diary::find($input->id);
             if (isset($diary) && $diary->user_id == $this->_user->id) {
                 $result = $diary->delete();
+                echo $this->view->json(array('result' => $result));
             }
         }
-        echo $this->view->json(array('result' => $result));
     }
     
     private function createDiary($data) {
