@@ -91,7 +91,7 @@ var Editor = {
     init : function(options) {
         var t = this, o = $.extend(this.settings, options);
         
-        // Cann't init the editor, Missing DOM element
+        // Some DOM elements are requried
         if (! this.checkDOMIsReady()) { return; }
         
         // Init
@@ -121,7 +121,6 @@ var Editor = {
         return this;
     },
     
-    // Bind Event 
     bindEvent: function() {
         var self = this;
         
@@ -131,7 +130,6 @@ var Editor = {
             self.doSave(true);
         });
         
-        // Show confirm dialog before close this page
         $(window).bind('beforeunload', function(e) {
             self.rteSave(true);
             if (self.isChanged()) {
@@ -140,20 +138,17 @@ var Editor = {
         });
     },
     
-    // Save current title/content length by DOM elem' value
+    // 判断 isChanged 时需要上一次保存时标题/内容的快照
     updateTitleContentLength: function() {
         this.titleLength = this.titleElem.val().length;
         this.contentLength = this.bodyElem.val().length;
     },
     
-    // Setup TinyMCE
     setupTinyMCE: function() {
         var t = this;
-        
         if (typeof window.tinyMCE == 'undefined') {
             E.include(E.baseUrl + "/js/tiny_mce/tiny_mce.js");
         }
-
         window.tinyMCE.init({
             mode: 'exact',
             elements: this.bodyElem.attr('id'),
@@ -196,7 +191,7 @@ var Editor = {
 
     },
 
-    // Check if required DOM elements all exist
+    // 初始化所必须的DOM元素一个都不能少
     checkDOMIsReady: function() {
         var o = this.settings,
             requiredElem = ['element', 'titleElem', 'bodyElem',
@@ -235,8 +230,6 @@ var Editor = {
             console.warn("Editor already has a Plugin named as " + name);
         }
     },
-    
-    // Init all plugins
     initPlugins: function() {
         $.each(this.plugins, function() {
             this.delayInit();
@@ -254,12 +247,12 @@ var Editor = {
         this.events.addListener(name, listener);
     },
     
-    // Notice listeners
+    // 通知绑定在某一事件上的监听函数
     hook: function(hookName, args) {
         this.events.callListener(hookName, args);
     },
     
-    // callback by server
+    // 调用服务器返回的callback
     callback: function(callbackName) {
         if (typeof this[callbackName] === 'function') {
             var fn = this[callbackName];
@@ -267,7 +260,6 @@ var Editor = {
         }
     },
 
-    // is read only
     isReadonly: function() {
         return this.titleElem.attr('readonly') || this.bodyElem.attr('readonly');
     },
@@ -347,15 +339,12 @@ var Editor = {
               || this.bodyElem.val().length !== this.contentLength ); 
     },
     
-    // start auto-save task
     startAutoSave: function() {
         var self = this;
         this.updater = setInterval(function() {
             self.doSave();
         }, self.AUTO_SAVE_INTERVAL);
     },
-    
-    // stop auto-save task
     stopAutoSave: function() {
         if (!! this.updater) {
             clearInterval(this.updater);
@@ -397,7 +386,6 @@ var Editor = {
         }
     },
     
-    // stop auto-resize task
     stopResizer: function() {
         if (!! this.resizer) {
             clearInterval(this.resizer);
@@ -405,7 +393,7 @@ var Editor = {
         }
     },
     
-    // Save the content into the textarea
+    // Save the content into the textarea, so isChanged can read it
     rteSave: function(force) {
         console.log('rte save.');
         var force = force || false,
@@ -415,7 +403,7 @@ var Editor = {
         }
     },
     
-    // do save action
+    // save diary
     doSave: function(force) {
         try {
             var self = this,
@@ -423,10 +411,8 @@ var Editor = {
                 $form = $(this.settings.formElem);
 
             this.rteSave();
-            // force save or (is not empty and changed)
             if ( force || (!this.isEmpty() && this.isChanged() && !this.saving) ) {
                 console.log('do save');
-                // Send data to Server
                 $.ajax({
                     url: self.settings.saveUrl,
                     type: 'POST',
@@ -442,9 +428,6 @@ var Editor = {
                         self.saving = false;
                         self.onSaveDone(data);
                         self.hook('onSaveDone', arguments);
-                    },
-                    complete: function() {
-                        self.updateTitleContentLength();
                     }
                 });
             }
@@ -498,7 +481,6 @@ var Editor = {
             console.log("Get data form server : " + data);
             console.dir(data);
         }
-        // has error or data is null
         if (null == data) {
             return false;
         }
@@ -532,8 +514,6 @@ var Editor = {
             }
         });
     },
-    
-    // use server response repaint the panel
     onGetDiaryDone: function(data) {
         if (! this.checkData(data)) { return; }
         
@@ -547,7 +527,6 @@ var Editor = {
         console.log('do delete');
     },
     
-    // Call jQuery.ajaxSetup
     setupAjax: function() {
         var self = this, 
             options = {
@@ -618,22 +597,18 @@ var Editor = {
     destroy : function() {
         //console.log('destroy editor');
         
-        // Stop Tasks
         this.stopAutoSave();
         this.stopResizer();
         
-        // Destroy TinyMCE Editor
         if ( window.tinyMCE && this.getRTEditor() ) {
             //TODO: tinyMCE 生成的元素无法完全destroy, 生成的元素只是被hide,而非删除
             this.getRTEditor().remove();
         }
         
-        // Destroy all elements
         this.element = null;
         this.titleElem = null;
         this.bodyElem = null;
         
-        // Destroy all plugins
         $.each(this.plugins, function() {
             this.destroy();
         });
@@ -749,15 +724,17 @@ var OpenButton = Plugin.extend({
         this.element.trigger('click');
     },
     
-    // bind event
     bindEvent: function() {
         var self = this,
             o = this.options;
         
         // open button
-        this.element.click(function(){
+        this.element.toggle(function(){
             $(self.tabElemId).slideDown('slow');
             self.doGetDiarys({page: 1, count: o.count});
+            return false;
+        }, function() {
+            $(self.tabElemId).slideUp('slow');
             return false;
         });
         
