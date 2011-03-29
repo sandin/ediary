@@ -34,12 +34,13 @@ class DoControllerTest extends ControllerTestCase
         $this->assertResponseCode('200');
         $response = Zend_Json::decode($this->getResponse()->getBody()); // return array
         
-        $this->assertEquals(count($response), 1); // count 1
-        $this->assertNotNull($response[0]['id']);   // diary id is not null
+        $this->assertEquals(count($response['diarys']), 1); // count 1
+        $this->assertNotNull($response['diarys'][0]['id']);   // diary id is not null
         
+        
+        /////////////////////////////////////////////////// 
         $this->resetRequest()
              ->resetResponse();
-        /////////////////////////////////////////////////// 
         
         $this->request->setMethod("POST")
                       ->setPost(array(
@@ -50,9 +51,44 @@ class DoControllerTest extends ControllerTestCase
         $this->assertResponseCode('200');
         $response = Zend_Json::decode($this->getResponse()->getBody()); // return array
         
-        $this->assertEquals(count($response), 10); // count 10
+        $this->assertEquals(count($response['diarys']), 10); // count 10
         
     } 
+    
+    public function testDeleteAction() {
+        $data = array(
+        	'title' => 'title',
+        	'content' => 'content',
+        	'weather' => 'sunshine',
+        	'mood' => 'normal',
+    		'status' => Ediary_Diary::STATUS_PRIVATE,
+        	'user_id' => '3',
+        	'journal_id' => '1'
+        );
+        $diary = Ediary_Diary::create($data);
+        $this->assertTrue($diary->id > 0);
+        
+        $this->request->setMethod("POST")
+                      ->setPost(array(
+                          'id' => $diary->id,
+                      ));
+        $this->dispatch("/diary/do/delete");
+        
+        $response = Zend_Json::decode($this->getResponse()->getBody());
+        $this->assertTrue($response['result']);
+        
+        /////////////////////////////////////////////////// 
+        $this->resetRequest()
+             ->resetResponse();
+        
+        $this->request->setMethod("POST")
+                      ->setPost(array(
+                          'id'  => '13242342324423' // no exists
+                      ));
+        $this->dispatch("/diary/do/delete");
+        $response = Zend_Json::decode($this->getResponse()->getBody());
+        $this->assertFalse($response['result']);  // cann't delete 
+    }
 
 
 }

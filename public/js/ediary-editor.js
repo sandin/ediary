@@ -718,6 +718,7 @@ var OpenButton = Plugin.extend({
         element: '#editor-btn-open',
         listUrl: E.url('/diary/list/get'),
         getUserDiaryUrl: E.url('diary/do/user_diarys'),
+        delUrl: E.url('/diary/do/delete'),
         boxElem: '#toolbar_extBox_list' 
     },
     
@@ -729,13 +730,7 @@ var OpenButton = Plugin.extend({
             self = this;
 
         this.element = $(o.element);
-        this.element.bind('click', function(){
-            console.log('click open btn');
-            console.log(self.tabElemId);
-            $(self.tabElemId).slideDown('slow');
-            self.getList();
-            return false;
-        });
+       
         this.tabElemId = this.element.attr('href');
         
         this.bindLiveEvent();
@@ -746,6 +741,21 @@ var OpenButton = Plugin.extend({
     
     bindLiveEvent: function() {
         var self = this;
+        
+        // open button
+        this.element.bind('click', function(){
+            $(self.tabElemId).slideDown('slow');
+            self.getList();
+            return false;
+        });
+        
+        // flash button
+        $('#diarys_list_flash').bind('click', function() {
+            self.getList();
+            return false;
+        });
+        
+        // edit button
         $('#table_diary_list .icon_edit_16').live('click', function(e) {
             var id = self._findId(this);
             if (id) {
@@ -755,9 +765,12 @@ var OpenButton = Plugin.extend({
             return false;
         });
         
+        // delete button
         $('#table_diary_list .icon_del_16').live('click', function(e) {
-            console.log(self._findId(this));
-            self.doGetDiarys();
+            var target = this;
+            self.doDelete(self._findId(this), function(){
+                $(target).parent().parent().hide(); // hide this row
+            });
             return false;
         });
     },
@@ -767,6 +780,26 @@ var OpenButton = Plugin.extend({
         if ($tr.length > 0) {
             return parseInt($tr.attr('id').replace('diarys_item_id_', ''));
         }
+    },
+    
+    doDelete: function(id, callback) {
+        var self = this,
+            o = this.options,
+            data = {id : id};
+            
+        $.ajax({
+            url: o.delUrl,
+            type: 'post',
+            data: data,
+            dataType: 'json',
+            success: function(data) {
+                if (data && data.result) {
+                    console.log(data);
+                    callback();
+                }
+            }
+        });
+        
     },
     
     doGetDiarys: function(data) {
@@ -782,11 +815,13 @@ var OpenButton = Plugin.extend({
         $.ajax({
             url: o.getUserDiaryUrl,
             type: 'post',
-            dataType: 'text json',
+            dataType: 'json',
             data: data,
             success: function(data) {
                 console.log(data);
-                self.updateTable(data);
+                if (data.diarys) {
+                    self.updateTable(data.diarys);
+                }
                 E.Notice.showMessage("成功", 1000);
             }
         });

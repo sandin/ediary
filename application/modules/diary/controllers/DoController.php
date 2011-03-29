@@ -131,8 +131,27 @@ class Diary_DoController extends Zend_Controller_Action
             $page = (isset($input->page)) ? $input->page : 1;
             $count = (isset($input->count)) ? $input->count : 10;
             $paginator = Ediary_Diary::getDiarysPaginator($this->_user->id, $page, $count);
-            echo $this->view->json($paginator);
+            $response = array(
+            	'diarys' => (array)$paginator->getCurrentItems(),
+                'current_page' => $paginator->getCurrentPageNumber(),
+                'total_page' => $paginator->count(),
+                'total_diarys' => $paginator->getTotalItemCount()
+            );
+            echo $this->view->json($response);
         }
+    }
+    
+    public function deleteAction() {
+        $result = false;
+        $input = new Zend_Filter_Input(array('id' => 'Int'), array(), $this->_request->getParams());
+        
+        if ($input->isValid() && !$input->hasMissing()) {
+            $diary = Ediary_Diary::find($input->id);
+            if (isset($diary) && $diary->user_id == $this->_user->id) {
+                $result = $diary->delete();
+            }
+        }
+        echo $this->view->json(array('result' => $result));
     }
     
     private function createDiary($data) {
