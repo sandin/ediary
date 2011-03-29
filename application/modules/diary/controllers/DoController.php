@@ -97,7 +97,6 @@ class Diary_DoController extends Zend_Controller_Action
                 $response['diary'] = $diary->toArray();
             }
             
-            //echo json_encode($response);
             echo $this->view->json($response);
         }
     }
@@ -120,7 +119,6 @@ class Diary_DoController extends Zend_Controller_Action
             $id = $input->id;
             $diary = Ediary_Diary::find($id);
             if ($diary != null && $diary->user_id == $this->_user->id) {
-                //echo json_encode( array('diary' => $diary->toArray(true)) );
                 echo $this->view->json( array('diary' => $diary->toArray(true)) );
             }
         }
@@ -142,24 +140,37 @@ class Diary_DoController extends Zend_Controller_Action
      *  	'total_page'   : int
      *  	'total_diarys' : int
      *  } 
-     *  or return NULL on fail
+     *  如果没有日记, 返回信息依然是一条json, 只是diarys为空, []
      * 
      */
     public function userdiarysAction() {
         $filterRules = array(
             'count' => 'Int',
             'page'  => 'Int',
-            'since' => 'LocalizedToNormalized', /* Date */
-            'max'	=> 'LocalizedToNormalized'  /* Date */
+            'since' => 'StringTrim',
+            'max'   => 'StringTrim'
         );
+        $dateValidate = Ediary_Formator::getDateValidate();
         $validatorRules = array();
         $input = new Zend_Filter_Input($filterRules, $validatorRules, $this->_request->getParams());
         
-        //var_dump($input->since);
+        // since和max为可选, 但如果提供就必须符合 0000-00-00 格式
+        /*
+        $dataValidator = Ediary_Formator::getDateValidate();
+        if ( (isset($input->since) && !$dataValidator->isValid($input->since))
+          || (isset($input->max) && !$dataValidator->isValid($input->max)) ) {
+            return;
+        }
+        */
+        
+        //var_dump($input->getUnescaped());
+        //var_dump($input->isValid());
         if ($input->isValid()) {
-            $page = (isset($input->page)) ? $input->page : 1;
+            $page  = (isset($input->page)) ? $input->page : 1;
             $count = (isset($input->count)) ? $input->count : 10;
-            $paginator = Ediary_Diary::getDiarysPaginator($this->_user->id, $page, $count);
+            $since = (isset($input->since)) ? Ediary_Formator::addTime($input->since) : null;
+            $max   = (isset($input->max))  ? Ediary_Formator::addTime($input->max, true) : null;
+            $paginator = Ediary_Diary::getDiarysPaginator($this->_user->id, $page, $count, $since, $max);
             
             $diarys = array();
             foreach ($paginator as $item) {
@@ -170,7 +181,6 @@ class Diary_DoController extends Zend_Controller_Action
                     'saved_at' => $item['saved_at']
                 );
             }
-            
             $response = array(
             	'diarys' => $diarys,
                 'current_page' => $paginator->getCurrentPageNumber(),

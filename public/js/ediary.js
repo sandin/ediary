@@ -367,8 +367,12 @@ var Notice = {
     
     // Options
     options: {
-        element: '#notice'
+        element: '#notice',
+        dialogElem: '#dialog-message'
     },
+    
+    // dialog UI
+    dialog: null,
     
     // hide timer
     timer : null,
@@ -410,6 +414,26 @@ var Notice = {
     
     getMessage: function() {
         return this.element.html();
+    },
+    
+    showDialog: function(message, title) {
+        var t =this, o = this.options,
+            title = title || '提示框';
+        if (! this.dialog) {
+            t.dialog = $(o.dialogElem);
+            if (t.dialog.length == 0) {
+                t.dialog = $("<div></div>").attr('id', o.dialogElem.slice(1))
+                                             .attr('title', title)
+                                             .appendTo($('body'));
+            }
+            t.dialog.dialog({
+                    modal: true,
+                    buttons: {
+                        Ok: function(){$(this).dialog( "close" );}
+                    }
+                });
+        }
+        t.dialog.attr('title', title).text(message).dialog('open');
     },
     
     /**

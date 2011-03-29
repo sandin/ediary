@@ -690,14 +690,21 @@ E.SaveButton = SaveButton; // NAMESPACE
  */
 var OpenButton = Plugin.extend({
     
-    options: {
+    data: {
         count: 10,
+        page: 1
+    },
+    
+    options: {
         // elements 
         element:       '#editor-btn-open',
         tableElem:     '#table_diary_list', // will cache the repsonse data
         tbodyElem:     '#table_diary_list>tbody',
-        editBtnElem :  '#table_diary_list .icon_edit_16',
-        delBtnElem  :  '#table_diary_list .icon_del_16',
+        editBtnElem:   '#table_diary_list .icon_edit_16',
+        delBtnElem:    '#table_diary_list .icon_del_16',
+        filterElem:    '#diarys_list_filter',
+        startDateElem: '#datepicker-start',
+        endDateElem:   '#datepicker-end',
         boxElem:       '#toolbar_extBox_list',
         flashElem:     '#diarys_list_flash',
         pageElem:      '#diarys_list_pages',
@@ -721,7 +728,7 @@ var OpenButton = Plugin.extend({
         this.bindEvent();
         
         // debug 
-        this.element.trigger('click');
+        //this.element.trigger('click');
     },
     
     bindEvent: function() {
@@ -729,22 +736,24 @@ var OpenButton = Plugin.extend({
             o = this.options;
         
         // open button
-        this.element.toggle(function(){
-            $(self.tabElemId).slideDown('slow');
-            self.doGetDiarys({page: 1, count: o.count});
-            return false;
-        }, function() {
-            $(self.tabElemId).slideUp('slow');
+        this.element.click(function(){
+            var box = $(self.tabElemId), 
+                visiable = box.css('display');
+                
+            if ( !visiable || visiable === 'none' ) {
+                box.slideDown('slow');
+                self.doGetDiarys(self.data);
+            } else {
+                box.slideUp('slow');
+            }
             return false;
         });
         
         // flash button
         $(o.flashElem).click(function() {
-            var data = {
-                count: o.count,
+            self.doGetDiarys($.extend(self.data, {
                 page : $(o.tableElem).data('last').current_page || 1
-            };
-            self.doGetDiarys(data);
+            }));
             return false;
         });
         
@@ -771,7 +780,9 @@ var OpenButton = Plugin.extend({
         $(o.nextPageElem).click(function() {
             var nextPage = self._nextPage();
             if (nextPage) {
-                self.doGetDiarys({count: 10, page: nextPage});
+                self.doGetDiarys($.extend(self.data, {
+                    page: nextPage
+                }));
             }
             return false;
         });
@@ -780,8 +791,34 @@ var OpenButton = Plugin.extend({
         $(o.prePageElem).click(function() {
             var prePage = self._nextPage(true);
             if (prePage) {
-                self.doGetDiarys({count: 10, page: prePage});
+                self.doGetDiarys($.extend(self.data, {
+                    page: prePage
+                }));
             }
+            return false;
+        });
+        
+        // filter date button
+        $(o.filterElem).click(function() {
+            var start = $(o.startDateElem).val(),
+                end = $(o.endDateElem).val(),
+                today = new Date(),
+                newData = {page: 1, count: self.data.count}; // 每次点击此按钮都希望使用新的参数请求数据 
+            
+            // 没有初始日期表示不限, 没有结束日期表示到今日止
+            if (start) { newData.since = start; }
+            newData.max = (!!end) ? end : today.getFullYear() 
+                                  + '-' + (today.getMonth() + 1) 
+                                  + '-' + today.getDate();
+            if (newData.since && newData.max 
+                && Date.parse(newData.since) > Date.parse(newData.max))
+            {
+                //alert("起始日期不得大于结束日期.", 5000);
+                E.Notice.showDialog("起始日期不得大于结束日期.", '警告');
+                return false;
+            }
+            self.doGetDiarys(newData);
+            self.data = newData; // reset
             return false;
         });
     },
@@ -802,7 +839,7 @@ var OpenButton = Plugin.extend({
                 }
             } else {
                 // next page
-                if (data.current_page * o.count < data.total_diarys) {
+                if (data.current_page * this.data.count < data.total_diarys) {
                     return parseInt(data.current_page) + 1;
                 }
             }
@@ -851,7 +888,7 @@ var OpenButton = Plugin.extend({
             data: post,
             success: function(data) {
                 console.log(data);
-                if (data.diarys) {
+                if (data && data.diarys) {
                     self.updateTable(data, post);
                     E.Notice.showMessage("成功", 1000);
                     // save response except diarys list
@@ -882,11 +919,21 @@ var OpenButton = Plugin.extend({
                      .html(html)
                      .appendTo(tbody);
         }
+        if (0 == diarys.length) {
+            tbody.html('<tr><td>无日记</td></tr>');
+        }
         
         var start = (data.current_page * post.count) - post.count + 1,
             end = start + diarys.length - 1,
             pageHtml = start + " - " + end + " of " + data.total_diarys;
         pagebar.html(pageHtml);
+        
+        if (this.data.since) {
+            $(o.startDateElem).val(this.data.since);
+        }
+        if (this.data.max) {
+            $(o.endDateElem).val(this.data.max);
+        }
     },
     
     /** @deprecated */

@@ -135,10 +135,26 @@ class Ediary_Diary extends Ediary_Query_Record
      * @param int $itemCountPerPage
      * @return Zend_Paginator
      */
-    public static function getDiarysPaginator($user_id, $currentPageNumber = 1, $itemCountPerPage = 10) {
-        return Ediary_Paginator::factory('{diarys}', 'user_id = ?', $user_id,
+    public static function getDiarysPaginator($user_id,
+                                              $currentPageNumber = 1,
+                                              $itemCountPerPage = 10,
+                                              $since = null,
+                                              $max = null)
+    {
+        $where[] = 'user_id = ?';
+        $bind[] = $user_id;
+        if (isset($since)) {
+            $where[] = 'created_at >= ?';
+            $bind[] = $since;
+        }
+        if (isset($max)) {
+            $where[] = 'created_at <= ?';
+            $bind[] = $max;
+        }
+        return Ediary_Paginator::factory('{diarys}', $where, $bind,
                                  $currentPageNumber, $itemCountPerPage);
     }
+    //SELECT * FROM diarys d where created_at >= '2011-03-28 00:00:00' AND created_at < '2011-03-29 23:00:00' LIMIT 0,1000
     
     /**
      * Delete current diary

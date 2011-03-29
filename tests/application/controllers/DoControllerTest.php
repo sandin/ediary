@@ -15,7 +15,7 @@ class DoControllerTest extends ControllerTestCase
     {
         /* Tear Down Routine */
     }
-    
+
     // 该测试必须开启 hack auth
     // 并且 hack auth 必须有至少 10篇以上的日记存在
     public function testUserDiaryAction() {
@@ -49,14 +49,30 @@ class DoControllerTest extends ControllerTestCase
                       ));
         $this->dispatch("/diary/do/userdiarys");
         $this->assertResponseCode('200');
-        $response = Zend_Json::decode($this->getResponse()->getBody()); // return array
+        $response2 = Zend_Json::decode($this->getResponse()->getBody()); // return array
         
-        $this->assertEquals(count($response['diarys']), 10); // count 10
-        
+        $this->assertEquals(count($response2['diarys']), 10); // count 10
     } 
     
-    public function testDeleteAction() {
-        $data = array(
+    public function testGetDiarysSince() {
+        $diary = $this->_createDiary();
+        
+        $this->request->setMethod("POST")
+                      ->setPost(array(
+                          'count' => 1,
+                          'page'  => 1,
+                          'since' => '2011-03-29',
+                          'max'   => '2011-03-29'
+                      ));
+        $this->dispatch("/diary/do/userdiarys");
+        $this->assertResponseCode('200');
+        
+        $response = Zend_Json::decode($this->getResponse()->getBody()); // return array
+        $this->assertEquals(count($response['diarys']), 1); // count 1
+    }
+    
+    private function _createDiary() {
+         $data = array(
         	'title' => 'title',
         	'content' => 'content',
         	'weather' => 'sunshine',
@@ -65,7 +81,11 @@ class DoControllerTest extends ControllerTestCase
         	'user_id' => '3',
         	'journal_id' => '1'
         );
-        $diary = Ediary_Diary::create($data);
+        return Ediary_Diary::create($data);
+    }
+    
+    public function testDeleteAction() {
+        $diary = $this->_createDiary();
         $this->assertTrue($diary->id > 0);
         
         $this->request->setMethod("POST")
