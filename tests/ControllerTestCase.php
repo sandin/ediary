@@ -2,6 +2,7 @@
 require_once 'Zend/Application.php';
 require_once 'Zend/Test/PHPUnit/ControllerTestCase.php';
 require_once 'Zend/Db.php';
+require_once './Initialize.php';
 
 abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
 {
@@ -10,29 +11,24 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
     protected function setUp()
     {
         $this->bootstrap = array($this, 'appBootstrap');
-
-        $params = array ('host'     => '127.0.0.1',
-                 'username' => 'lds',
-                 'password' => '123',
-                 'dbname'   => 'lds0019');
-        $db = Zend_Db::factory('PDO_MYSQL', $params);
-        Zend_Registry::set('db',$db);
-
+        /*
+        $this->bootstrap = new Zend_Application(
+            'testing',
+            APPLICATION_PATH . '/configs/application.ini'
+        );
+        */
         parent::setUp();
     }
 
     public function appBootstrap()
     {
-        $this->application = new Zend_Application(APPLICATION_ENV,APPLICATION_PATH . '/configs/application.ini');
+        $this->application = new Zend_Application('testing' ,APPLICATION_PATH . '/configs/application.ini');
         $this->application->bootstrap();
 
         $bootstrap = $this->application->getBootstrap();
         $front = $bootstrap->getResource('FrontController');
         $front->setParam('bootstrap', $bootstrap);
-
+        $front->throwExceptions(true);
     }
-
-
-
-
+    
 }

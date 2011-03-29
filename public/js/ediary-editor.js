@@ -560,9 +560,8 @@ var Editor = {
                     self.hook('onError', arguments);
                 },
                 beforeSend: function(jqXHR, settings) {
-                    if (settings.beforeSendMessage) {
-                        E.Notice.showMessage(settings.beforeSendMessage);
-                    }
+                    var msg = settings.beforeSendMessage || '正在请求服务器...';
+                    E.Notice.showMessage(msg);
                     self.hook('onBeforeSend', arguments);
                 }
             };
@@ -712,12 +711,13 @@ E.SaveButton = SaveButton; // NAMESPACE
 
 /**
  * Class SaveButton extends Plugin
- * 保存按钮 - 插件
+ * 保存按钮 - 日记列表 - 插件
  */
 var OpenButton = Plugin.extend({
     options: {
         element: '#editor-btn-open',
         listUrl: E.url('/diary/list/get'),
+        getUserDiaryUrl: E.url('diary/do/user_diarys'),
         boxElem: '#toolbar_extBox_list' 
     },
     
@@ -739,6 +739,9 @@ var OpenButton = Plugin.extend({
         this.tabElemId = this.element.attr('href');
         
         this.bindLiveEvent();
+        
+        // debug 
+        this.element.trigger('click');
     },
     
     bindLiveEvent: function() {
@@ -754,6 +757,7 @@ var OpenButton = Plugin.extend({
         
         $('#table_diary_list .icon_del_16').live('click', function(e) {
             console.log(self._findId(this));
+            self.doGetDiarys();
             return false;
         });
     },
@@ -762,6 +766,44 @@ var OpenButton = Plugin.extend({
         $tr = $(obj).parent().parent();
         if ($tr.length > 0) {
             return parseInt($tr.attr('id').replace('diarys_item_id_', ''));
+        }
+    },
+    
+    doGetDiarys: function(data) {
+        var self = this, 
+            o = this.options,
+            data = {
+                count: 5,
+                page: 1
+        };
+        
+        $('#table_diary_list').data('post', data);
+        
+        $.ajax({
+            url: o.getUserDiaryUrl,
+            type: 'post',
+            dataType: 'json',
+            data: data,
+            success: function(data) {
+                console.log(data);
+                self.updateTable(data);
+                E.Notice.showMessage("成功", 1000);
+            }
+        });
+    },
+    
+    updateTable: function(jdata) {
+        for ( var i in jdata ) {
+            var diary = jdata[i],
+                html = '<td>' + diary.title + '</td>'
+                     + '<td>' + diary.content + '</td>'
+                     + '<td>' + diary.saved_at + '</td>'
+                     + '<td><a class="icon_edit_16" href="/diary/' + diary.id + '"></a>'
+                     + '<td><a class="icon_del_16" href="/diary/del/' + diary.id + '"></a>',
+                tr = $('<tr></tr>')
+                     .attr('id', 'diarys_item_id_' + diary.id)
+                     .html(html)
+                     .appendTo("#table_diary_list>tbody");
         }
     },
     
@@ -774,7 +816,6 @@ var OpenButton = Plugin.extend({
             type: 'post',
             dataType: 'html',
             data: {page: page},
-            beforeSendMessage: '正在请求...',
             success: function(data) {
                 $(o.boxElem).html(data);
                 E.Notice.showMessage("成功", 1000);

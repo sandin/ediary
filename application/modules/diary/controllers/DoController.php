@@ -39,6 +39,9 @@ class Diary_DoController extends Zend_Controller_Action
         return new Zend_Filter_Input($filter, $validator, $_POST['diary']);
     } 
 
+    /**
+     * Create or Update diary
+     */
     public function saveAction()
     {
         // NEED POST [id, title, content]
@@ -83,6 +86,9 @@ class Diary_DoController extends Zend_Controller_Action
         }
     }
     
+    /**
+     * Get a particular diary by ID
+     */
     public function getAction() {
         $input = new Zend_Filter_Input(array('id' => 'Int'), array(), $_POST);
         if ($input->isValid() && !$input->hasMissing()) {
@@ -91,6 +97,39 @@ class Diary_DoController extends Zend_Controller_Action
             if ($diary != null && $diary->user_id == $this->_user->id) {
                 echo json_encode( array('diary' => $diary->toArray(true)) );
             }
+        }
+    }
+    
+    /**
+     * Get a particular user's diarys
+     * 
+     * POST/GET: 
+     * 	count int diarys number
+     *  page  int page number
+     *  since Date 'yyyy-mm-dd' 
+     *  max   Date 'yyyy-mm-dd'
+     * 
+     */
+    public function userdiarysAction() {
+        $filterRules = array(
+            'count' => 'Int',
+            'page'  => 'Int',
+            'since' => 'LocalizedToNormalized', /* Date */
+            'max'	=> 'LocalizedToNormalized'  /* Date */
+        );
+        $validatorRules = array();
+        $input = new Zend_Filter_Input($filterRules, $validatorRules, $this->_request->getParams());
+        
+        /*
+        var_dump($input->since);
+        var_dump($input->count);
+        var_dump($input->page);
+        */
+        if ($input->isValid()) {
+            $page = (isset($input->page)) ? $input->page : 1;
+            $count = (isset($input->count)) ? $input->count : 10;
+            $paginator = Ediary_Diary::getDiarysPaginator($this->_user->id, $page, $count);
+            echo $paginator->toJson();
         }
     }
     
