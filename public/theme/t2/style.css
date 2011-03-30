@@ -1,0 +1,9 @@
+/**
+ * Default theme 
+ 
+ * @author lds
+ */
+body {
+	background: url("images/bg_body.png") repeat scroll 0 0 #F2EFE9;
+    color: #666;
+}

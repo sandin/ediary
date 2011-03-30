@@ -72,11 +72,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	    // must before setSaveHandler
 	    Zend_Session::setOptions(array('gc_maxlifetime' => strval(60*60*24*30))); // a month
 	    Zend_Session::setSaveHandler(new Zend_Session_SaveHandler_DbTable($config));
-	    /*
-	    if(!isset($_SESSION)){
-	        Zend_Session::start();
-	    }
-	    */
+	    /* if(!isset($_SESSION)){ Zend_Session::start(); } */
 	    //var_dump(Zend_Session::getOptions());
     }
     
@@ -94,6 +90,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $hack->username = 'admin';
         $hack->id = 3;
         $hack->email = "admin@lds.com";
+        $hack->theme = 't0';
         Zend_Registry::set('user', $hack);
         //TODO: DELETE ME ****** HACK **************************
     }
@@ -257,6 +254,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         // shortcut for view script
         $view->user = Zend_Registry::get('user');
+        $theme = (isset($view->user->theme)) ? $view->user->theme : 't0';
+        $view->theme = $view->baseUrl("/theme/") . $theme . "/style.css";
         
         return $view;
     }

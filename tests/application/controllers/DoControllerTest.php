@@ -16,9 +16,13 @@ class DoControllerTest extends ControllerTestCase
         /* Tear Down Routine */
     }
 
-    // 该测试必须开启 hack auth
-    // 并且 hack auth 必须有至少 10篇以上的日记存在
+    // ****************************************************
+    // **** 该测试必须开启 Bootstarp.php 中的 hack auth ******
+    // ****************************************************
     public function testUserDiaryAction() {
+        for ($i = 0, $l = 10; $i < $l; $i++) {
+            $diary = $this->_createDiary();
+        }
         
         $this->request->setMethod("POST")
                       ->setPost(array(
@@ -26,6 +30,7 @@ class DoControllerTest extends ControllerTestCase
                           'page'  => 1
                       ));
         $this->dispatch("/diary/do/userdiarys");
+        //var_dump($this->getResponse()->getBody());
         
         $this->assertModule('diary');
         $this->assertController('do');
@@ -61,8 +66,8 @@ class DoControllerTest extends ControllerTestCase
                       ->setPost(array(
                           'count' => 1,
                           'page'  => 1,
-                          'since' => '2011-03-29',
-                          'max'   => '2011-03-29'
+                          'since' => '2010-03-29',
+                          'max'   => '2061-03-29'
                       ));
         $this->dispatch("/diary/do/userdiarys");
         $this->assertResponseCode('200');

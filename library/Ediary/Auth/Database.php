@@ -38,7 +38,8 @@ class Ediary_Auth_Database
                 $authAdapter->getResultRowObject(array(
                     Ediary_User::EMAIL,
                     Ediary_User::NAME,
-                    Ediary_User::ID)
+                    Ediary_User::ID,
+                    'theme')
             ));
 
             // set a cookie to save user info

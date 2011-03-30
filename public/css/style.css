@@ -960,8 +960,26 @@ form.profile #forget_pw {
 .table_diary_list th {
 	text-align: left;
 }
-.table_diary_list {}
-.table_diary_list {}
+
+.theme_list {}
+.theme_list li {
+    float: left;
+    margin: 5px 8px;
+    text-align: center;
+    width: 120px;
+}
+.theme_list li img {
+    display: block;
+	width: 120px;
+	height: 120px;
+	border: 1px solid #EEEEEE;
+}
+.theme_list_footer {
+	text-align: right;
+}
+.theme_list {}
+.theme_list {}
+
 	
 	
 

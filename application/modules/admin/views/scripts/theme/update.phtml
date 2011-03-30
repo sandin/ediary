@@ -1,0 +1,16 @@
+<div class="content_box">
+	<h2>主题管理</h2>
+	<?php echo $this->message ?>
+	<?php if (isset($this->themesInstalled)):?>
+		<h3>已安装主题:</h3>
+		<ul class="theme_list clearfix">
+		<?php foreach($this->themesInstalled as $theme):?>
+			<li>
+				<img src="<?php echo $this->baseUrl("/theme/") . $theme['name'] .'/preview.jpg' ?>" />
+		        <?php echo $theme['name']?>
+			</li>
+		<?php endforeach;?>
+		</ul>
+	<?php endif;?>
+	
+</div>

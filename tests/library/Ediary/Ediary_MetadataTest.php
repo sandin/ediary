@@ -47,26 +47,31 @@ class Ediary_MetadataTest extends ControllerTestCase
      */
     public function testAll($key, $value) {
         $metadata = $this->object;
+        $metadata->delete(); // reset
         $update = "change 1";
         
-        $metadata->insert($key, $value);
+        $row1 = $metadata->insert($key, $value);
+        $this->assertEquals($row1, 1); // only one row affected
         
         // test find also
-        $this->assertEquals($metadata->find($key), $value);
+        $this->assertEquals($value, $metadata->find($key));
+        $this->assertTrue($metadata->isExists($key));
         
         // test update
-        $metadata->update($key, $update);
-        $this->assertEquals($metadata->find($key), $update);
+        $row2 = $metadata->update($key, $update);
+        $this->assertEquals(1, $row2); // only one row affected
+        $this->assertEquals($update, $metadata->find($key));
         
         // test delete
         $metadata->delete($key);
         $this->assertFalse($metadata->find($key));
+        $this->assertFalse($metadata->isExists($key));
     }
     
     public function dataProviderForGetAll() {
         return array(
-            array('settings1', 'settings1-values', 'settings2', 'settings2-values'),
-            array('settings1', 'settings1-values', 'settings2', 'settings2-values'),
+            array('settings1-1', 'settings1-values', 'settings2-1', 'settings2-values'),
+            array('settings1-2', 'settings1-values', 'settings2-1', 'settings2-values'),
         );
         
     }
@@ -77,12 +82,14 @@ class Ediary_MetadataTest extends ControllerTestCase
     public function testGetAll($k1, $v1, $k2, $v2) {
         $metadata = $this->object;
         $metadata->delete();
-        $metadata->insert($k1, $v1);
-        $metadata->insert($k2, $v2);
+        $r1 = $metadata->insert($k1, $v1);
+        $r2 = $metadata->insert($k2, $v2);
+        $this->assertEquals(1, $r1); // only one row affected
+        $this->assertEquals(1, $r2);
         
         $usermeta = Ediary_Metadata::getAll('usermeta', 'user_id', 3);
         $this->assertTrue(is_array($usermeta));
-        $this->assertEquals(count($usermeta),2);
+        $this->assertEquals(2, count($usermeta));
         //var_dump($usermeta);
     }
     

@@ -378,7 +378,7 @@ class Ediary_User extends Ediary_Query_Record
                 return -1; //is not a valid data
             }
         }
-        $where = $this->db->quoteInto(self::ID . '= ?', $useId);
+        $where = $this->db->quoteInto(self::ID . '= ?', $userId);
         return self::$table->update($userData, $where);
     }
     

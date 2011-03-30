@@ -1,0 +1,18 @@
+/**
+ * Default theme 
+ 
+ * @author lds
+ */
+body {
+	background: url("images/bg_body.jpg") repeat scroll 0 0 #F2EFE9;
+    color: #666;
+}
+
+.diary_wrapper {
+    line-height: 24px;
+}
+.diary_wrapper .diary_container {
+   	background: #FFF url("images/bg_diary_line.jpg") repeat;
+    line-height: 24px;
+    padding-top: 24px;
+}

@@ -155,13 +155,11 @@ class Diary_DoController extends Zend_Controller_Action
         $input = new Zend_Filter_Input($filterRules, $validatorRules, $this->_request->getParams());
         
         // since和max为可选, 但如果提供就必须符合 0000-00-00 格式
-        /*
         $dataValidator = Ediary_Formator::getDateValidate();
         if ( (isset($input->since) && !$dataValidator->isValid($input->since))
           || (isset($input->max) && !$dataValidator->isValid($input->max)) ) {
             return;
         }
-        */
         
         //var_dump($input->getUnescaped());
         //var_dump($input->isValid());

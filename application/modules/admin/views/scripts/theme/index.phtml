@@ -1,0 +1,15 @@
+<div class="content_box">
+	<h2>主题管理</h2>
+	<form action="/admin/theme/update" method="post">
+	<ul class="theme_list clearfix">
+		<?php foreach ($this->themes as $theme):?>
+		<li>
+			<img src="<?php echo $this->baseUrl("/theme/") . $theme['name'] .'/preview.jpg' ?>" />
+		    <?php echo $theme['name']?>
+		    <input type="checkbox" name="themes[]" value="<?php echo $theme['name']?>" />
+		</li>
+		<?php endforeach; ?>
+	</ul>
+		<input type="submit" value="确定" />
+	</form>
+</div>

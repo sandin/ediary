@@ -29,7 +29,7 @@ class Ediary_Database_Db
      * Tables name
      * @var Array<String>
      */
-    private $tables = array('users', 'usermeta', 'diarys', 'journals', 'sessions');
+    private $tables = array('users', 'usermeta', 'diarys', 'journals', 'themes', 'sessions');
 
     /**
      * Table Name - users
@@ -44,6 +44,8 @@ class Ediary_Database_Db
     public $usermeta;
     
     public $sessions;
+    
+    public $themes;
 
     /**
      * Table Name - diarys

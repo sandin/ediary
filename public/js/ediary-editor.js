@@ -957,11 +957,18 @@ E.OpenButton = OpenButton; // NAMESPACE
  * 保存按钮 - 插件
  */
 var ThemeButton = Plugin.extend({
+    
+    // 选择的主题
+    select: null,
+    
     options: {
         element: '#editor-btn-theme',
         previewElem: '.preview-theme-btns',
+        changeElem: '#change-theme-btn',
         themeLinkElem: '#theme-css',
-        themeRoot: E.url('/theme/')
+        
+        themeRoot: E.url('/theme/'),
+        changeThemeUrl: E.url('/user/settings/save')
     },
     
     init: function() {
@@ -980,16 +987,34 @@ var ThemeButton = Plugin.extend({
     
     bindEvent: function() {
         var self = this, o = this.options;
-        console.log(o.previewElem);
+        
+        // preview theme buttons, no really change the theme, just preview
         $(o.previewElem).each(function(i) {
             $(this).click(function(e) {
                 var themeName = $(this).attr('href'),
                     themeCSS = o.themeRoot + themeName + '/style.css';
                 
-                console.log(themeCSS);
                 $(o.themeLinkElem).attr('href', themeCSS);
+                self.select = themeName;
                 return false;
             });
+        });
+        
+        // change the theme button
+        $(o.changeElem).click(function() {
+            if (null == self.select) return;
+            
+            $.ajax({
+                url : o.changeThemeUrl,
+                data: {theme: self.select},
+                success: function(data) {
+                    if (data && data.result) {
+                        E.Notice.showMessage("成功更换主题", 2000);
+                        console.log(data);
+                    }
+                }
+            });
+            
         });
     },
     

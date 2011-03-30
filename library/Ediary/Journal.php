@@ -51,7 +51,7 @@ class Ediary_Journal extends Ediary_Query_Record
         $this->fields['created_at'] = $now;
         
         // Insert into DB
-        $result = parent::insertRow($this->getDb()->journals);
+        $result = parent::insertRow(self::getDb()->journals);
         
         // Reset fields
         $this->fields['id'] = self::getDb()->lastInsertId();

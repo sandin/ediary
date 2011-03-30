@@ -27,6 +27,7 @@ CREATE TABLE $imdb->users (
   created_at 	datetime     NOT NULL default '0000-00-00 00:00:00',
   last_logined	datetime     NOT NULL default '0000-00-00 00:00:00',
   account  	 int(11)         NOT NULL default '0',
+  theme 	 varchar(100)    NOT NULL default 't0',
   photo      varchar(100)    NOT NULL default '',
 
   PRIMARY KEY (id),
@@ -74,6 +75,15 @@ CREATE TABLE $imdb->journals (
 
   PRIMARY KEY (id),
   KEY journal_owner (user_id)
+) $imdb->tableSet;
+
+DROP TABLE IF EXISTS $imdb->themes;
+CREATE TABLE $imdb->themes (
+  id      	  bigint(20)      unsigned NOT NULL auto_increment,
+  name        varchar(100)    NOT NULL default '',
+
+  PRIMARY KEY (id),
+  UNIQUE KEY name (name)
 ) $imdb->tableSet;
 
 DROP TABLE IF EXISTS $imdb->sessions;

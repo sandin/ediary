@@ -87,6 +87,9 @@
               <actionMethod actionName="step2"/>
               <actionMethod actionName="step1"/>
             </controllerFile>
+            <controllerFile controllerName="Theme">
+              <actionMethod actionName="index"/>
+            </controllerFile>
           </controllersDirectory>
           <formsDirectory enabled="false"/>
           <layoutsDirectory enabled="false"/>
@@ -107,6 +110,9 @@
               </viewControllerScriptsDirectory>
               <viewControllerScriptsDirectory forControllerName="Install">
                 <viewScriptFile forActionName="step1"/>
+              </viewControllerScriptsDirectory>
+              <viewControllerScriptsDirectory forControllerName="Theme">
+                <viewScriptFile forActionName="index"/>
               </viewControllerScriptsDirectory>
             </viewScriptsDirectory>
             <viewHelpersDirectory/>
@@ -198,6 +204,7 @@
           <testApplicationControllerFile filesystemName="DoControllerTest.php"/>
           <testApplicationControllerFile filesystemName="ListControllerTest.php"/>
           <testApplicationControllerFile filesystemName="SettingsControllerTest.php"/>
+          <testApplicationControllerFile filesystemName="ThemeControllerTest.php"/>
         </testApplicationControllerDirectory>
       </testApplicationDirectory>
       <testLibraryDirectory>
