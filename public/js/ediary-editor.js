@@ -706,6 +706,7 @@ var OpenButton = Plugin.extend({
         startDateElem: '#datepicker-start',
         endDateElem:   '#datepicker-end',
         boxElem:       '#toolbar_extBox_list',
+        tabsElem:      '#editor-toolbar',
         flashElem:     '#diarys_list_flash',
         pageElem:      '#diarys_list_pages',
         nextPageElem:  '#diarys_list_next_page',
@@ -725,7 +726,13 @@ var OpenButton = Plugin.extend({
 
         this.element = $(o.element);
         this.tabElemId = this.element.attr('href');
-        this.bindEvent();
+        
+         // open button
+        this.element.click(function(){
+            self.doGetDiarys(self.data);
+            self.bindEvent();
+            return false;
+        });
         
         // debug 
         //this.element.trigger('click');
@@ -734,20 +741,6 @@ var OpenButton = Plugin.extend({
     bindEvent: function() {
         var self = this,
             o = this.options;
-        
-        // open button
-        this.element.click(function(){
-            var box = $(self.tabElemId), 
-                visiable = box.css('display');
-                
-            if ( !visiable || visiable === 'none' ) {
-                box.slideDown('slow');
-                self.doGetDiarys(self.data);
-            } else {
-                box.slideUp('slow');
-            }
-            return false;
-        });
         
         // flash button
         $(o.flashElem).click(function() {
@@ -762,7 +755,7 @@ var OpenButton = Plugin.extend({
             var id = self._findId(this);
             if (id) {
                 E.Editor.doGetDiary(id);
-                $(self.tabElemId).slideUp('slow');
+                $(o.tabsElem).simpleTabs('hide');
             }
             return false;
         });
@@ -959,6 +952,54 @@ var OpenButton = Plugin.extend({
 });
 E.OpenButton = OpenButton; // NAMESPACE
 
+/**
+ * Class SaveButton extends Plugin
+ * 保存按钮 - 插件
+ */
+var ThemeButton = Plugin.extend({
+    options: {
+        element: '#editor-btn-theme',
+        previewElem: '.preview-theme-btns',
+        themeLinkElem: '#theme-css',
+        themeRoot: E.url('/theme/')
+    },
+    
+    init: function() {
+        this._super();
+    
+        $.extend(this.options, this.extData);
+        var o = this.options;
+
+        this.element = $(o.element);
+        if (this.element.length < 1) {
+            console.warn("Theme Button is missing, it should be :", o.element);
+        }
+
+        this.bindEvent();
+    },
+    
+    bindEvent: function() {
+        var self = this, o = this.options;
+        console.log(o.previewElem);
+        $(o.previewElem).each(function(i) {
+            $(this).click(function(e) {
+                var themeName = $(this).attr('href'),
+                    themeCSS = o.themeRoot + themeName + '/style.css';
+                
+                console.log(themeCSS);
+                $(o.themeLinkElem).attr('href', themeCSS);
+                return false;
+            });
+        });
+    },
+    
+    
+    destroy : function() {
+        this.element.unbind();
+    }
+});
+E.ThemeButton = ThemeButton; // NAMESPACE
+
 })(jQuery, Ediary, window);
 
 
@@ -995,6 +1036,7 @@ var Pad = {
         // add Plugins 
         editor.addPlugin('SaveButton', new E.SaveButton());
         editor.addPlugin('OpenButton', new E.OpenButton());
+        editor.addPlugin('ThemeButton', new E.ThemeButton());
     },
     
     destroy: function() {

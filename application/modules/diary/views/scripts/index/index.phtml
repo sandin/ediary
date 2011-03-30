@@ -2,6 +2,7 @@
 $this->loadJquery();
 $this->headLink()->appendStylesheet("/css/smoothness/jquery-ui-1.8.11.custom.css");
 $this->headScript()->appendFile("/js/jquery-ui-1.8.11.custom.min.js");
+$this->headScript()->appendFile("/js/jquery-simpleTabs-1.0.js");
 $this->headScript()->appendFile("/js/ediary.js?v=1");
 $this->headScript()->appendFile("/js/ediary-editor.js?v=1");
 $this->headScript()->appendFile("/js/tiny_mce/tiny_mce.js");
@@ -17,18 +18,24 @@ $(document).ready(function(){
 	};
 	$("#datepicker-start").datepicker(params);
 	$("#datepicker-end").datepicker(params);
+	
+	$("#editor-toolbar").simpleTabs({select: null, useId: true});
 });
 ');
 ?>
 <!-- Toolbar -->
 <div id="editor-toolbar" class="toolbar">
 	<ul class="toolbar-btns">
-		<li><a href="#toolbar-tabs-1" id="" class="menu">新建</a></li>
+		<li><a href="#toolbar-tabs-create" id="" class="menu">新建</a></li>
 		<li><a href="#toolbar-tabs-open" id="editor-btn-open" class="menu active">打开</a></li>
 		<li><a href="#" id="editor-btn-save" class="menu">保存</a></li>
-		<li><a href="#toolbar-tabs-3" class="menu">附件</a></li>
+		<li><a href="#toolbar-tabs-upload" class="menu">附件</a></li>
+		<li><a href="#toolbar-tabs-theme" id="editor-btn-theme" class="menu">主题</a></li>
 	</ul>
-	<div id="toolbar-tabs-1" class="innerBox"></div>
+	
+	<div id="toolbar-tabs-create" class="innerBox">
+		create
+	</div>
 	
 	<div id="toolbar-tabs-open" class="innerBox">
 		<div class="diarys_list_toolbar">
@@ -62,7 +69,15 @@ $(document).ready(function(){
 		</div>
 	</div><!-- /tabs -->
 	
-	<div id="toolbar-tabs-3" class="innerBox">
+	<div id="toolbar-tabs-upload" class="innerBox">
+		upload
+	</div>
+	
+	<div id="toolbar-tabs-theme" class="innerBox">
+		<ul class="theme_list">
+			<li><a class="preview-theme-btns" href="t0"><img src="/theme/t0/preview.jpg" />主题0</a></li>
+			<li><a class="preview-theme-btns" href="t1"><img src="/theme/t1/preview.jpg" />主题1</a></li>
+		</ul>
 	</div>
 </div><!-- /toolbar -->
 

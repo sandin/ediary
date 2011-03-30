@@ -550,5 +550,3 @@ Ediary.extend('Notice', Notice);
         window.Class = Class;
     }
 })(window);
-
-

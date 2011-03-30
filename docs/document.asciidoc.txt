@@ -232,6 +232,44 @@ array(
 
 因为 `session` 存储在数据表中, 所以其生命期不再由 `session.gc_maxlifetime`  或 服务器系统(比如清空session缓存目录) 来决定, 其持久化的层度只由本应用程序决定, 独立于运行在同一台服务器上的其他所有程序.
 
+== Theme 样式布局 ==
+
+样式应以简洁为主. 还原日记的本质, 靠近纸质书写的体验.
+
+.layout
+`/application/layouts/scripts/layout.phtml`
+全局布局文件(HTML总结构).
+
+.style
+`/public/css`
+
+.首页模板
+`/application/modules/default/views/script/index/index.phtml`
+
+=== 主题 ===
+每个用户可以选择一个主题, 该主题包括一个css样式文件, 可定义的一般为背景图片,基本配色, 有限度的布局.
+
+路径在:
+`/public/theme`
+
+
+.主题模板
+=============================================
+
+.主题 `t0` 的基本文件列表
+`/public/theme/t0/`
+`/public/theme/t0/style.css`
+`/public/theme/t0/preview.jpg`
+
+主题要求:
+    * 主题的根目录必须放置在 `public/theme` 文件夹下, 权限为所有人可读.
+    * 主题的目录名必须是小写的主题名.
+    * 必须包含一个样式文件, 名为 `style.css` .
+    * 必须包含一张主题预览图, 名为 `preview.jpg` . 注意必须为 `JPG` 格式的图片, 大小暂未定.
+
+=============================================
+
+
 == Diary Module ==
 
 === DoController ===
@@ -262,19 +300,7 @@ array(
 `$this->_redirect(Ediary_Core::redirect('登录成功', '首页', "/"));`
 
 
-== Theme 样式布局 ==
 
-样式应以简洁为主. 还原日记的本质, 靠近纸质书写的体验.
-
-.layout
-`/application/layouts/scripts/layout.phtml`
-全局布局文件(HTML总结构).
-
-.style
-`/public/css`
-
-.首页模板
-`/application/modules/default/views/script/index/index.phtml`
 
 
 === 分页 ===
@@ -419,6 +445,7 @@ NOTE: 为复用考虑, 建议使用写好的独立模板来显示分页列表.
     * 决定将日记列表从 *标题列表* 改成 *标题/内容列表* ,  因为标题基本都是日期, 列出来没有多少意义, 而使用类似博客的形式把日记都分页列出来, 才更方便进行回顾性的浏览, 然后单日记浏览功能也需要实现.
     * 参考豆瓣, AUTO_INCREMENT = 10000000
     * 新建类型API的东西,用于AJAX请求, 和外部API的区别是认证方式不同, 将来可以参考此内部API开发外部API, 用于其他客户端请求.
+    * 实现支持主题 theme .
 
     首页-登录 -> today页面
 
