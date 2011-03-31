@@ -159,10 +159,10 @@ var Editor = {
             theme : "advanced",
             skin: 'default',
             content_css : E.baseUrl + "/css/rte.css",
-            theme_advanced_buttons1 : "bold,italic,underline,|,fontselect,fontsizeselect,forecolor,|,justifyleft,justifycenter,justifyright,|,indent,outdent,|,strikethrough,backcolor,|,bullist,numlist,|,spellchecker,insertdate,link,removeformat",
+            theme_advanced_buttons1 : "bold,italic,underline,|,fontselect,forecolor,|,justifyleft,justifycenter,justifyright,|,indent,outdent,|,strikethrough,backcolor,|,bullist,numlist,|,spellchecker,insertdate,link,removeformat",
             theme_advanced_buttons2 : "",
             theme_advanced_buttons3 : "",
-            theme_advanced_toolbar_location : "none",
+            theme_advanced_toolbar_location : "external",
             theme_advanced_toolbar_align : "left",
             theme_advanced_statusbar_location : "none",
             theme_advanced_resizing : true,
@@ -303,6 +303,17 @@ var Editor = {
         
         // debug
         if (this.debug) { console.log('repaint with data: '); console.dir(data); }
+    },
+    
+    newDiary: function() {
+        var data = {
+            title: 'new title',
+            content: 'new content',
+            id: '-1',
+            saved_at: '未保存'
+        };
+        
+        this.repaint(data);
     },
     
     /**
@@ -544,9 +555,6 @@ var Editor = {
                         E.Notice.showMessage(msg);
                     }
                     self.hook('onBeforeSend', arguments);
-                },
-                complete: function() {
-                    E.Notice.showMessage('', 1); // no message
                 }
             };
         
@@ -884,6 +892,7 @@ var OpenButton = Plugin.extend({
             type: 'post',
             dataType: 'json',
             data: post,
+            beforeSendMessage: '正在请求服务器',
             success: function(data) {
                 console.log(data);
                 if (data && data.diarys) {
@@ -893,7 +902,6 @@ var OpenButton = Plugin.extend({
                     delete data.diarys;
                     $(o.tableElem).data('last', data);
                 }
-                E.Notice.showMessage("成功", 1000);
             }
         });
     },
@@ -1023,7 +1031,6 @@ var ThemeButton = Plugin.extend({
         });
     },
     
-    
     destroy : function() {
         this.element.unbind();
     }
@@ -1063,10 +1070,23 @@ var Pad = {
         editor.addListener("onSaveSuccess", function(data, textStatus, jqXHR){
         });
         
+        $("#editor-toolbar").simpleTabs({select: null, useId: true});
+        
         // add Plugins 
         editor.addPlugin('SaveButton', new E.SaveButton());
         editor.addPlugin('OpenButton', new E.OpenButton());
         editor.addPlugin('ThemeButton', new E.ThemeButton());
+        
+        
+        $('#editor-btn-create').click(function() {
+            editor.newDiary();
+            return false;
+        });
+        
+        $('.toolbar-close-btn').click(function() {
+            $('#editor-toolbar').simpleTabs('hide');
+            return false;
+        });
     },
     
     destroy: function() {

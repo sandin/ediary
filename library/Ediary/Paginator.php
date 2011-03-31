@@ -12,7 +12,7 @@ class Ediary_Paginator
      * @throws Ediary_Exception when $currentPageNumber is not a number
      * @return Zend_Paginator 
      */
-    public static function factory($table, $where, $bind, $currentPageNumber = 1, $itemCountPerPage = 10) {
+    public static function factory($table, $where, $bind, $orderBy = null, $currentPageNumber = 1, $itemCountPerPage = 10) {
         if (!is_numeric($currentPageNumber)) {
             throw new Ediary_Exception(__METHOD__ . ' except $currentPageNumber is a number.');
         }
@@ -26,6 +26,9 @@ class Ediary_Paginator
         } else {
             $select->where($where, $bind);
         }             
+        if (isset($orderBy)) {
+            $select->order($orderBy);
+        }
         //var_dump($select->__toString());
                      
         $adapter = new Zend_Paginator_Adapter_DbSelect($select);

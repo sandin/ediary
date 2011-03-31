@@ -151,7 +151,7 @@ class Ediary_Diary extends Ediary_Query_Record
             $where[] = 'created_at <= ?';
             $bind[] = $max;
         }
-        return Ediary_Paginator::factory('{diarys}', $where, $bind,
+        return Ediary_Paginator::factory('{diarys}', $where, $bind, 'id DESC',
                                  $currentPageNumber, $itemCountPerPage);
     }
     //SELECT * FROM diarys d where created_at >= '2011-03-28 00:00:00' AND created_at < '2011-03-29 23:00:00' LIMIT 0,1000

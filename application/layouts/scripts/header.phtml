@@ -2,7 +2,7 @@
 <div class="inner"><a class="title" href="/"><span>宜日记</span></a>
 <ul class="user_info">
 <?php if (isset($this->user)): //登录用户 ?>
-    <li><a href="<?php echo $this->baseUrl("user/") . $this->user->id ?>"><?php echo $this->user->email?></a></li> |
+    <li><a href="/user/settings"><?php echo $this->user->email?></a></li> |
     <li><a href="/diary">写日记</a> |
     <li><a href="/diary/list">我的日记</a> |
     <li><a class="" href="/logout">退出</a></li> |

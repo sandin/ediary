@@ -196,13 +196,13 @@ em {color:red;}
     text-decoration: none;
 }
 #header .title span {
-    background: url("../images/chonglogo.png") no-repeat scroll 0 0 transparent;
-    height: 44px;
-    left: -9px;
+    background: url("../images/logo.png") no-repeat scroll 0 0 transparent;
     position: absolute;
-    text-indent: -2000px;
-    top: 0;
+    top: 7px;
+    left: -9px;
     width: 163px;
+    height: 30px;
+    text-indent: -2000px;
 }
 
 #notice {
@@ -898,15 +898,73 @@ form.profile #forget_pw {
     margin-bottom: 3px;
 }
 .toolbar .menu {
+    display: inline-block;
+    /*
     background: #50514D;
     color: #FFF;
-    display: inline-block;
     height: 26px;
     line-height: 26px;
     text-align: center;
     width: 42px;
     margin-bottom: 3px;
+    */
+    background-image:url(/images/menu.png);
+    background-position:0 0;
+    width:42px; 
+    height:36px;
 }
+/* from penzu */
+#menu a#editor-btn-create{}
+#menu a#editor-btn-create:hover{background-position:0 -36px}
+#menu a#editor-btn-create:active{background-position:0 -72px}
+#menu a#editor-btn-create.open{background-position:0 -108px}
+#menu a#editor-btn-save{background-position:-42px 0}
+#menu a#editor-btn-save:hover{background-position:-42px -36px}
+#menu a#editor-btn-save:active{background-position:-42px -72px}
+#menu a#editor-btn-save.open{background-position:-42px -108px}
+#menu a#menu_print{background-position:-84px 0}
+#menu a#menu_print:hover{background-position:-84px -36px}
+#menu a#menu_print:active{background-position:-84px -72px}
+#menu a#menu_print.open{background-position:-84px -108px}
+#menu a#editor-btn-insert{background-position:-126px 0}
+#menu a#editor-btn-insert:hover{background-position:-126px -36px}
+#menu a#editor-btn-insert:active{background-position:-126px -72px}
+#menu a#editor-btn-insert.open{background-position:-126px -108px}
+#menu a#menu_share{background-position:-168px 0}
+#menu a#menu_share:hover{background-position:-168px -36px}
+#menu a#menu_share:active{background-position:-168px -72px}
+#menu a#menu_share.open{background-position:-168px -108px}
+#menu a#menu_lock{background-position:-210px 0}
+#menu a#menu_lock:hover{background-position:-210px -36px}
+#menu a#menu_lock:active{background-position:-210px -72px}
+#menu a#menu_lock.open{background-position:-210px -108px}
+#menu a#menu_lock{background-position:-210px 0}
+#menu a#menu_lock:hover{background-position:-210px -36px}
+#menu a#menu_lock:active{background-position:-210px -72px}
+#menu a#menu_lock.open{background-position:-210px -108px}
+#menu a#editor-btn-format{background-position:-252px 0}
+#menu a#editor-btn-format:hover{background-position:-252px -36px}
+#menu a#menu_lock:active{background-position:-210px -72px}
+#menu a#editor-btn-format.open{background-position:-252px -108px}
+#menu a#menu_tag{background-position:-294px 0}
+#menu a#menu_tag:hover{background-position:-294px -36px}
+#menu a#menu_tag:active{background-position:-294px -72px}
+#menu a#menu_tag.open{background-position:-294px -108px}
+#menu a#editor-btn-theme{background-position:-336px 0}
+#menu a#editor-btn-theme:hover{background-position:-336px -36px}
+#menu a#editor-btn-theme:active{background-position:-336px -72px}
+#menu a#editor-btn-theme.open{background-position:-336px -108px}
+#menu a#editor-btn-open{background-position:-378px 0}
+#menu a#editor-btn-open:hover{background-position:-378px -36px}
+#menu a#editor-btn-open:active{background-position:-378px -72px}
+#menu a#editor-btn-open.open{background-position:-378px -108px}
+#menu a#menu_comments{background-position:-420px 0}
+#menu a#menu_comments:hover{background-position:-420px -36px}
+#menu a#menu_comments:active{background-position:-420px -72px}
+#menu a#menu_comments.open{background-position:-420px -108px}
+/* from penzu */
+
+
 .toolbar-btns li {
 	display: inline;
 }
@@ -917,11 +975,27 @@ form.profile #forget_pw {
 }
 .toolbar .innerBox,
 .toolbar .simple-tabs-panels {
-	background: #50514D;
+	background: #000;
 	color: #FFF;
 	width: 680px; /* 10+680+10 */
-	padding: 10px;
+	padding: 20px 10px;
 	display: none; /* hide at first */
+	opacity: 0.9;
+    filter: alpha(opacity=90);
+    position: relative;
+}
+.toolbar-close-btn {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+}
+.toolbar .simple-tabs-panels a:link,
+.toolbar .simple-tabs-panels a:visited {
+	color: #fff;
+}
+.toolbar .simple-tabs-panels a:hover,
+.toolbar .simple-tabs-panels a:active {
+	color: red;
 }
 .diarys_list_toolbar {
 	margin-bottom: 5px;
@@ -981,7 +1055,68 @@ form.profile #forget_pw {
 .theme_list {}
 .theme_list {}
 
-	
+.diarys_list .content_box {
+}
+.diary_item {
+}
+.diary_item_mete {
+	position: relative;
+	float: left;
+	width: 80px;
+	height: 80px;
+	background: url("../images/bg_calender_80.png") no-repeat center center;
+}
+.diary_item_mete .meta_day,
+.diary_item_mete .meta_year_month {
+	position: absolute;
+	color: #FFF;
+	font-weight: bold;
+	font-size: 12px;
+}
+.diary_item_mete .meta_year_month {
+	top: 14px;
+	left: 0;
+	width: 80px;
+	text-align: center;
+}
+.diary_item_mete .meta_day {
+	top: 30px;
+	left: 22px;
+	color: #000;
+	font-size: 30px;
+	width: 35px;
+	text-align: center;
+}
+
+.diary_item_content {
+	float: right;
+	width: 565px;
+}
+.diary_item_content .innerBox {
+    padding: 15px 20px;
+    font-size: 14px;
+    line-height: 20px;
+}
+.diary_item_content h4 {
+    color: #444444;
+    font-size: 22px;
+    font-weight: normal;
+    line-height: 1.3em;
+    margin: 5px 0;
+    word-wrap: break-word;
+}
+
+.diary_item_footer {
+	text-align: right;
+}
+.diary_item_footer a:link,
+.diary_item_footer a:visited {
+    color: #A8B1BA;
+}
+.diary_item_footer a:hover,
+.diary_item_footer a:active {
+    color: #7B8994;
+}
 	
 
 /* Debug {{{ 
@@ -1004,4 +1139,14 @@ form.profile #forget_pw {
 	/*border: 1px solid #DDD*/;
 }
 /*}}}*/
+
+.tipsy { padding: 5px; font-size: 10px; opacity: 0.8; filter: alpha(opacity=80); background-repeat: no-repeat;  background-image: url(../images/tipsy.gif); font-size: 12px; }
+.tipsy-inner { padding: 5px 8px 4px 8px; background-color: black; color: white; max-width: 200px; text-align: center; }
+.tipsy-inner { -moz-border-radius:3px; -webkit-border-radius:3px; }
+.tipsy-north { background-position: top center; }
+.tipsy-south { background-position: bottom center; }
+.tipsy-east { background-position: right center; }
+.tipsy-west { background-position: left center; }
+
+
 

@@ -19,27 +19,25 @@ $(document).ready(function(){
 	$("#datepicker-start").datepicker(params);
 	$("#datepicker-end").datepicker(params);
 	
-	$("#editor-toolbar").simpleTabs({select: null, useId: true});
-	
 	// DEBUG
 	$("#editor-btn-theme").trigger("click");
+	
+	$("#menu>li>a").tipsy({gravity: "s", fake: true});
 });
 ');
 ?>
+<div class="tooltip"></div>
 <!-- Toolbar -->
 <div id="editor-toolbar" class="toolbar">
-	<ul class="toolbar-btns">
-		<li><a href="#toolbar-tabs-create" id="" class="menu">新建</a></li>
-		<li><a href="#toolbar-tabs-open" id="editor-btn-open" class="menu active">打开</a></li>
-		<li><a href="#" id="editor-btn-save" class="menu">保存</a></li>
-		<li><a href="#toolbar-tabs-upload" class="menu">附件</a></li>
-		<li><a href="#toolbar-tabs-theme" id="editor-btn-theme" class="menu">主题</a></li>
-		<li><a href="/diary/list/get" id="" class="menu">测试</a></li>
+	<ul id="menu" class="toolbar-btns">
+		<li><a href="#" id="editor-btn-create" class="menu" title="新建">&nbsp;</a></li>
+		<li><a href="#toolbar-tabs-open" id="editor-btn-open" class="menu active" title="打开">&nbsp;</a></li>
+		<li><a href="#" id="editor-btn-save" class="menu" title="保存">&nbsp;</a></li>
+		<li><a href="#toolbar-tabs-upload" id="editor-btn-insert" class="menu" title="附件">&nbsp;</a></li>
+		<!--li><a href="#toolbar-tabs-format" id="editor-btn-format" class="menu" title="格式">&nbsp;</a></li-->
+		<li><a href="#toolbar-tabs-theme" id="editor-btn-theme" class="menu" title="主题">&nbsp;</a></li>
+		<li><a href="/diary/list/get" id="" class="menu" title="测试">&nbsp;</a></li>
 	</ul>
-	
-	<div id="toolbar-tabs-create" class="innerBox">
-		create
-	</div>
 	
 	<div id="toolbar-tabs-open" class="innerBox">
 		<div class="diarys_list_toolbar">
@@ -57,7 +55,7 @@ $(document).ready(function(){
 		<table class="Table" id="table_diary_list" width="100%">
 			<thead>
 				<tr>
-					<th width="130">标题</th>
+					<th width="135">标题</th>
 					<th>内容</th>
 					<th width="150">最后更新</th>
 					<th width="40">编辑</th>
@@ -71,6 +69,7 @@ $(document).ready(function(){
 			<a id="diarys_list_next_page" href="#">下一页</a>
 			<span id="diarys_list_pages"></span>
 		</div>
+		<a class="toolbar-close-btn" href="#">&nbsp;close</a>
 	</div><!-- /tabs -->
 	
 	<div id="toolbar-tabs-upload" class="innerBox">
@@ -87,9 +86,10 @@ $(document).ready(function(){
 		</ul>
 		<div class="theme_list_footer">
 			<a href="#" id="change-theme-btn" class="btn">保存</a>
-			<a href="#" id="cannel-theme-btn">取消</a>
 		</div>
+		<a class="toolbar-close-btn" href="#">&nbsp;close</a>
 	</div>
+	
 </div><!-- /toolbar -->
 
 <!-- Editor -->

@@ -19,12 +19,28 @@ array(
 <?php if (count($this->paginator)): ?>
 <div class="diarys_list">
     <?php foreach ($this->paginator as $item): ?>
-	<div class="diary_item">
-		<h4><a href="<?php echo $this->baseUrl("/diary/") . $item['id'];?>"><?php echo $this->escape($item['title']) ?></a></h4>
-		<div class="diary_item_mete"><span><?php echo $item['created_at']?></span></div>
-		<div class="diary_item_content"><?php echo $this->escape($item['content']) ?></div>
+	<?php 
+	    $date = new Zend_Date($item['created_at']);
+	    $year = $date->get(Zend_Date::YEAR);
+	    $month = $date->get(Zend_Date::MONTH_NAME);
+	    $day = $date->get(Zend_Date::DAY);
+	?>
+	<div class="diary_item clearfix">
+		<!-- div class="diary_item_mete"><span><?php echo $item['created_at']?></span></div-->
+		<div class="diary_item_mete">
+			<span class="meta_year_month"><?php echo $year . ' - ' . $month?></span>
+			<span class="meta_day"><?php echo $day?></span>
+		</div>
+		<div class="content_box diary_item_content">
+			<div class="innerBox">
+				<h4><?php echo $this->escape($item['title']) ?></h4>
+			    <?php echo strip_tags($item['content'], '<p>') ?>
+				<div class="diary_item_footer">
+					<a href="<?php echo $this->baseUrl("/diary/") . $item['id'];?>">编辑</a>
+				</div>
+			</div>
+		</div>
 	</div>
-	<hr />
     <?php endforeach; ?>
 </div>
 <?php else: ?>

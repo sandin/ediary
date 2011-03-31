@@ -1,11 +1,7 @@
 <div class="content">
-
-    <div class="content_box diary_list_box">
-    	<div class="contentBox_tabNav">
-			<a href="#" class="contentBox_tabNav_tab first current">我的日记</a>
-        </div>
-        <?php echo $this->partial('template_diarys_list.phtml', array('paginator' => $this->paginator))?>
-        <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_control.phtml'); ?>
+    <div class="diary_list_box">
+	    <?php echo $this->partial('template_diarys_list.phtml', array('paginator' => $this->paginator))?>
+	    <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_control.phtml'); ?>
     </div><!-- /diary_list_box -->
 </div><!-- /content -->
 
@@ -13,7 +9,7 @@
     <div class="content_box info_box">
         <div class="top">
             <img class="avatar" src="http://www.gravatar.com/avatar/98b3fc3ad16e35c181df5a0e4fbcb3d2?s=45">
-            <p class="username">cenkee</p>
+            <p class="username"><?php echo $this->user->username ?></p>
 
             <p class="joinTime">2011年02月10日加入</p>
             <p class="howSetAvatar"><a href="http://blog.bookfor.us/archives/40/" target="_blank">积分充值</a></p>			
@@ -33,7 +29,7 @@
                 <span class="infoBox_numbers_left">
                     日记<br>
 
-                    <label class="infoBox_numbers_number">1581</label>
+                    <label class="infoBox_numbers_number"><?php echo $this->totalDiary?></label>
                 </span>
                 <span class="infoBox_numbers_left">
                     积分<br>

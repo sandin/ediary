@@ -64,6 +64,7 @@ class User_SettingsController extends Zend_Controller_Action
         }
         $this->_helper->json( array('result' => $result) );
     }
+    
 
     /**
      * @return Ediary_Form

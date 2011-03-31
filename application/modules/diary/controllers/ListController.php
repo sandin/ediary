@@ -17,7 +17,10 @@ class Diary_ListController extends Zend_Controller_Action
     {
         // action body
         $page = $this->_getPage();
-        $this->view->paginator = Ediary_Diary::getDiarysPaginator($this->_user->id, $page);
+        $paginator = Ediary_Diary::getDiarysPaginator($this->_user->id, $page);
+        $this->view->totalDiary = $paginator->getTotalItemCount();
+        $this->view->paginator = $paginator;
+        
     }
     
     /**
