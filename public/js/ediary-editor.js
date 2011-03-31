@@ -539,9 +539,14 @@ var Editor = {
                     self.hook('onError', arguments);
                 },
                 beforeSend: function(jqXHR, settings) {
-                    var msg = settings.beforeSendMessage || '正在请求服务器...';
-                    E.Notice.showMessage(msg);
+                    var msg = settings.beforeSendMessage;
+                    if (msg) {
+                        E.Notice.showMessage(msg);
+                    }
                     self.hook('onBeforeSend', arguments);
+                },
+                complete: function() {
+                    E.Notice.showMessage('', 1); // no message
                 }
             };
         

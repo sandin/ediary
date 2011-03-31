@@ -24,21 +24,43 @@ var methods = {
                 tabNavs = elem.children('ul').children(),
                 tabBoxs = elem.children('div');
 
-            tabBoxs.hide();
+            tabBoxs.addClass('simple-tabs-panels').hide();
             if (o.select !== null) {
                 tabBoxs.eq(o.select).show().addClass('simple-tabs-select');
             }
 
             tabNavs.children('a').each(function(i){
+                var href = $(this).attr('href');
+                if (href.length > 1 && ! /#.+/.test(href) ) {
+                    var id = 'simple-tabs-' + i,
+                        div = $('<div></div>').attr('id', id).hide().html("no content").addClass('simple-tabs-panels');
+                    if (i == 0 || o.useId) {
+                        div.insertAfter(tabBoxs.last());
+                    } else {
+                        div.insertAfter(tabBoxs.eq(i-1));
+                    }
+                    $(this).attr('href', '#' + id).data('url', href);
+                    href = '#' + id;
+                }
                 $(this).click(function(e) {
-                    var select = (o.useId) ? $(this).attr('href') : i;
+                    var select = (o.useId) ? href : i;
                     methods.show.call(self, select);
+
+                    var url = $(this).data('url');
+                    if ( url ) {
+                        $.ajax({
+                            url: url,
+                            dataType: 'html',
+                            success: function(data) {
+                                $(select).html(data);
+                            }
+                        });
+                    }
                     return false;
                 });
             });
 
         });
-
     },
     destroy : function( ) {
         return this.each(function(){
@@ -46,6 +68,7 @@ var methods = {
     },
     show : function(select) {
         $(this).children('div.simple-tabs-select').hide().remove('simple-tabs-select');
+        //console.log($(select));
         if (typeof select === 'string' && /#.+/.test(select)) {
             $(select).show().addClass('simple-tabs-select');
         } else {

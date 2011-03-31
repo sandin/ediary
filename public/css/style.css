@@ -915,7 +915,8 @@ form.profile #forget_pw {
 	
 #toolbar_extBox {
 }
-.toolbar .innerBox {
+.toolbar .innerBox,
+.toolbar .simple-tabs-panels {
 	background: #50514D;
 	color: #FFF;
 	width: 680px; /* 10+680+10 */
