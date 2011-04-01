@@ -25,7 +25,7 @@ class Ediary_Upload
         $this->_Path = realpath($pathname);
     }
     
-    public function getTrasfer() {
+    public function getAdapter() {
         return $this->_fileTrasfer;
     }
     
@@ -46,10 +46,10 @@ class Ediary_Upload
             // unique file name
             $filename = $this->_Path . '/' . time() . $file['name'];
             $upload->addFilter('Rename', array('target' => $filename,
-                'overwrite' => true), $file['name'] );
+                			   'overwrite' => true), $file['name'] );
         }
         try {
-            return $upload->receive();
+            $upload->receive();
         } catch (Zend_File_Transfer_Exception $e) {
             Ediary_Logger::log($e->getMessage());
         }
@@ -59,9 +59,10 @@ class Ediary_Upload
      * 将上传的文件的信息存入数据库
      * 
      * @param $user_id file owner's id
-     * @param boolean True on Success, false if not 
+     * @param $diary_id diary's id
+     * @return boolean True on Success, false if not 
      */
-    public function store($user_id) {
+    public function store($user_id, $diary_id) {
         $adapter = $this->_fileTrasfer;
         if ( !$adapter->isReceived() ) {
             return;
@@ -69,6 +70,7 @@ class Ediary_Upload
         //TODO: getFileName 一系列函数都可以是返回数组
         $fileInfo = array(
         	'user_id'  => $user_id,
+            'diary_id' => $diary_id, 
         	'filename' => substr($adapter->getFileName(null, false), 10), // strip the unique key
         	'filepath' => self::getRelativePath($adapter->getFileName(null, true)),
             'filemime' => $adapter->getMimeType(),

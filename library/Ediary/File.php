@@ -11,6 +11,7 @@ class Ediary_File extends Ediary_Query_Record
     private static $defaultFields = array(
     	/* id */
         'user_id' => '',
+        'diary_id' => '',
         'filename' => '',
         'filepath' => '',
         'filemime' => '',

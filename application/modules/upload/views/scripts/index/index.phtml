@@ -1,13 +1,19 @@
-<?php
-$this->loadJquery();
-$this->headScript()->appendFile("/js/jquery.uploadify/swfobject.js");
-$this->headScript()->appendFile("/js/jquery.uploadify/jquery.uploadify.v2.1.4.js");
-$this->headScript()->appendFile("/js/ediary.js?v=1");
-?>
-<div class="content_box p10">
-<form enctype="multipart/form-data">
+<div class="diary_upload_box">
+<ul id="diary_file_list" class="theme_list clearfix">
+	<li><a rel="group1" href="/uploads/2011/Apr/1301667348Penzu-inaction.png"><img src="/uploads/2011/Apr/1301667348Penzu-inaction.png" width="120" height="120" /></a></li>
+	<li><a rel="group1" href="/uploads/2011/Apr/1301667348Penzu-inaction.png"><img src="/uploads/2011/Apr/1301667348Penzu-inaction.png" width="120" height="120" /></a></li>
+</ul>
+<form class="form_diary_upload" enctype="multipart/form-data">
+	<input id="diary_file_upload" name="file_upload" type="file" />
 	<div id="diary-upload-queue"></div>
-	<input id="file_upload" name="file_upload" type="file" />
 	<input type="hidden" name="MAX_FILE_SIZE" value="100000" />
-</form>
+</form>	
+<!--script type="text/javascript" src="/js/jquery.uploadify/swfobject.js"></script-->
+<!--script type="text/javascript" src="/js/jquery.uploadify/jquery.uploadify.v2.1.4.js"></script-->
+<script type="text/javascript">
+(function() {
+	Ediary.Upload.init();
+})();
+</script>
 </div>
+<a class="toolbar-close-btn" href="#">&nbsp;close</a>

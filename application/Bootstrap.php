@@ -31,6 +31,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         if ( function_exists( 'date_default_timezone_set' ) ) {
             date_default_timezone_set( 'PRC' );
         }
+        
+        define('DS', DIRECTORY_SEPARATOR);
     }
 
     protected function _initInstallChecker() {

@@ -38,7 +38,9 @@ class Diary_DoController extends Zend_Controller_Action
             'title' => 'StripTags',
             'content' => $stripTagsFilter
         );
-        $validator = array();
+        $validator = array(
+            '*' => array( 'presence' => 'required')
+        );
         return new Zend_Filter_Input($filter, $validator, $_POST['diary']);
     } 
 
@@ -117,10 +119,11 @@ class Diary_DoController extends Zend_Controller_Action
      * or NULL
      */
     public function getAction() {
-        $input = new Zend_Filter_Input(array('id' => 'Int'), array(), $this->getRequest()->getParams());
+        $input = new Zend_Filter_Input(array('id' => 'Int'),
+                                       array('id' => array( 'presence' => 'required')),
+                                       $_REQUEST);
         if ($input->isValid() && !$input->hasMissing()) {
-            $id = $input->id;
-            $diary = Ediary_Diary::find($id);
+            $diary = Ediary_Diary::find($input->id);
             if ($diary != null && $diary->user_id == $this->_user->id) {
                 echo $this->view->json( array('diary' => $diary->toArray(true)) );
             }
@@ -128,7 +131,7 @@ class Diary_DoController extends Zend_Controller_Action
     }
     
     /**
-     * Get a particular user's diarys
+     * Get current user's diarys
      * 
      * REQUEST:
      * 	count int diarys number
@@ -164,8 +167,6 @@ class Diary_DoController extends Zend_Controller_Action
             return;
         }
         
-        //var_dump($input->getUnescaped());
-        //var_dump($input->isValid());
         if ($input->isValid()) {
             $page  = (isset($input->page)) ? $input->page : 1;
             $count = (isset($input->count)) ? $input->count : 10;
@@ -173,6 +174,7 @@ class Diary_DoController extends Zend_Controller_Action
             $max   = (isset($input->max))  ? Ediary_Formator::addTime($input->max, true) : null;
             $paginator = Ediary_Diary::getDiarysPaginator($this->_user->id, $page, $count, $since, $max);
             
+            // escape output
             $diarys = array();
             foreach ($paginator as $item) {
                 $diarys[] = array(
@@ -203,7 +205,9 @@ class Diary_DoController extends Zend_Controller_Action
      *  or return NULL on fail
      */
     public function deleteAction() {
-        $input = new Zend_Filter_Input(array('id' => 'Int'), array(), $this->_request->getParams());
+        $input = new Zend_Filter_Input(array('id' => 'Int'),
+                                       array('id' => array( 'presence' => 'required')), 
+                                       $_REQUEST);
         if ($input->isValid() && !$input->hasMissing()) {
             $diary = Ediary_Diary::find($input->id);
             if (isset($diary) && $diary->user_id == $this->_user->id) {

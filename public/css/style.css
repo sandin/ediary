@@ -1120,10 +1120,6 @@ form.profile #forget_pw {
 }
 
 #diary-upload-queue {
-	border: 1px solid #CCC;
-	min-height: 50px;
-	width: 350px;
-	margin-bottom: 10px;
 }
 #diary-upload-queue .cancel {
 	float: right;
@@ -1132,6 +1128,20 @@ form.profile #forget_pw {
 	padding: 10px 5px;
 	border-bottom: 1px solid #CCC;
 }
+#diary-upload-queue .uploadifyProgress {
+  background-color: #E5E5E5;
+  margin-top: 10px;
+  width: 100%;
+}
+#diary-upload-queue .uploadifyProgressBar {
+  background-color: #0099FF;
+  height: 3px;
+  width: 1px;
+}
+.form_diary_upload {
+	text-align: right;
+}
+
 	
 
 /* Debug {{{ 

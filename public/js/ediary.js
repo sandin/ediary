@@ -19,6 +19,8 @@ if (! window.console ) {
 // Application
 var Ediary = {
     
+    debug: true,
+    
     baseUrl : '',
     
     // default options
@@ -660,32 +662,3 @@ Ediary.extend('Notice', Notice);
     };
     
 })(jQuery);
-
-$(document).ready(function() {
-  $('#file_upload').uploadify({
-    'uploader'  : '/js/jquery.uploadify/uploadify.swf',
-    'script'    : '/upload/index/images',
-    'buttonText': 'SELECT',
-    'cancelImg' : '/js/jquery.uploadify/cancel.png',
-    'folder'    : '/uploads',
-    'auto'      : true,
-    'multi'     : true,
-    'fileExt'   : '*.jpg;*.gif;*.png',
-    'fileDesc'  : 'Image Files (.JPG, .GIF, .PNG)',
-    'queueID'   : 'diary-upload-queue',
-    'removeCompleted': false,
-    'onSelectOnce' : function(event, data) {
-        console.log(data);
-    },
-    'onAllComplete' : function(event, data) {
-        console.log(data);
-    },
-    'onComplete' : function(event, ID, fileObj, response, data) {
-        console.log(event);
-        console.log(ID);
-        console.log(fileObj);
-        console.log(response);
-        console.log(data);
-    }
-  });
-});

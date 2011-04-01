@@ -827,6 +827,15 @@ var OpenButton = Plugin.extend({
             self.data = newData; // reset
             return false;
         });
+        
+        // datepicker
+        var params = { 
+            dateFormat: "yy-mm-dd",
+            dayNamesMin: ["日", "一", "二", "三", "四", "五", "六"],
+            monthNames: ["一月", "二月", "三月", "四月", "五月", "六月","七月","八月","九月","十月","十一月","十二月"]
+        };
+        $("#datepicker-start").datepicker(params);
+        $("#datepicker-end").datepicker(params);
     },
     
     /**
@@ -1083,10 +1092,13 @@ var Pad = {
             return false;
         });
         
-        $('.toolbar-close-btn').click(function() {
+        $('.toolbar-close-btn').live('click', function() {
             $('#editor-toolbar').simpleTabs('hide');
             return false;
         });
+        
+        // buttons tooltip
+        $("#menu>li>a").tipsy({gravity: "s", fake: true});
     },
     
     destroy: function() {
@@ -1097,4 +1109,135 @@ var Pad = {
 E.extend('Pad', Pad);
         
 })(jQuery, Ediary, window);
-    
+
+
+(function($, E, window){
+
+E.extend('upload', function(){
+
+    var Upload = {
+        debug: E.debug,
+        
+        element: null,
+        settings : {
+            'element' : '#diary_file_upload',
+            'idElem'  : '#diary_id', // <input name="diary_id" value="0000000" />
+            'targetElem' : '#diary_file_list', // 需要将服务器响应结果刷新到的元素
+            'js' : ['/js/jquery.uploadify/swfobject.js', 
+                    '/js/jquery.uploadify/jquery.uploadify.v2.1.4.js',
+                    '/js/fancybox/jquery.fancybox-1.3.4.js'],
+            'loadJs' : true,
+            'previewSize' : [120, 120],
+            'uploadify' : {
+                'uploader'  : '/js/jquery.uploadify/uploadify.swf',
+                'script'    : '/upload/index/images',
+                'buttonText': 'Upload',
+                'cancelImg' : '/js/jquery.uploadify/cancel.png',
+                'folder'    : '/uploads',
+                'auto'      : true,
+                'multi'     : true,
+                'fileExt'   : '*.jpg;*.gif;*.png',
+                'fileDesc'  : 'Image Files (.JPG, .GIF, .PNG)',
+                'queueID'   : 'diary-upload-queue',
+                'wmode'     : 'transparent',
+                'removeCompleted': false
+            },
+            'fancybox' : {
+                //'transitionIn'  :   'elastic',
+                //'transitionOut' :   'elastic',
+                //'speedIn'       :   600, 
+                //'speedOut'      :   200, 
+                //'overlayShow'   :   false
+                'titlePosition'     : 'over',
+                'titleFormat'       : function(title, currentArray, currentIndex, currentOpts) {
+                    return '<span id="fancybox-title-over">Image ' +  (currentIndex + 1) + ' / ' + currentArray.length + ' ' + title + '</span>';
+                }
+            },
+            'fancyboxGroup' : 'group1'
+        },
+
+        init: function(options) {
+            var self = this, o = this.settings; 
+            if (options) {
+                $.extend(o, options);
+            }
+
+            this.element = $(o.element);
+            if (o.loadJs) {
+                this.loadJs();
+            }
+            this.initUploadify();
+            
+            $('a', o.targetElem).fancybox(o.fancybox);
+        },
+        
+        loadJs: function() {
+            if (typeof jQuery.fn.uploadify === 'undefined') {
+                for (var i in this.settings.js) {
+                    E.include(this.settings.js[i]);
+                }
+            }
+        },
+
+        initUploadify: function() {
+            var self = this, o = this.settings;
+
+            var params = {
+                //'scriptData': {'diary_id' : null},
+                'onSelectOnce': function(event, data) {
+                    self.onSelectOnce.apply(self, arguments);
+                },
+                'onAllComplete': function() {
+                    self.onAllComplete.apply(self, arguments);
+                },
+                'coCancel': function() {
+                    self.onCancel.apply(self, arguments);
+                },
+                'onComplete': function() {
+                    self.onComplete.apply(self, arguments);
+                }
+            };
+            this.element.uploadify($.extend(params, o.uploadify));
+        },
+        
+        onSelectOnce: function(event, data) {
+            // 每次都从idElem里读取id, 保证在id更改后依然发送正确的数据
+            var id = $(this.settings.idElem).val();
+            if (this.debug) { console.log('upload file -> diary_id : ' + id); }
+            $(event.target).uploadifySettings('scriptData', {'diary_id' : id});
+        },
+        
+        onCancel: function(event, ID, fileObj, data) {
+            // AJAX delete
+        },
+        onComplete: function(event, ID, fileObj, response, data) {
+            var o = this.settings;
+            if (this.debug) { console.log(response); }
+            if (response) {
+                try {
+                    var json = $.parseJSON(response),
+                        origin = json.origin,
+                        small = json.small,
+                        html = '<a href="' + json.origin + '" rel="' 
+                             + o.fancyboxGroup + '">'
+                             + '<img src="' + json.small 
+                             + '" width="' + o.previewSize[0] 
+                             + '" height="' + o.previewSize[1] + '" /></a>',
+                        a = $(html).fancybox();
+                        
+                    $('<li></li>').append(a).appendTo($(o.targetElem));
+                } catch (e) {
+                    $.error(e.getMessage());
+                }
+            }
+        },
+        onAllComplete: function() {
+            
+        }
+    };
+
+    E.Upload = Upload;
+});
+
+})(jQuery, Ediary, window);
+
