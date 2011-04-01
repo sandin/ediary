@@ -30,4 +30,18 @@ class Ediary_Utility_File
         }
         return $subDirs;
     }
+    
+    /**
+     * 目录不存在则递归创建
+     * 
+     * @param String $pathname
+     * @param int $mode
+     * @return boolean 目录存在或成功创建则返回true, 目录不存在且无法创建则返回false
+     */
+    public static function mkdir($pathname, $mode = 0755) {
+       if (!file_exists($pathname)) {
+           return mkdir($pathname, $mode, true);
+       } 
+       return true;
+    }
 }

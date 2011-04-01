@@ -144,7 +144,7 @@ class Ediary_Journal extends Ediary_Query_Record
      */
     public function isBelongTo($who) {
         $userId = $who; // TODO: mixed, username, email, userId
-        return ( ($this->id === $userId) ? true : false );
+        return ($this->user_id === $userId);
     }
     
     /**

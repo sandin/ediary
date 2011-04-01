@@ -429,6 +429,54 @@ NOTE: 为复用考虑, 建议使用写好的独立模板来显示分页列表.
 }
 ---------------------------
 
+== Upload 文件上传 ==
+
+`class Ediary_Upload` 
+
+该类简单包装了 `Zend_File_Transfer` , 方便用于上传文件.
+
+实例.
+[source]
+---------------------------------------
+// 实例化一个 Zend_File_Transfer 
+$upload = new Ediary_Upload(APPLICATION_PATH . '/../public/uploads');
+
+// 使用按年/月的目录结构来储存上传文件
+$upload->useSubDir(true);
+
+// 接收文件, 注意这步不是服务器接收文件, 文件早已经上传到了服务器(在临时目录).
+// 这个接收动作是指将临时目录中的文件移动到设置的上传目录
+// 并且会对文件大小类型检查, 如果不符合检验器会返回false, 并拒绝移动文件到指定的上传目录
+$upload->recevie('Filedata'); // uploadify file field name
+
+// 将刚接收的文件的信息写入数据库, 成功写入返回 true
+$result = $upload->store($this->_user->id);
+---------------------------------------
+
+== Image 图像处理 ==
+
+`class Ediary_Image`
+
+该类是对 `gmagick` 的简单包装, 用于进行简单的图像处理.
+
+NOTE: 服务器必须安装 `gmagick` 扩展. 关于如何安装请参考PHP手册: http://www.php.net/manual/en/book.gmagick.php[Gmagick] .
+
+.制作缩略图
+[source]
+-------------------------------------------------
+$image = new Ediary_Image('/your/path/some.jpg'); 
+
+$width = 100;  // 设置宽度
+$height = 0;   // 设置高度,这里设置为0表示保持长宽比率自动设置.
+$output = '/your/path/some_thumail.jpg'; // 输出文件
+
+$image->thumnail($width, $height, $output);
+-------------------------------------------------
+
+.`__CALL`
+可以直接调用 `class Gmagick` 的任何方法.
+
+
 === 第三方库 ===
     * http://code.google.com/p/zfdebug/[ZFDebug]
 
@@ -456,6 +504,7 @@ NOTE: 为复用考虑, 建议使用写好的独立模板来显示分页列表.
     * Tabs支持ajax载入.
     * 日记列表管理/主题选择 插件独立化, 可在独立页面使用.
     * js段的分页管理器提取基类以复用.
+    * 实现上传模块.
 
     首页-登录 -> today页面
 

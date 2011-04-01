@@ -86,6 +86,23 @@ CREATE TABLE $imdb->themes (
   UNIQUE KEY name (name)
 ) $imdb->tableSet;
 
+DROP TABLE IF EXISTS $imdb->files;
+CREATE TABLE $imdb->files (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `filename` varchar(255) NOT NULL DEFAULT '',
+  `filepath` varchar(255) NOT NULL DEFAULT '',
+  `filemime` varchar(255) NOT NULL DEFAULT '',
+  `filesize` varchar(100) NOT NULL DEFAULT '',
+  `status` int(11) NOT NULL DEFAULT '0',
+  `timestamp` int(10) unsigned NOT NULL DEFAULT '0',
+  
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `status` (`status`),
+  KEY `timestamp` (`timestamp`)
+) $imdb->tableSet;
+
 DROP TABLE IF EXISTS $imdb->sessions;
 CREATE TABLE IF NOT EXISTS $imdb->sessions (  
   `id` char(32) collate utf8_unicode_ci NOT NULL,  

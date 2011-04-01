@@ -29,34 +29,15 @@ class Ediary_Database_Db
      * Tables name
      * @var Array<String>
      */
-    private $tables = array('users', 'usermeta', 'diarys', 'journals', 'themes', 'sessions');
+    private $tables = array('users', 'usermeta', 'diarys', 'journals', 'themes', 'sessions', 'files'); 
 
-    /**
-     * Table Name - users
-     * @var String
-     */
+    //Tables Name - has prefix
     public $users;
-    
-     /**
-     * Table Name - usermeta
-     * @var String
-     */
     public $usermeta;
-    
     public $sessions;
-    
     public $themes;
-
-    /**
-     * Table Name - diarys
-     * @var String
-     */
+    public $files;
     public $diarys;
-
-    /**
-     * Table Name - books
-     * @var String
-     */
     public $journals;
 
     /**

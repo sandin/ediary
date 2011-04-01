@@ -1,0 +1,13 @@
+<?php
+$this->loadJquery();
+$this->headScript()->appendFile("/js/jquery.uploadify/swfobject.js");
+$this->headScript()->appendFile("/js/jquery.uploadify/jquery.uploadify.v2.1.4.js");
+$this->headScript()->appendFile("/js/ediary.js?v=1");
+?>
+<div class="content_box p10">
+<form enctype="multipart/form-data">
+	<div id="diary-upload-queue"></div>
+	<input id="file_upload" name="file_upload" type="file" />
+	<input type="hidden" name="MAX_FILE_SIZE" value="100000" />
+</form>
+</div>

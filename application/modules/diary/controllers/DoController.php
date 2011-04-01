@@ -11,6 +11,9 @@ class Diary_DoController extends Zend_Controller_Action
         $this->_helper->layout->disableLayout();
         
         $this->_user = Zend_Registry::get('user');
+        if (isset($this->_user)) {
+            //TODO: 没有登录
+        }
     }
 
     public function indexAction()
