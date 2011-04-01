@@ -32,6 +32,7 @@ var methods = {
             tabNavs.children('a').each(function(i){
                 var href = $(this).attr('href');
                 if (href.length > 1 && ! /#.+/.test(href) ) {
+                    // AJAX MODE
                     var id = 'simple-tabs-' + i,
                         div = $('<div></div>').attr('id', id).hide().html("no content").addClass('simple-tabs-panels');
                     if (i == 0 || o.useId) {
@@ -43,6 +44,9 @@ var methods = {
                     href = '#' + id;
                 }
                 $(this).click(function(e) {
+                    tabNavs.children('a').removeClass('open');
+                    $(this).addClass("open");
+                    
                     var select = (o.useId) ? href : i;
                     methods.show.call(self, select);
 
@@ -53,6 +57,9 @@ var methods = {
                             dataType: 'html',
                             success: function(data) {
                                 $(select).html(data);
+                            },
+                            beforeSend: function() {
+                                $(select).html("Loading...");
                             }
                         });
                     }

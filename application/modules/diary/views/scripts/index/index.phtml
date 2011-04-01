@@ -20,13 +20,12 @@ $(document).ready(function(){
 <!-- Toolbar -->
 <div id="editor-toolbar" class="toolbar">
 	<ul id="menu" class="toolbar-btns">
-		<li><a href="#" id="editor-btn-create" class="menu" title="新建">&nbsp;</a></li>
-		<li><a href="#toolbar-tabs-open" id="editor-btn-open" class="menu active" title="打开">&nbsp;</a></li>
-		<li><a href="#" id="editor-btn-save" class="menu" title="保存">&nbsp;</a></li>
-		<li><a href="/upload" id="editor-btn-upload" class="menu" title="附件">&nbsp;</a></li>
-		<!--li><a href="#toolbar-tabs-format" id="editor-btn-format" class="menu" title="格式">&nbsp;</a></li-->
-		<li><a href="#toolbar-tabs-theme" id="editor-btn-theme" class="menu" title="主题">&nbsp;</a></li>
-		<li><a href="/diary/list/get" id="" class="menu" title="测试">&nbsp;</a></li>
+		<li><a id="editor-btn-create" href="#"class="menu" title="新建">&nbsp;</a></li>
+		<li><a id="editor-btn-open" href="#toolbar-tabs-open" class="menu" title="打开">&nbsp;</a></li>
+		<li><a id="editor-btn-save" href="#" class="menu" title="保存">&nbsp;</a></li>
+		<li><a id="editor-btn-upload" href="/upload" class="menu" title="附件">&nbsp;</a></li>
+		<li><a id="editor-btn-format" href="#toolbar-tabs-format" class="menu" title="格式">&nbsp;</a></li>
+		<li><a id="editor-btn-theme" href="/user/settings/theme_ajax" class="menu" title="主题">&nbsp;</a></li>
 	</ul>
 	
 	<div id="toolbar-tabs-open" class="innerBox">
@@ -61,23 +60,6 @@ $(document).ready(function(){
 		</div>
 		<a class="toolbar-close-btn" href="#">&nbsp;close</a>
 	</div><!-- /tabs -->
-	
-	<div id="toolbar-tabs-upload" class="innerBox">
-	</div>
-	
-	<div id="toolbar-tabs-theme" class="innerBox">
-		<ul class="theme_list clearfix">
-			<li><a class="preview-theme-btns" href="t0"><img src="/theme/t0/preview.jpg" />主题0</a></li>
-			<li><a class="preview-theme-btns" href="t1"><img src="/theme/t1/preview.jpg" />主题1</a></li>
-			<li><a class="preview-theme-btns" href="t2"><img src="/theme/t2/preview.jpg" />主题2</a></li>
-			<li><a class="preview-theme-btns" href="t3"><img src="/theme/t3/preview.jpg" />主题3</a></li>
-			<li><a class="preview-theme-btns" href="t4"><img src="/theme/t4/preview.jpg" />主题3</a></li>
-		</ul>
-		<div class="theme_list_footer">
-			<a href="#" id="change-theme-btn" class="btn">保存</a>
-		</div>
-		<a class="toolbar-close-btn" href="#">&nbsp;close</a>
-	</div>
 	
 </div><!-- /toolbar -->
 

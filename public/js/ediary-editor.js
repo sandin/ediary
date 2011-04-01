@@ -659,47 +659,8 @@ var Plugin = Class.extend({
 E.Plugin = Plugin; // NAMESPACE
 
 /**
- * Class SaveButton extends Plugin
- * 保存按钮 - 插件
- */
-var SaveButton = Plugin.extend({
-    options: {
-        element: '#editor-btn-save'
-    },
-    
-    init: function() {
-        this._super();
-    
-        $.extend(this.options, this.extData);
-        var o = this.options;
-
-        this.element = $(o.element);
-        if (this.element.length < 1) {
-            console.warn("Save Button is missing, it should be :", o.element);
-        }
-
-        this.bindEvent();
-    },
-    
-    bindEvent: function() {
-        this.element.click(this.clickHandler);
-    },
-    
-    clickHandler : function(e) {
-        console.log('click save btn');
-        E.Editor.doSave(true); // force save
-        return false;
-    },
-    
-    destroy : function() {
-        this.element.unbind();
-    }
-});
-E.SaveButton = SaveButton; // NAMESPACE
-
-/**
- * Class SaveButton extends Plugin
- * 保存按钮 - 日记列表 - 插件
+ * Class OpenButton extends Plugin
+ * 打开按钮 - 日记管理列表 - 插件
  */
 var OpenButton = Plugin.extend({
     
@@ -730,6 +691,8 @@ var OpenButton = Plugin.extend({
         delUrl:          E.url('/diary/do/delete')
     },
     
+    isReady : false,
+    
     init: function() {
         this._super();
         $.extend(this.options, this.extData);
@@ -743,9 +706,14 @@ var OpenButton = Plugin.extend({
          // open button
         this.element.click(function(){
             self.doGetDiarys(self.data);
-            self.bindEvent();
+            // 只在第一次点击时绑定
+            if ( !self.isReady ) {
+                self.isReady = true;
+                self.bindEvent();
+            }
             return false;
         });
+        
         
         // debug 
         //this.element.trigger('click');
@@ -832,7 +800,8 @@ var OpenButton = Plugin.extend({
         var params = { 
             dateFormat: "yy-mm-dd",
             dayNamesMin: ["日", "一", "二", "三", "四", "五", "六"],
-            monthNames: ["一月", "二月", "三月", "四月", "五月", "六月","七月","八月","九月","十月","十一月","十二月"]
+            monthNames: ["一月", "二月", "三月", "四月", "五月", "六月",
+                         "七月","八月","九月","十月","十一月","十二月"]
         };
         $("#datepicker-start").datepicker(params);
         $("#datepicker-end").datepicker(params);
@@ -978,13 +947,13 @@ E.OpenButton = OpenButton; // NAMESPACE
  * Class SaveButton extends Plugin
  * 保存按钮 - 插件
  */
-var ThemeButton = Plugin.extend({
+var ThemeManager = Plugin.extend({
     
     // 选择的主题
     select: null,
     
     options: {
-        element: '#editor-btn-theme',
+        element: '#toolbar-tabs-theme',
         previewElem: '.preview-theme-btns',
         changeElem: '#change-theme-btn',
         themeLinkElem: '#theme-css',
@@ -1044,7 +1013,7 @@ var ThemeButton = Plugin.extend({
         this.element.unbind();
     }
 });
-E.ThemeButton = ThemeButton; // NAMESPACE
+E.ThemeManager = ThemeManager; // NAMESPACE
 
 })(jQuery, Ediary, window);
 
@@ -1082,10 +1051,12 @@ var Pad = {
         $("#editor-toolbar").simpleTabs({select: null, useId: true});
         
         // add Plugins 
-        editor.addPlugin('SaveButton', new E.SaveButton());
         editor.addPlugin('OpenButton', new E.OpenButton());
-        editor.addPlugin('ThemeButton', new E.ThemeButton());
         
+        $('#editor-btn-save').click(function() {
+            editor.doSave(true); // force save
+            return false;
+        });
         
         $('#editor-btn-create').click(function() {
             editor.newDiary();
@@ -1132,7 +1103,7 @@ E.extend('upload', function(){
                 'uploader'  : '/js/jquery.uploadify/uploadify.swf',
                 'script'    : '/upload/index/images',
                 'buttonText': 'Upload',
-                'cancelImg' : '/js/jquery.uploadify/cancel.png',
+                //'cancelImg' : '/js/jquery.uploadify/cancel.png',
                 'folder'    : '/uploads',
                 'auto'      : true,
                 'multi'     : true,
@@ -1140,7 +1111,7 @@ E.extend('upload', function(){
                 'fileDesc'  : 'Image Files (.JPG, .GIF, .PNG)',
                 'queueID'   : 'diary-upload-queue',
                 'wmode'     : 'transparent',
-                'removeCompleted': false
+                //'removeCompleted': false
             },
             'fancybox' : {
                 //'transitionIn'  :   'elastic',

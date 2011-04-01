@@ -65,6 +65,15 @@ class User_SettingsController extends Zend_Controller_Action
         $this->_helper->json( array('result' => $result) );
     }
     
+    public function themeAction() {
+        $this->view->name = "LDS";
+    }
+    
+    public function themeajaxAction() {
+        
+        $this->_helper->layout->disableLayout();
+    }
+    
 
     /**
      * @return Ediary_Form
@@ -81,6 +90,7 @@ class User_SettingsController extends Zend_Controller_Action
         $form->addElement($username);
         return $form;
     }
+    
 
 }
 

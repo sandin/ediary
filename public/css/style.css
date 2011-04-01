@@ -927,10 +927,10 @@ form.profile #forget_pw {
 #menu a#menu_print:hover{background-position:-84px -36px}
 #menu a#menu_print:active{background-position:-84px -72px}
 #menu a#menu_print.open{background-position:-84px -108px}
-#menu a#editor-btn-insert{background-position:-126px 0}
-#menu a#editor-btn-insert:hover{background-position:-126px -36px}
-#menu a#editor-btn-insert:active{background-position:-126px -72px}
-#menu a#editor-btn-insert.open{background-position:-126px -108px}
+#menu a#editor-btn-upload{background-position:-126px 0}
+#menu a#editor-btn-upload:hover{background-position:-126px -36px}
+#menu a#editor-btn-upload:active{background-position:-126px -72px}
+#menu a#editor-btn-upload.open{background-position:-126px -108px}
 #menu a#menu_share{background-position:-168px 0}
 #menu a#menu_share:hover{background-position:-168px -36px}
 #menu a#menu_share:active{background-position:-168px -72px}
@@ -945,7 +945,7 @@ form.profile #forget_pw {
 #menu a#menu_lock.open{background-position:-210px -108px}
 #menu a#editor-btn-format{background-position:-252px 0}
 #menu a#editor-btn-format:hover{background-position:-252px -36px}
-#menu a#menu_lock:active{background-position:-210px -72px}
+#menu a#editor-btn-format:active{background-position:-252px -72px}
 #menu a#editor-btn-format.open{background-position:-252px -108px}
 #menu a#menu_tag{background-position:-294px 0}
 #menu a#menu_tag:hover{background-position:-294px -36px}
@@ -1140,6 +1140,7 @@ form.profile #forget_pw {
 }
 .form_diary_upload {
 	text-align: right;
+	margin-top: 10px;
 }
 
 	

@@ -1,0 +1,34 @@
+<?php
+$this->loadJquery();
+$this->headScript()->appendFile("/js/ediary.js");
+$this->headScript()->appendFile("/js/ediary-editor.js");
+$this->inlineScript()->appendScript('
+');
+?>
+<div id="settings-tabs" class="content_box">
+	<div class="contentBox_tabNav">
+		<a class="contentBox_tabNav_tab first" href="#">个人资料</a>
+		<a class="contentBox_tabNav_tab" href="#">隐私设置</a>
+		<a class="contentBox_tabNav_tab current" href="#">选择主题</a>
+    </div>
+    <div class="innerBox">
+    
+   	<div id="toolbar-tabs-theme">
+		<ul class="theme_list clearfix">
+			<li><a class="preview-theme-btns" href="t0"><img src="/theme/t0/preview.jpg" />主题0</a></li>
+			<li><a class="preview-theme-btns" href="t1"><img src="/theme/t1/preview.jpg" />主题1</a></li>
+			<li><a class="preview-theme-btns" href="t2"><img src="/theme/t2/preview.jpg" />主题2</a></li>
+			<li><a class="preview-theme-btns" href="t3"><img src="/theme/t3/preview.jpg" />主题3</a></li>
+			<li><a class="preview-theme-btns" href="t4"><img src="/theme/t4/preview.jpg" />主题3</a></li>
+		</ul>
+		<div class="theme_list_footer">
+			<a href="#" id="change-theme-btn" class="btn">保存</a>
+		</div>
+		<a class="toolbar-close-btn" href="#">&nbsp;close</a>
+		<script type="text/javascript">
+			new Ediary.ThemeManager();
+		</script>
+	</div><!-- /toolbar-tabs-theme -->
+		
+    </div>
+</div><!-- /settings-tabs -->
