@@ -14,6 +14,7 @@ if (! window.console ) {
     
 var i18n = {
     SAVE_SUCCESS : '保存成功.',
+    SAVE_FAIL : '保存失败.',
     SAVING : '正在保存...',
     JSON_PARSE_ERROR : '无法解析服务器返回的数据'
 };
@@ -145,7 +146,7 @@ var Editor = {
     },
     
     setupTinyMCE: function() {
-        var t = this;
+        var self = this;
         if (typeof window.tinyMCE == 'undefined') {
             E.include(E.baseUrl + "/js/tiny_mce/tiny_mce.js");
         }
@@ -185,13 +186,29 @@ var Editor = {
                         }
                     });
                 }
+                // 内容为空时显示"默认信息"
+                ed.onKeyPress.add(function(ed) {
+                    //TODO: 检查是否有性能问题
+                    self.setDefaultContent(ed);
+                });
             },
             template_replace_values : {
             }
         });
-
     },
-
+    
+    /**
+     * @param ed TinyMCE.Editor
+     */
+    setDefaultContent: function(ed, force) {
+        ed = ed || this.getRTEditor();
+        if (force || ed.getContent().length === 0) {
+            $(ed.getBody()).addClass("content_is_empty");
+        } else {
+            $(ed.getBody()).removeClass("content_is_empty");
+        }
+    },
+    
     // 初始化所必须的DOM元素一个都不能少
     checkDOMIsReady: function() {
         var o = this.settings,
@@ -302,14 +319,15 @@ var Editor = {
             $(this.settings.updateElem).html(data.saved_at);
         }
         
+        this.setDefaultContent();
         // debug
         if (this.debug) { console.log('repaint with data: '); console.dir(data); }
     },
     
     newDiary: function() {
         var data = {
-            title: 'new title',
-            content: 'new content',
+            title: E.Date.getDateAndWeek(),
+            content: '',
             id: '-1',
             saved_at: '未保存'
         };
@@ -337,10 +355,10 @@ var Editor = {
         this.setId(this.getCache('diary').id);
     },
     
-    // title and body both are empty
+    // title or body is empty
     isEmpty: function() {
        return ( 0 == this.titleElem.val().length 
-             && 0 == this.bodyElem.val().length );
+             || 0 == this.bodyElem.val().length );
     },
     
     // title or body has been changed
@@ -423,7 +441,10 @@ var Editor = {
                 $form = $(this.settings.formElem);
 
             this.rteSave();
-            if ( force || (!this.isEmpty() && this.isChanged() && !this.saving) ) {
+            if ( this.isEmpty() || this.saving ) {
+                return; // do nothing
+            }
+            if ( force || this.isChanged() ) {
                 console.log('do save');
                 $.ajax({
                     url: self.settings.saveUrl,
@@ -439,6 +460,7 @@ var Editor = {
                     success: function(data, textStatus, jqXHR) {
                         self.saving = false;
                         self.onSaveDone(data);
+                        self.updateStatus(true);
                         self.hook('onSaveDone', arguments);
                     }
                 });
@@ -449,18 +471,13 @@ var Editor = {
     },
     // do save success callback
     onSaveDone: function(data) {
-        if (!this.checkData(data)) { return; }
-        
-        var diary = data.diary;
-        if (diary) {
-            var update = {
-                'saved_at' : diary.saved_at
-            };
-            this.repaint(update);
+        var msg = i18n.SAVE_FAIL;
+        if ( this.checkData(data) && data.diary) {
+            this.repaint({'saved_at' : data.diary.saved_at});
             this.updateTitleContentLength();
-            this.updateStatus(true);
-            E.Notice.showMessage(i18n.SAVE_SUCCESS, 1000);
+            msg = i18n.SAVE_SUCCESS;
         }
+        E.Notice.showMessage(msg, 3000);
     },
     
     /**
@@ -800,9 +817,8 @@ var DiarysManager = Plugin.extend({
         // datepicker
         var params = { 
             dateFormat: "yy-mm-dd",
-            dayNamesMin: ["日", "一", "二", "三", "四", "五", "六"],
-            monthNames: ["一月", "二月", "三月", "四月", "五月", "六月",
-                         "七月","八月","九月","十月","十一月","十二月"]
+            dayNamesMin: E.Date.dayNamesMin,
+            monthNames: E.Date.monthNames,
         };
         $("#datepicker-start").datepicker(params);
         $("#datepicker-end").datepicker(params);

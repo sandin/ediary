@@ -68,11 +68,9 @@ class Diary_DoController extends Zend_Controller_Action
         if (! isset($_POST['diary']) ) {
             return;
         }
-
+        
         $input = $this->filterPost($_POST);
         if ($input->isValid() && !$input->hasMissing()) {
-            //TODO: 检查权限
-            
             $response = array();
             $data = array(
             	"id" => $input->id,
@@ -85,24 +83,18 @@ class Diary_DoController extends Zend_Controller_Action
                 unset($data['id']);
                 $data['user_id'] = $this->_user->id;
                 $diary = Ediary_Diary::create($data);
-                if ($diary->id <= 0) {
-                    $response['error'] = _t("无法新建日记.");
-                }
                 $response['callback'] = 'updateId';
             } else {
                 // update 
                 $diary = Ediary_Diary::find($data['id']);
-                $diary->title = $data['title'];
-                $diary->content = $data['content'];
-                if (! $diary->update() ) {
-                    $response['error'] = _t("无法新建日记.");
+                if ($diary !== null && $diary->user_id == $this->_user->id) {
+                    $diary->title = $data['title'];
+                    $diary->content = $data['content'];
+                    $diary->update();
                 }
             }
-            if (!isset($response['error'])) {
-                $response['diary'] = $diary->toArray();
-            }
-            
-            echo $this->view->json($response);
+            $response['diary'] = ($diary != null) ? $diary->toArray() : null;
+            $this->_helper->json($response);
         }
     }
     

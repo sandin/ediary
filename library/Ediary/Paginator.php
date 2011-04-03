@@ -17,8 +17,9 @@ class Ediary_Paginator
             throw new Ediary_Exception(__METHOD__ . ' except $currentPageNumber is a number.');
         }
         
-        $db = Ediary_Database_Db::getInstance();
-        $select = $db->select()->from($db->prefixTables($table));
+        $db = Ediary_Db::getInstance();
+        $select = $db->select()
+                     ->from(Ediary_Db::prefixTables($table));
         if (is_array($where)) {
             for ($i = 0, $l = count($where); $i < $l; $i++) {
                 $select->where($where[$i], (isset($bind[$i])) ? $bind[$i] : '');

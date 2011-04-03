@@ -47,7 +47,7 @@ class Ediary_Journal extends Ediary_Query_Record
         $this->exclude('id'); // exclude primary key 
         
         // default values
-        $now = Ediary_Database_Db::now();
+        $now = Ediary_Db::now();
         $this->fields['created_at'] = $now;
         
         // Insert into DB

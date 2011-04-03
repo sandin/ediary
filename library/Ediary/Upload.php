@@ -78,7 +78,7 @@ class Ediary_Upload
         try {
             return $upload->receive();
         } catch (Zend_File_Transfer_Exception $e) {
-            Ediary_Logger::log($e->getMessage());
+            Ediary_Logger::log2($e->getMessage());
         }
     }
     

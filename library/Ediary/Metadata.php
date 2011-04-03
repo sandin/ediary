@@ -155,10 +155,10 @@ class Ediary_Metadata
     }
     
     /**
-     * @return Ediary_Database_Db
+     * @return Ediary_Db
      */
     public static function getDb() {
-        return Ediary_Database_Db::getInstance();
+        return Ediary_Db::getInstance();
     }
     
 }

@@ -6,5 +6,8 @@ body.mceContentBody {
 	background: transparent;
 	font-size: 14px;/* equals 1 */
     line-height: 24px; /* equals 2 */
-    border: 1px #eee solid;
+    /*border: 1px #eee solid;*/
+}
+body.content_is_empty {
+    background: transparent url("../images/content_is_empty.png") no-repeat;
 }

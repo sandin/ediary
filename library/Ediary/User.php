@@ -35,7 +35,7 @@ class Ediary_User extends Ediary_Query_Record
     private $isLoad = false;
 
     public function __construct() {
-        $this->db = Ediary_Database_Db::getInstance();
+        $this->db = Ediary_Db::getInstance();
         if (NULL == self::$table) {
             self::$table = new Zend_Db_Table($this->db->users);
         }
@@ -312,7 +312,7 @@ class Ediary_User extends Ediary_Query_Record
      * @return String user's securtiy code from db
      */
     private static function getSecurtiyCode($email) {
-        $db = Ediary_Database_Db::getInstance();
+        $db = Ediary_Db::getInstance();
         return $db->fetchOne(
         	'SELECT security_code FROM {users} WHERE email=?', $email);
     }
@@ -337,7 +337,7 @@ class Ediary_User extends Ediary_Query_Record
      * @return int the last insert id
      */
     private function insert($email, $password, $name = '') {
-        $now = Ediary_Database_Db::formator(time());
+        $now = Ediary_Db::formator(time());
         $securityCode = self::makeSecurityCode($email);
         $encodedPassword = self::encryptPassword($password, $securityCode);
          

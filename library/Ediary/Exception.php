@@ -40,7 +40,7 @@ class Ediary_Exception extends Exception {
     public static function exceptionHandler( $exception ) {
         if ("1" == Ediary_Config::getAppConfig()->logger->enable) {
             //$backtrace = print_r( $exception->getTrace(), true );
-            Ediary_Logger::log($exception->getMessage() . ' in ' 
+            Ediary_Logger::log2($exception->getMessage() . ' in ' 
                 . $exception->file . ':' . $exception->line);
         }
         

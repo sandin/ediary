@@ -16,7 +16,8 @@ class Ediary_Diary extends Ediary_Query_Record
         'title' => '',
         'content' => '',
         'weather' => '',
-        'created_at' => '',
+        'created_date' => '',
+        'created_time' => '',
         'saved_at' => '',
         'mood' => 'normal',
     	'status' => self::STATUS_PRIVATE,
@@ -49,6 +50,15 @@ class Ediary_Diary extends Ediary_Query_Record
         return $diary;
     }
     
+    public static function newDiary() {
+        return new Ediary_Diary(array(
+        	'id' => '-1',
+            'title' => Ediary_Formator::getDateAndWeek(),
+            'content' => '',
+            'saved_at' => _t("未保存")
+        )); 
+    }
+    
     /**
      * Insert current Diary into the database
      * 
@@ -58,9 +68,9 @@ class Ediary_Diary extends Ediary_Query_Record
         $this->exclude('id'); // exclude primary key 
         
         // default values
-        $now = Ediary_Database_Db::now();
-        $this->fields['created_at'] = $now;
-        $this->fields['saved_at'] = $now; //touch
+        $this->fields['created_date'] = Ediary_Db::today();
+        $this->fields['created_time'] = Ediary_Db::now();
+        $this->fields['saved_at'] = Ediary_Db::datetime();
         
         // Insert into DB
         $result = parent::insertRow($this->getDb()->diarys);
@@ -101,13 +111,13 @@ class Ediary_Diary extends Ediary_Query_Record
     /**
      * Get a Diary by Date
      * 
-     * @param String $date '2011-03-25 00:00:00'
+     * @param String $date like: '2011-03-25'
      * @param String user id
      * @return Ediary_Diary or null
      */
     public static function findByDate($date, $user_id) {
         $row = self::getDb()->fetchRow('SELECT * FROM {diarys} '
-       	    . ' WHERE created_at >= ? AND user_id = ? '
+       	    . ' WHERE created_date = ? AND user_id = ? '
        	    . ' ORDER BY id DESC LIMIT 1', array($date, $user_id)); 
         if ($row != false) {
             return new Ediary_Diary($row);
@@ -122,7 +132,7 @@ class Ediary_Diary extends Ediary_Query_Record
     public static function findByUser($user_id) {
         $db = self::getDb();
         $select = $db->select()
-                     ->from($db->prefix('diarys'))
+                     ->from(Ediary_Db::prefix('diarys'))
                      ->where('user_id = ?', $user_id);
         return $db->fetchAll($select->__toString());
     }
@@ -144,17 +154,17 @@ class Ediary_Diary extends Ediary_Query_Record
         $where[] = 'user_id = ?';
         $bind[] = $user_id;
         if (isset($since)) {
-            $where[] = 'created_at >= ?';
+            $where[] = 'created_date >= ?';
             $bind[] = $since;
         }
         if (isset($max)) {
-            $where[] = 'created_at <= ?';
+            $where[] = 'created_date <= ?';
             $bind[] = $max;
         }
         return Ediary_Paginator::factory('{diarys}', $where, $bind, 'id DESC',
                                  $currentPageNumber, $itemCountPerPage);
     }
-    //SELECT * FROM diarys d where created_at >= '2011-03-28 00:00:00' AND created_at < '2011-03-29 23:00:00' LIMIT 0,1000
+    //SELECT * FROM diarys d where created_date >= '2011-03-28' AND created_date < '2011-03-29' LIMIT 0,1000
     
     /**
      * Delete current diary
@@ -188,7 +198,7 @@ class Ediary_Diary extends Ediary_Query_Record
      * @return boolean success or not
      */
     public function update() {
-        $this->fields['saved_at'] = Ediary_Database_Db::now(); //touch
+        $this->fields['saved_at'] = Ediary_Db::datetime(); //touch
         
         $where = self::getDb()->quoteInto('id = ?', $this->fields['id']);
         return parent::updateRow(self::getDb()->diarys, $where);

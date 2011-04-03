@@ -91,7 +91,7 @@ class Admin_InstallController extends Zend_Controller_Action
     public function step2Action()
     {
     	// Check username, password, host, dbname
-        $db = Ediary_Database_Db::getInstance(); 
+        $db = Ediary_Db::getInstance(); 
         try {
         	$db->connect();
         } catch (Exception $db_e) {

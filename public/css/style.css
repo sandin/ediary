@@ -986,6 +986,12 @@ form.profile #forget_pw {
     position: relative;
 }
 .toolbar-close-btn {
+	/*
+	background: url("/js/fancybox/fancy_close.png") no-repeat center center;
+	display: block;
+	width: 30px;
+	height: 30px;
+	*/
 	position: absolute;
 	top: 5px;
 	right: 5px;
@@ -1086,14 +1092,15 @@ form.profile #forget_pw {
 	font-weight: bold;
 }
 .photo_list li a.delete {
+    background: url("../images/icon_delete_16.png") no-repeat center center;
+	width: 16px;
+	height: 16px;
 	display: none;
 	position: absolute;
 	bottom: 5px;
 	right: 5px;
-	width: 16px;
-	height: 16px;
-	background: url("../images/icon_delete_16.png") no-repeat center center;
 }
+
 .photo_list li img {
 }
 

@@ -6,7 +6,7 @@
  * @author lds
  *
  */
-class Ediary_Database_Db
+class Ediary_Db
 {
 
     /**
@@ -21,7 +21,7 @@ class Ediary_Database_Db
      *
      * @var String
      */
-    private $prefix = '';
+    private static $prefix = '';
 
     private $tableSet = '';
 
@@ -52,12 +52,12 @@ class Ediary_Database_Db
     /**
      * This instance
      *
-     * @var Ediary_Database_Db
+     * @var Ediary_Db
      */
     private static $instance;
 
     /**
-     * PRIVATE, use Ediary_Database_Db::getInstance()
+     * PRIVATE, use Ediary_Db::getInstance()
      */
     private function __construct() {
     }
@@ -65,7 +65,7 @@ class Ediary_Database_Db
     /**
      * Get Database Instance
      *
-     * @return Ediary_Database_Db
+     * @return Ediary_Db
      */
     public static function getInstance() {
         if (! isset(self::$instance) ) {
@@ -83,7 +83,7 @@ class Ediary_Database_Db
     // METHODS
 
     /**
-     * Set Tables prefix
+     * Set All Tables prefix
      *
      * @param String $prefix
      * @throws Ediary_Exception invalid prefix
@@ -93,9 +93,9 @@ class Ediary_Database_Db
             throw new Ediary_Exception(_t("数据库前缀不能允许数字字母和下划线."));
         }
          
-        $this->_prefix = $prefix;
+        self::$prefix = $prefix;
         foreach ($this->tables as $table) {
-            $this->$table = $this->_prefix . $table ;
+            $this->$table = self::$prefix . $table ;
         }
     }
     
@@ -105,15 +105,15 @@ class Ediary_Database_Db
      * @param String $tableName
      * @return string prefixed
      */
-    public function prefix($tableName) {
-        return $this->_prefix . $tableName;
+    public static function prefix($tableName) {
+        return self::$prefix . $tableName;
     }
 
     /**
      * Set Database Connection
      *
      * @param  Zend_Db_Adapter_Abstracta $conn
-     * @return Ediary_Database_Db
+     * @return Ediary_Db
      */
     public function setConnection($conn) {
         $this->conn = $conn;
@@ -128,26 +128,33 @@ class Ediary_Database_Db
     public function getConnection() {
         return $this->conn;
     }
+    
+ 	/**
+     *  set charset and collation
+     */
+    public function setCharset($charset) {
+        $this->tableSet = ' CHARACTER SET ' . $charset . ' COLLATE utf8_general_ci';
+    }
+    
+    public function getTableSet() {
+        return $this->tableSet;
+    }
 
     /**
      * Connect to the Database
      *
      * @throws Ediary_Database_Exception When cann't connect to the database
      *
-     * @return boolean
+     * @return void
      */
     public function connect() {
         try {
             if (NULL !== $this->conn) {
                 $this->conn->getConnection();
-            } else {
-                return false;
             }
         } catch (Exception $e) {
             throw new Ediary_Database_Exception($e->getMessage(), $e->getCode(), $e);
         }
-         
-        return true;
     }
 
     public function test() {
@@ -163,6 +170,8 @@ class Ediary_Database_Db
         $result = $this->query("SHOW TABLES");
         return ( $result->rowCount() > 0 );
     }
+    
+   
 
     /**
      * Create Tables
@@ -170,16 +179,11 @@ class Ediary_Database_Db
      */
     public function create($force = false) {
         if ( $force || $this->isInstalled() ) { 
-            return Ediary_Logger::log('The application is already installed');
+            return Ediary_Logger::log2('The application is already installed');
         }
 
         // Setup charset and collation
-        $charset_name = $this->getConfig()->charset ;
-        $collation_name = 'utf8_general_ci';
-
-        $this->dbname = $this->getConfig()->dbname;
-        $this->tableSet = ' CHARACTER SET ' . $charset_name
-                        . ' COLLATE ' . $collation_name;
+        $this->setupTableSet();
 
         $imdb = $this;
         include 'schema.php'; //defined $query
@@ -226,7 +230,7 @@ class Ediary_Database_Db
         if ($this->isInstalled() ) {
             $this->drop();
             $this->create(true);
-            Ediary_Logger::log("Database has been upgraded.");
+            Ediary_Logger::log2("Database has been upgraded.");
         }
     }
 
@@ -246,7 +250,6 @@ class Ediary_Database_Db
      * Get database config, such as username, host, dbname
      *
      * @return stdClass {username, dbname, host, charset}
-     */
     public function getConfig() {
         $config = new stdClass();
 
@@ -260,6 +263,7 @@ class Ediary_Database_Db
 
         return $config;
     }
+     */
 
     /**
      * Call $this->connection->xxx instead
@@ -303,19 +307,23 @@ class Ediary_Database_Db
     }
     
     /**
-     * Get current data/time like '0000-00-00 00:00:00'
+     * Get current time like '00:00:00'
      * @return string
      */
     public static function now() {
-        return self::formator(time());
+        return date('H:i:s', time());
     }
     
     /**
-     * Get today data like '0000-00-00 00:00:00'
+     * Get today data like '0000-00-00'
      * @return string
      */
     public static function today() {
-         return self::formator(mktime(0,0,0,date("m"),date("d"),date("Y")));
+        return date('Y-m-d', time());
+    }
+    
+    public static function datetime() {
+        return date('Y-m-d H:i:s', time());
     }
 
     /**
@@ -393,9 +401,9 @@ class Ediary_Database_Db
      * @param String $sql
      * @return string sql
      */
-    public function prefixTables($sql) {
+    public static function prefixTables($sql) {
         // Then replace remaining tables with the default prefix.
-        return strtr($sql, array('{' => $this->prefix, '}' => ''));
+        return strtr($sql, array('{' => self::$prefix, '}' => ''));
     }
     
 

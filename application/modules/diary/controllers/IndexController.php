@@ -15,31 +15,26 @@ class Diary_IndexController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        $diary = null;
         $diary_id = $this->_getParam('id');
         
         if (isset($diary_id) && is_numeric($diary_id)) {
-            // Open a particular diary
-            $diary = Ediary_Diary::find($this->_getParam('id'));
-            if (!isset($diary) || $diary->user_id != $this->_user->id) {
-                //TODO: 
-                echo _t("该日记不存在, 或您没有权限打开它.");
-                exit();
-            }
+            $diary = $this->_openDiary($diary_id);
         } else {
-            // Open today's diary
-            $diary = Ediary_Diary::findByDate(Ediary_Database_Db::today(), $this->_user->id);
-            if (null == $diary) {
-                // Today did not write a diary, create a new one
-                $diary = new Ediary_Diary(array(
-               		'id' => '-1',
-                    'title' => Ediary_Database_Db::today(),
-                    'content' => ''
-                ));
-            }
+            $diary = Ediary_Diary::findByDate(Ediary_Db::today(), $this->_user->id);
+            $diary = (null != $diary) ? $diary : Ediary_Diary::newDiary();
         }
         
         $this->view->diary = $diary->toArray(true);
+        var_dump($this->view->diary);
+    }
+    
+    private function _openDiary($id) {
+        $diary = Ediary_Diary::find($id);
+        if ($diary != null && $diary->user_id == $this->_user->id) {
+            return $diary;
+        } else {
+            return Ediary_Core::exitApp(_t("该日记不存在, 或您没有权限访问"));
+        }
     }
     
     private function _parsePost() {

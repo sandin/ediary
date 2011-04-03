@@ -33,6 +33,15 @@ class Ediary_Formator
         return $tmp[0];
     }
     
+    public static function getDateAndWeek($date = null) {
+        $zDate = new Zend_Date();
+        $zDate->set(isset($date) ? $date : time());
+        return $zDate->get(Zend_Date::YEAR) . '年'
+               . $zDate->get(Zend_Date::MONTH_SHORT) . '月'
+               . $zDate->get(Zend_Date::DAY_SHORT) . '日 '
+               . $zDate->get(Zend_Date::WEEKDAY);
+    }
+    
     /**
      * Validator for : 0000-00-00
      * @return Zend_Validate_Regex

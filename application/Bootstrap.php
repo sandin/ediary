@@ -40,7 +40,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         //var_dump($isInstalled); //TODO: 有时误报?
         
         if ( !$isInstalled ) {
-            Ediary_Logger::log('The application is not installed, installing now.');
+            Ediary_Logger::log2('The application is not installed, installing now.');
             Ediary_Config::setInstalling(true);
             Ediary_Config::setInstalled(true);
             Ediary_Core::gotoUrl('/admin/install');
@@ -51,21 +51,23 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     protected function _initDatebase() {
         $resources = $this->getPluginResource('db');
         $dbAdapter = $resources->getDbAdapter();
+        $config = $dbAdapter->getConfig();
         
-        $db = Ediary_Database_Db::getInstance()->setConnection($dbAdapter);
+        $db = Ediary_Db::getInstance()->setConnection($dbAdapter);
         $db->setPrefix(Ediary_Config::getPerfix());
+        $db->setCharset($config['charset']);
 
         Zend_Db_Table::setDefaultAdapter($dbAdapter);
     }
     
     protected function _initSession()
     {
-        $db = Ediary_Database_Db::getInstance();
+        $db = Ediary_Db::getInstance();
         Zend_Db_Table_Abstract::setDefaultAdapter($db->getConnection());
         
         //配置SessionDB字段
         $config = array(
-	  		'name'           => $db->prefix('sessions'),
+	  		'name'           => Ediary_Db::prefix('sessions'),
 	  		'primary'        => 'id',
 	  		'modifiedColumn' => 'modified',
 	  		'dataColumn'     => 'data',
@@ -129,7 +131,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                     $translate->addTranslation($lang);
                 }
             } else {
-                Ediary_Logger::log($lang['locale'] . ' translation file is missing : '. $lang['content']);
+                Ediary_Logger::log2($lang['locale'] . ' translation file is missing : '. $lang['content']);
             }
         }
 

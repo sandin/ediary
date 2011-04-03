@@ -5,14 +5,36 @@ class Ediary_Logger
     const LOGGER_TYPE_DATABASE	= 'database';
     const LOGGER_TYPE_FIREBUG	= 'firebug'; // Only Use this in your model, view and controller files
 
+    /**
+     * @var Zend_Log
+     */
     private static $logger = null;
+    
+    /**
+     * @var Ediary_Looger
+     */
+    private static $instance = null;
+    
+    private function __construct() {
+        
+    }
+    
+    /**
+     * @return Ediary_Looger
+     */
+    public static function getInstance() {
+        if (self::$instance == null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
 
     /**
      * new Zend_Log and addWriter
      *
      * @param int $type defined in const field
      */
-    private static function getLogger($type = self::LOGGER_TYPE_FILE) {
+    private static function _setLogger($type = self::LOGGER_TYPE_FILE) {
         self::$logger = new Zend_Log();
         $write = null;
 
@@ -65,7 +87,7 @@ class Ediary_Logger
             if (NULL != $config && isset($config->logger->type) ) {
                 $logType = $config->logger->type;
             }
-            self::getLogger($logType);
+            self::_setLogger($logType);
         }
     }
 
@@ -77,8 +99,14 @@ class Ediary_Logger
      * @param String $message
      * @param int $priority [Zend_Log::INFO, ...]
      * @param mixed $extras
+     * @deprecated use log instead
      */
-    public static function log($message,  $priority = Zend_Log::INFO, $extras = null) {
+    public static function log2($message,  $priority = Zend_Log::INFO, $extras = null) {
+        self::initLogger();
+        self::$logger->log($message, $priority, $extras);
+    }
+    
+    public function log($message,  $priority = Zend_Log::INFO, $extras = null) {
         self::initLogger();
         self::$logger->log($message, $priority, $extras);
     }

@@ -101,7 +101,7 @@ class Ediary_DiaryTest extends ControllerTestCase
     public function testFindByDate() {
         $diary = Ediary_Diary::create( $this->data );
         $diaryId = $diary->id;
-        $today = Ediary_Database_Db::today();
+        $today = Ediary_Db::today();
         
 //        $start = xdebug_time_index();
         $diaryFined = Ediary_Diary::findByDate($today, $this->data['user_id']);

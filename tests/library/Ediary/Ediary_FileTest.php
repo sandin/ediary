@@ -89,7 +89,7 @@ class Ediary_FileTest extends ControllerTestCase
         $this->assertTrue(is_array($files));
         $this->assertTrue(count($files) > 0);
         
-        $db = Ediary_Database_Db::getInstance();
+        $db = Ediary_Db::getInstance();
         $count = $db->fetchOne("SELECT COUNT(*) FROM {files} WHERE diary_id = ? ", $data['diary_id']);
         $this->assertEquals($count, count($files));
         

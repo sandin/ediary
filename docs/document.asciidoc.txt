@@ -74,7 +74,7 @@ module目录下的所有类名都使用 `Zend_Loader_Autoloader` , 命名方式�
 所以入库都必须使用 `Zend_Db` 提供的 `quote` 或 `quoteInto` , 如果要对一次请求的所有POST或GET数组进行转义, 可以使用已封装好的内部魔法引号对一个数组进行转义:
 [source]
 ----------------------------------------------
-Ediary_Database_Db::addMagicQuotes($array);
+Ediary_Db::addMagicQuotes($array);
 ----------------------------------------------
 该方法会递归的对数组的 *值* 进行转义, 返回的数据可以安全入库.
 

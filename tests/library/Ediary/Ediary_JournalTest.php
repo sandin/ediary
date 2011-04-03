@@ -22,7 +22,7 @@ class Ediary_JournalTest extends ControllerTestCase
     {
         parent::setUp();
         
-        //Ediary_Database_Db::getInstance()->upgrade();
+        //Ediary_Db::getInstance()->upgrade();
         
         $this->data = array(
         'title' => 'title',

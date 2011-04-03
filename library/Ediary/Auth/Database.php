@@ -7,7 +7,7 @@ class Ediary_Auth_Database
         $result->result  = false;
         $result->message = '';
         
-        $db = Ediary_Database_Db::getInstance();
+        $db = Ediary_Db::getInstance();
         
         $storage = new Zend_Auth_Storage_Session(Ediary_Application::SESSION_AUTH);
         $namespace = $storage->getNamespace();
