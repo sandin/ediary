@@ -1104,15 +1104,15 @@ E.extend('upload', function(){
             titleElem  : '#diary_file_list>li>p',
             deleteUrl : '/upload/index/delete?id=',
             js : ['/js/jquery.uploadify/swfobject.js', 
-                    '/js/jquery.uploadify/jquery.uploadify.v2.1.4.js',
-                    '/js/fancybox/jquery.fancybox-1.3.4.js'],
+                  '/js/jquery.uploadify/jquery.uploadify.v2.1.4.js',
+                  '/js/fancybox/jquery.fancybox-1.3.4.js'],
             loadJs : true,
             previewSize : [160, 120],
             uploadify : {
                 'uploader'  : '/js/jquery.uploadify/uploadify.swf',
                 'script'    : '/upload/index/images',
                 'buttonText': 'Upload',
-                //'cancelImg' : '/js/jquery.uploadify/cancel.png',
+                'cancelImg' : '/js/jquery.uploadify/cancel.png',
                 'folder'    : '/uploads',
                 'auto'      : true,
                 'multi'     : true,
@@ -1206,6 +1206,9 @@ E.extend('upload', function(){
                 },
                 'onComplete': function() {
                     self.onComplete.apply(self, arguments);
+                },
+                'onError': function(event,ID,fileObj,errorObj) {
+                    $.error(errorObj);
                 }
             };
             this.element.uploadify($.extend(params, o.uploadify));
@@ -1230,6 +1233,20 @@ E.extend('upload', function(){
                 try {
                     var json = $.parseJSON(response);
                     
+                    // has error
+                    if (json.error) {
+                        var msg = '无法上传文件 ', errors = json.error;
+                        if ($.inArray('fileMimeTypeFalse', errors) != -1) {
+                            msg += '该文件类型不被允许 ';
+                        }
+                        if ($.inArray('fileSizeTooBig', errors) != -1) {
+                            msg += '该文件过大 ';
+                        }
+                        E.Notice.showMessage(msg, 10000);
+                        return;
+                    }
+                    
+                    // Create DOM element, like:
                     // <li>
                     //    <a href="" rel=""><img src="" /></a>
                     //    <p>title<a class="delete"></a></p>
@@ -1258,12 +1275,14 @@ E.extend('upload', function(){
                     ).appendTo($(o.targetElem));
                     
                 } catch (e) {
-                    $.error(e.getMessage());
+                    $.error(e); // Case by PARSE JSON
                 }
+            } else {
+                E.Notice.showMessage("服务器无法响应, 请稍后再试.", 5000);
             }
         },
         onAllComplete: function() {
-            
+            //console.log('all complete');
         }
     };
 

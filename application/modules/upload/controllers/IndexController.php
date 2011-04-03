@@ -71,14 +71,17 @@ class Upload_IndexController extends Zend_Controller_Action
             $diary = Ediary_Diary::find($input->diary_id);
             
             if ($diary != null && $diary->user_id == $this->_user->id) {
-                // Move file into upload dir
-                $upload = new Ediary_Upload(APPLICATION_PATH . '/../public/uploads');
+                // Recevie and Move file to the upload dir
+                $upload = new Ediary_Upload_Images(APPLICATION_PATH . '/../public/uploads');
                 $upload->useSubDir(true);
-                $upload->recevie('Filedata'); // uploadify file field name
+                if (! $upload->recevie('Filedata') ) {
+                    // File is invalid
+                   $this->_helper->json(array('error' => $upload->getError())); 
+                   return;
+                }
                 
                 // Store file info into DB
                 $fileInfo = $upload->store($this->_user->id, $diary->id);
-                
                 if ( $fileInfo != null ) {
                     // Make thumbnail
                     $image = new Ediary_Image($upload->getFilename());

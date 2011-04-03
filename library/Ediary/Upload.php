@@ -4,12 +4,12 @@ class Ediary_Upload
     /**
      * @var String Upload dir
      */
-    private $_path;
+    protected $_path;
     
     /**
      * @var Zend_File_Transfer_Adapter_Http
      */
-    private $_fileTrasfer;
+    protected $_fileTrasfer;
     
     /**
      * @param String $pathname 上传目录
@@ -48,6 +48,10 @@ class Ediary_Upload
         return $this->_fileTrasfer->getFilename();
     }
     
+    public function getError() {
+        return $this->_fileTrasfer->getErrors();
+    }
+    
     /**
      * get upload dir path
      * @return string
@@ -57,7 +61,7 @@ class Ediary_Upload
     }
     
     /**
-     * Try to receive post file
+     * Try to receive post file 
      * 
      * @param String $inputName
      * @return boolean 
@@ -72,7 +76,7 @@ class Ediary_Upload
                 			   'overwrite' => true), $file['name'] );
         }
         try {
-            $upload->receive();
+            return $upload->receive();
         } catch (Zend_File_Transfer_Exception $e) {
             Ediary_Logger::log($e->getMessage());
         }
