@@ -10,6 +10,7 @@
 class Ediary_Image
 {
     const PLACEHOLDER = '{$1}';
+    const DEFAULT_PATTERN = '{$1}_thumbnail';
     
     private $_filename;
     private $_image;
@@ -43,7 +44,7 @@ class Ediary_Image
         $image->thumbnailImage($width, $height);
         
         if ( strpos($output, self::PLACEHOLDER) !== false ) { 
-            $output = self::parseFileName($this->_filename, $output);
+            $output = self::rename($this->_filename, $output);
         }
         $image->write($output);
         return $output;
@@ -51,18 +52,25 @@ class Ediary_Image
     
    
     /**
-     * 'originname.jpg' with pattern '{$1}_thumbnail' 
-     *  => 'originname_thumbnail.jpg'
+     * 
+     * 利用暂位符模式重命名文件名
+     * 
+     * INPUT: 
+     * $originFileName : '/your/path/originname.pg'
+     * $pattern        : '{$1}_thumbnail' 
+     * 
+     * OUTPUT:
+     * '/your/path/originname_thumbnail.jpg'
      * 
      * @param String $originFileName
      * @param String $pattern
      * @return string
      */
-    public static function parseFileName($originFileName, $pattern) {
+    public static function rename($originFileName, $pattern) {
         $fileInfo = pathinfo($originFileName);
         $filename = str_replace(self::PLACEHOLDER, $fileInfo['filename'], $pattern);
-        return $fileInfo['dirname'] . DIRECTORY_SEPARATOR 
-               . $filename . '.' . $fileInfo['extension'];
+        $dirname = ($fileInfo['dirname'] !== '.') ? $fileInfo['dirname']  . DIRECTORY_SEPARATOR : '';
+        return $dirname . $filename . '.' . $fileInfo['extension'];
     }
     
     public function __call($method, $args) {

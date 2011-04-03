@@ -135,5 +135,12 @@ class Ediary_DiaryTest extends ControllerTestCase
         $this->assertNotNull($diarys2);
         $this->assertEquals($diarys2->getCurrentItemCount(), $prePage);
     }
+    
+    public function testCheckAccess() {
+        $diary = Ediary_Diary::create( $this->data );
+        
+        $this->assertTrue(Ediary_Diary::checkAccess($diary->id, $diary->user_id));
+        $this->assertFalse(Ediary_Diary::checkAccess($diary->id, '3244235'));
+    }
 }
 ?>

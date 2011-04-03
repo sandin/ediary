@@ -64,7 +64,7 @@ class Ediary_Journal extends Ediary_Query_Record
      * Get a journal
      * 
      * @param String $id journal ID
-     * @return Ediary_Journal journal Object
+     * @return Ediary_Journal journal Object or NULL
      */
     public static function find($id) {
         $journal = self::findById($id);
@@ -75,13 +75,16 @@ class Ediary_Journal extends Ediary_Query_Record
      * Get a journal By journal id
      * 
      * @param String $id
-     * @return Ediary_Journal journal object
+     * @return Ediary_Journal journal object or NULL
      */
     public static function findById($id) {
         $row = self::getDb()->fetchRow(
             'SELECT * FROM {journals} WHERE id=?', $id);
-        $journal = new Ediary_Journal($row);
-        return $journal;
+        if ($row != false) {
+            $journal = new Ediary_Journal($row);
+            return $journal;
+        }
+        
     }
     
     /**

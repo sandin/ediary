@@ -162,7 +162,8 @@ var Editor = {
             theme_advanced_buttons1 : "bold,italic,underline,|,fontselect,forecolor,|,justifyleft,justifycenter,justifyright,|,indent,outdent,|,strikethrough,backcolor,|,bullist,numlist,|,spellchecker,insertdate,link,removeformat",
             theme_advanced_buttons2 : "",
             theme_advanced_buttons3 : "",
-            theme_advanced_toolbar_location : "external",
+            theme_advanced_toolbar_location : "docked",
+            theme_penzu_toolbar_location_docked_element_id : 'diary_editor_toolbar_docked',
             theme_advanced_toolbar_align : "left",
             theme_advanced_statusbar_location : "none",
             theme_advanced_resizing : true,
@@ -659,10 +660,10 @@ var Plugin = Class.extend({
 E.Plugin = Plugin; // NAMESPACE
 
 /**
- * Class OpenButton extends Plugin
+ * Class DiarysManager extends Plugin
  * 打开按钮 - 日记管理列表 - 插件
  */
-var OpenButton = Plugin.extend({
+var DiarysManager = Plugin.extend({
     
     data: {
         count: 10,
@@ -705,10 +706,10 @@ var OpenButton = Plugin.extend({
         
          // open button
         this.element.click(function(){
-            self.doGetDiarys(self.data);
-            // 只在第一次点击时绑定
+            // 避免每次点击都绑定/请求一遍
             if ( !self.isReady ) {
                 self.isReady = true;
+                self.doGetDiarys(self.data);
                 self.bindEvent();
             }
             return false;
@@ -941,7 +942,7 @@ var OpenButton = Plugin.extend({
         this.element.unbind();
     }
 });
-E.OpenButton = OpenButton; // NAMESPACE
+E.DiarysManager = DiarysManager; // NAMESPACE
 
 /**
  * Class SaveButton extends Plugin
@@ -1051,16 +1052,22 @@ var Pad = {
         $("#editor-toolbar").simpleTabs({select: null, useId: true});
         
         // add Plugins 
-        editor.addPlugin('OpenButton', new E.OpenButton());
+        editor.addPlugin('DiarysManager', new E.DiarysManager());
         
         $('#editor-btn-save').click(function() {
             editor.doSave(true); // force save
-            return false;
         });
         
         $('#editor-btn-create').click(function() {
             editor.newDiary();
-            return false;
+        });
+        
+        $('#editor-btn-upload').click(function() {
+            console.log(editor.getId());
+            if (editor.getId() == '-1') {
+                E.Notice.showDialog("日记尚未被创建, 请先点击保存!", "友情提示");
+                return false;
+            }
         });
         
         $('.toolbar-close-btn').live('click', function() {
@@ -1088,18 +1095,20 @@ E.extend('upload', function(){
 
     var Upload = {
         debug: E.debug,
-        
         element: null,
         settings : {
-            'element' : '#diary_file_upload',
-            'idElem'  : '#diary_id', // <input name="diary_id" value="0000000" />
-            'targetElem' : '#diary_file_list', // 需要将服务器响应结果刷新到的元素
-            'js' : ['/js/jquery.uploadify/swfobject.js', 
+            element : '#diary_file_upload', // TODO: 没有此元素
+            idElem  : '#diary_id', // <input name="diary_id" value="0000000" />
+            targetElem : '#diary_file_list', // 需要将服务器响应结果刷新到的元素
+            deleteElem : '#diary_file_list .delete',
+            titleElem  : '#diary_file_list>li>p',
+            deleteUrl : '/upload/index/delete?id=',
+            js : ['/js/jquery.uploadify/swfobject.js', 
                     '/js/jquery.uploadify/jquery.uploadify.v2.1.4.js',
                     '/js/fancybox/jquery.fancybox-1.3.4.js'],
-            'loadJs' : true,
-            'previewSize' : [120, 120],
-            'uploadify' : {
+            loadJs : true,
+            previewSize : [160, 120],
+            uploadify : {
                 'uploader'  : '/js/jquery.uploadify/uploadify.swf',
                 'script'    : '/upload/index/images',
                 'buttonText': 'Upload',
@@ -1113,7 +1122,7 @@ E.extend('upload', function(){
                 'wmode'     : 'transparent',
                 //'removeCompleted': false
             },
-            'fancybox' : {
+            fancybox : {
                 //'transitionIn'  :   'elastic',
                 //'transitionOut' :   'elastic',
                 //'speedIn'       :   600, 
@@ -1124,7 +1133,7 @@ E.extend('upload', function(){
                     return '<span id="fancybox-title-over">Image ' +  (currentIndex + 1) + ' / ' + currentArray.length + ' ' + title + '</span>';
                 }
             },
-            'fancyboxGroup' : 'group1'
+            fancyboxGroup : 'group1'
         },
 
         init: function(options) {
@@ -1139,7 +1148,38 @@ E.extend('upload', function(){
             }
             this.initUploadify();
             
-            $('a', o.targetElem).fancybox(o.fancybox);
+            $('a.lightbox', o.targetElem).fancybox(o.fancybox);
+            
+            $(o.deleteElem).live('click', function() {
+                self.doDelete($(this));
+                return false;
+            });
+            
+            $(o.titleElem).live('mouseenter mouseleave', function(event){
+                if ('mouseenter' == event.type) {
+                    $(this).children('a').show();
+                } else if ('mouseleave' == event.type) {
+                    $(this).children('a').hide();
+                }
+            });
+        },
+        
+        /**
+         * @param jQuery-Object click event target
+         */
+        doDelete: function(target) {
+            var self = this, o = this.settings,
+                url = target.attr('href') ;
+            $.getJSON(url, function(data) {
+                if (self.debug) {
+                    console.log("delete file -> url " + url);
+                    console.log(data);
+                }
+                if (data && data.status) {
+                    target.parent().parent().hide();
+                }
+            });
+            
         },
         
         loadJs: function() {
@@ -1175,7 +1215,9 @@ E.extend('upload', function(){
             // 每次都从idElem里读取id, 保证在id更改后依然发送正确的数据
             var id = $(this.settings.idElem).val();
             if (this.debug) { console.log('upload file -> diary_id : ' + id); }
-            $(event.target).uploadifySettings('scriptData', {'diary_id' : id});
+            if (id  != '-1') {
+                $(event.target).uploadifySettings('scriptData', {'diary_id' : id});
+            } 
         },
         
         onCancel: function(event, ID, fileObj, data) {
@@ -1186,17 +1228,35 @@ E.extend('upload', function(){
             if (this.debug) { console.log(response); }
             if (response) {
                 try {
-                    var json = $.parseJSON(response),
-                        origin = json.origin,
-                        small = json.small,
-                        html = '<a href="' + json.origin + '" rel="' 
-                             + o.fancyboxGroup + '">'
-                             + '<img src="' + json.small 
-                             + '" width="' + o.previewSize[0] 
-                             + '" height="' + o.previewSize[1] + '" /></a>',
-                        a = $(html).fancybox();
-                        
-                    $('<li></li>').append(a).appendTo($(o.targetElem));
+                    var json = $.parseJSON(response);
+                    
+                    // <li>
+                    //    <a href="" rel=""><img src="" /></a>
+                    //    <p>title<a class="delete"></a></p>
+                    // </li>
+                    $('<li />').append(
+                        $('<a />', {
+                            'href': json.origin,
+                            'rel' : o.fancyboxGroup
+                        })
+                        .fancybox(o.fancybox)
+                        .append(
+                            $('<img />', {
+                                'src'  : json.small,
+                                'width': o.previewSize[0],
+                                'height': o.previewSize[1]
+                            })
+                        )
+                    ).append(
+                        $('<p />').text(json.filename).append(
+                            $('<a />', {
+                                'class' : 'delete',
+                                'href'  : o.deleteUrl + json.id,
+                                html : '&nbsp'
+                            })
+                        )
+                    ).appendTo($(o.targetElem));
+                    
                 } catch (e) {
                     $.error(e.getMessage());
                 }

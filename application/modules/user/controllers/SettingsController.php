@@ -36,7 +36,7 @@ class User_SettingsController extends Zend_Controller_Action
         $result = false;
         $filterRules = array();
         $validatorRules = array();
-        $input = new Zend_Filter_Input($filterRules, $validatorRules, $_REQUEST);
+        $input = new Zend_Filter_Input($filterRules, $validatorRules, $_POST);
         
         if ($input->isValid()) {
             $theme = $input->theme;

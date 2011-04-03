@@ -1036,9 +1036,29 @@ form.profile #forget_pw {
 .table_diary_list th {
 	text-align: left;
 }
+#table_diary_list th,
+#table_diary_list td {
+	border-bottom: 1px dotted #333333;
+}
+#diary_editor_toolbar_docked a:link,
+#diary_editor_toolbar_docked a:visited {
+	color: #888;
+}
+
+.diarys_list_footer {
+	position: relative;
+	margin-top: 10px;
+	text-align: right;
+}
+#diarys_list_pages {
+	position: absolute;
+	left: 5px;
+	bottom: 5px;
+}
 
 .theme_list {}
-.theme_list li {
+.theme_list li,
+.photo_list li {
     float: left;
     margin: 5px 8px;
     text-align: center;
@@ -1046,15 +1066,36 @@ form.profile #forget_pw {
 }
 .theme_list li img {
     display: block;
-	width: 120px;
-	height: 120px;
 	border: 1px solid #EEEEEE;
 }
 .theme_list_footer {
 	text-align: right;
 }
-.theme_list {}
-.theme_list {}
+
+.photo_list li {
+	position: relative;
+	background: #FFF;
+	width: 160px;
+	padding: 5px;
+	margin: 15px 22px;
+	border: 1px solid #BBBBBB;
+}
+.photo_list li p {
+	display: block;
+	color: #333;
+	font-weight: bold;
+}
+.photo_list li a.delete {
+	display: none;
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+	width: 16px;
+	height: 16px;
+	background: url("../images/icon_delete_16.png") no-repeat center center;
+}
+.photo_list li img {
+}
 
 .diarys_list .content_box {
 }

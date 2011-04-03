@@ -29,6 +29,7 @@ class Ediary_FileTest extends ControllerTestCase
             array(
                 array(
         			'user_id' => '3',
+                    'diary_id' => '0000000000',
         			'filename' => 'testfile.jpg',
         			'filepath' => '/your/path/testfile.jpg',
         			'filemime' => 'image/jpg',
@@ -76,7 +77,21 @@ class Ediary_FileTest extends ControllerTestCase
         // test delete
         $this->assertTrue($fileDb->delete());
         $this->assertNull(Ediary_File::find($fileDb->id));
+    }
+    
+    /** @dataProvider dataProvider */
+    public function testGetFilesOfDiary($data) {
+        $file = new Ediary_File($data);
+        $file->insert();
+        $file->insert();
         
+        $files = Ediary_File::getFilesOfDiary($data['diary_id']);
+        $this->assertTrue(is_array($files));
+        $this->assertTrue(count($files) > 0);
+        
+        $db = Ediary_Database_Db::getInstance();
+        $count = $db->fetchOne("SELECT COUNT(*) FROM {files} WHERE diary_id = ? ", $data['diary_id']);
+        $this->assertEquals($count, count($files));
         
     }
 

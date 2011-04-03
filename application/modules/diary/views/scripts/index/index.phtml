@@ -23,10 +23,15 @@ $(document).ready(function(){
 		<li><a id="editor-btn-create" href="#"class="menu" title="新建">&nbsp;</a></li>
 		<li><a id="editor-btn-open" href="#toolbar-tabs-open" class="menu" title="打开">&nbsp;</a></li>
 		<li><a id="editor-btn-save" href="#" class="menu" title="保存">&nbsp;</a></li>
-		<li><a id="editor-btn-upload" href="/upload" class="menu" title="附件">&nbsp;</a></li>
+		<li><a id="editor-btn-upload" href="/upload" rev="#diary_id" class="menu" title="附件">&nbsp;</a></li>
 		<li><a id="editor-btn-format" href="#toolbar-tabs-format" class="menu" title="格式">&nbsp;</a></li>
 		<li><a id="editor-btn-theme" href="/user/settings/theme_ajax" class="menu" title="主题">&nbsp;</a></li>
 	</ul>
+	
+	<div id="toolbar-tabs-format" class="innerBox">
+		<div id="diary_editor_toolbar_docked"></div>
+		<a class="toolbar-close-btn" href="#">&nbsp;close</a>
+	</div>
 	
 	<div id="toolbar-tabs-open" class="innerBox">
 		<div class="diarys_list_toolbar">
@@ -54,9 +59,9 @@ $(document).ready(function(){
 			<tbody></tbody> <!-- AJAX ZONE -->
 		</table>
 		<div class="diarys_list_footer">
-			<a id="diarys_list_pre_page" href="#">上一页</a>
-			<a id="diarys_list_next_page" href="#">下一页</a>
 			<span id="diarys_list_pages"></span>
+			<a id="diarys_list_pre_page" href="#" class="btn">上一页</a> &nbsp;&nbsp;
+			<a id="diarys_list_next_page" href="#" class="btn">下一页</a>
 		</div>
 		<a class="toolbar-close-btn" href="#">&nbsp;close</a>
 	</div><!-- /tabs -->

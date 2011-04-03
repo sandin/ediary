@@ -60,5 +60,20 @@ class Ediary_ImageTest extends ControllerTestCase
             $this->assertEquals($height, $size[1]);
         }
     }
+    
+    public function dataProviderForRename() {
+        return array(
+            array('filename.jpg', '{$1}_postfix', 'filename_postfix.jpg'),
+            array('filename.gif', 'prefix_{$1}', 'prefix_filename.gif'),
+            array('filename.exe', 'prefix_{$1}_postfix', 'prefix_filename_postfix.exe'),
+            array('/your/path/filename.jpg', '{$1}_postfix', '/your/path/filename_postfix.jpg'),
+            array('/path/filename.jpg', 'prefix_{$1}', '/path/prefix_filename.jpg'),
+        );
+    }
+    
+    /** @dataProvider dataProviderForRename */
+    public function testRename($filename, $pattern, $except) {
+        $this->assertEquals($except, Ediary_Image::rename($filename, $pattern) );
+    }
 
 }

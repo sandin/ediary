@@ -1,8 +1,19 @@
 <div class="diary_upload_box">
-<ul id="diary_file_list" class="theme_list clearfix">
-	<li><a rel="group1" href="/uploads/2011/Apr/1301667348Penzu-inaction.png"><img src="/uploads/2011/Apr/1301667348Penzu-inaction.png" width="120" height="120" /></a></li>
-	<li><a rel="group1" href="/uploads/2011/Apr/1301667348Penzu-inaction.png"><img src="/uploads/2011/Apr/1301667348Penzu-inaction.png" width="120" height="120" /></a></li>
+<?php if (isset($this->files)):?>
+<ul id="diary_file_list" class="photo_list clearfix">
+<?php foreach ($this->files as $file): ?>
+	<?php $preview = Ediary_Image::rename($file['filepath'], Ediary_Image::DEFAULT_PATTERN); ?>
+	<li>
+		<a class="lightbox" rel="group1" href="<?php echo $file['filepath'] ?>">
+			<img src="<?php echo $preview ?>" width="160" height="120" />
+		</a>
+		<p><?php echo $file['filename']?><a class="delete" href="/upload/index/delete?id=<?php echo $file['id'] ?>">&nbsp;</a></p>
+		
+	</li>
+<?php endforeach; ?>
 </ul>
+<?php endif;?>
+
 <form class="form_diary_upload" enctype="multipart/form-data">
 	<input id="diary_file_upload" name="file_upload" type="file" />
 	<div id="diary-upload-queue"></div>
@@ -13,6 +24,7 @@
 <script type="text/javascript">
 (function() {
 	Ediary.Upload.init();
+	
 })();
 </script>
 </div>

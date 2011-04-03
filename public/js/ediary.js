@@ -626,7 +626,7 @@ Ediary.extend('Notice', Notice);
                     var tip = $.data(self, 'active.tipsy');
                     if (opts.fade) {
                         tip.stop().fadeOut(function() { $(this).remove(); });
-                    } else {
+                    } else if (tip) {
                         tip.remove();
                     }
                 }, 100);

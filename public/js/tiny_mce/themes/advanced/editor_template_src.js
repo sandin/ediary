@@ -668,9 +668,28 @@
 			}
 
 			// Create toolbar container at top
-			if (lo == 'top')
+			if (lo == 'top') {
 				t._addToolbars(tb, o);
-
+            }
+            // Create toolbar like docked
+            if (lo == 'docked') {
+                n = c = DOM.create('div', {
+                    style: 'position:relative'
+                });
+                n = DOM.add(n, 'div', {
+                    id: ed.id + '_external'
+                });
+                n = DOM.add(n, 'table', {
+                    id: ed.id + '_tblext',
+                    cellSpacing: 0,
+                    cellPadding: 0
+                });
+                etb = DOM.add(n, 'tbody');
+                var el = document.getElementById(s.theme_penzu_toolbar_location_docked_element_id);
+                //el.className = "mceEditor " + ed.settings.skin + "Skin";
+                el.appendChild(c);
+                t._addToolbars(etb, o);
+            }
 			// Create external toolbar
 			if (lo == 'external') {
 				n = c = DOM.create('div', {style : 'position:relative'});

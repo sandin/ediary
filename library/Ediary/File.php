@@ -75,6 +75,18 @@ class Ediary_File extends Ediary_Query_Record
         $file = self::findById($id);
         return $file;
     }
+    
+    /**
+     * Get all files of a particular diary
+     * 
+     * @param String $diary_id
+     * @return Array list of files(form DB)
+     */
+    public static function getFilesOfDiary($diary_id) {
+        $row = self::getDb()->fetchAll(
+            'SELECT * FROM {files} WHERE diary_id =? ', $diary_id);
+        return $row;
+    }
 
     /**
      * Get a file By file id

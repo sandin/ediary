@@ -230,7 +230,12 @@ class Ediary_Diary extends Ediary_Query_Record
      */
     public static function checkAccess($diaryId, $userId) {
         $db = self::getDb();
-        $count = $db->fetchOne('SELECT count(*) FROM {diarys} WHERE user_id = ? AND id = ?', $userId, $diaryId);
+        $select = $db->select();
+        $select->from($db->diarys, "COUNT(*)")
+               ->where('user_id = ?', $userId)
+               ->where('id = ?', $diaryId)
+               ->limit(1);
+        $count = $db->fetchOne($select->__toString());
         return ($count > 0);
     }
     

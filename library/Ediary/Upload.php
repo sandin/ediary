@@ -1,7 +1,14 @@
 <?php
 class Ediary_Upload 
 {
+    /**
+     * @var String Upload dir
+     */
     private $_path;
+    
+    /**
+     * @var Zend_File_Transfer_Adapter_Http
+     */
     private $_fileTrasfer;
     
     /**
@@ -25,10 +32,26 @@ class Ediary_Upload
         $this->_Path = realpath($pathname);
     }
     
+    /**
+     * @return Zend_File_Transfer_Adapter_Http
+     */
     public function getAdapter() {
         return $this->_fileTrasfer;
     }
     
+    /**
+     * Shortcut for Zend_File_Transfer_Adapter_Http->getFilename()
+     * 
+     * @return String filename
+     */
+    public function getFilename() {
+        return $this->_fileTrasfer->getFilename();
+    }
+    
+    /**
+     * get upload dir path
+     * @return string
+     */
     public function getPath() {
         return $this->_path;
     }
@@ -60,25 +83,40 @@ class Ediary_Upload
      * 
      * @param $user_id file owner's id
      * @param $diary_id diary's id
-     * @return boolean True on Success, false if not 
+     * @return mixed(Array|NULL) return file info on Success
+     * 							 return NULL when cann't insert into DB
      */
     public function store($user_id, $diary_id) {
         $adapter = $this->_fileTrasfer;
         if ( !$adapter->isReceived() ) {
             return;
         } 
-        //TODO: getFileName 一系列函数都可以是返回数组
+        //TODO: getFileName 一系列函数都可能返回数组
         $fileInfo = array(
         	'user_id'  => $user_id,
             'diary_id' => $diary_id, 
-        	'filename' => substr($adapter->getFileName(null, false), 10), // strip the unique key
+        	'filename' => self::stripUniqueKey($adapter->getFileName(null, false)), 
         	'filepath' => self::getRelativePath($adapter->getFileName(null, true)),
             'filemime' => $adapter->getMimeType(),
         	'filesize' => $adapter->getFileSize()
         );
 
         $file = new Ediary_File($fileInfo);
-        return $file->insert();
+        if ( $file->insert() ) {
+            $fileInfo['id'] = $file->id;
+            return $fileInfo;
+        }
+    }
+    
+    /**
+     * Strip the unique key
+     * like '1301795971menu.png' => 'menu.png'
+     * 
+     * @param String $filename
+     * @return string
+     */
+    public static function stripUniqueKey($filename) {
+        return substr($filename, 10);
     }
     
     /**

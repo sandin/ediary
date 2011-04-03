@@ -98,7 +98,9 @@ class DoControllerTest extends ControllerTestCase
                           'id' => $diary->id,
                       ));
         $this->dispatch("/diary/do/delete");
+        $this->assertResponseCode('200');
         
+        var_dump($this->getResponse()->getBody());
         $response = Zend_Json::decode($this->getResponse()->getBody());
         $this->assertTrue($response['result']);
         

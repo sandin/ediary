@@ -121,7 +121,7 @@ class Diary_DoController extends Zend_Controller_Action
     public function getAction() {
         $input = new Zend_Filter_Input(array('id' => 'Int'),
                                        array('id' => array( 'presence' => 'required')),
-                                       $_REQUEST);
+                                       $_POST);
         if ($input->isValid() && !$input->hasMissing()) {
             $diary = Ediary_Diary::find($input->id);
             if ($diary != null && $diary->user_id == $this->_user->id) {
@@ -207,7 +207,7 @@ class Diary_DoController extends Zend_Controller_Action
     public function deleteAction() {
         $input = new Zend_Filter_Input(array('id' => 'Int'),
                                        array('id' => array( 'presence' => 'required')), 
-                                       $_REQUEST);
+                                       $_POST);
         if ($input->isValid() && !$input->hasMissing()) {
             $diary = Ediary_Diary::find($input->id);
             if (isset($diary) && $diary->user_id == $this->_user->id) {

@@ -32,7 +32,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             date_default_timezone_set( 'PRC' );
         }
         
-        define('DS', DIRECTORY_SEPARATOR);
+        if (!defined('DS')) { define('DS', DIRECTORY_SEPARATOR); }
     }
 
     protected function _initInstallChecker() {
@@ -155,6 +155,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         //->registerPlugin(new Lds_Controller_Plugin_Smarty())
         //->registerPlugin(new Lds_Controller_Plugin_Modules())
         //->registerPlugin(new Lds_Controller_Plugin_Filter())
+        
+        // Helper 
+        $jsonHelper = new Ediary_Helper_JsonHelper();
+        Zend_Controller_Action_HelperBroker::addHelper($jsonHelper);
     }
 
     protected function _initRoute() {
