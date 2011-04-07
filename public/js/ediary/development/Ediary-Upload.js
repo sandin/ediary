@@ -4,7 +4,8 @@
 ;(function($, E, window){
 
 E.extend('upload', function(){
-
+    var TAG = 'Upload -> ';
+    
     var Upload = {
         element: null,
         settings : {

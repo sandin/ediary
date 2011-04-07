@@ -105,7 +105,9 @@ var Ediary = {
         js.type = 'text/javascript';
         js.charset = 'utf-8';
         js.src = jsurl;
+        $.ajaxSetup({ cache : true });
         $('head').append(js);
+        //$.getScript(jsurl);
     },
     
     destroy: function() {

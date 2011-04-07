@@ -61,7 +61,9 @@ var Notice = {
     },
     
     getMessage: function() {
-        return this.element.html();
+        if (this.element) {
+            return this.element.html();
+        }
     },
     
     showDialog: function(message, title) {

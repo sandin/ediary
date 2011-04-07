@@ -21,6 +21,8 @@ E.i18n.extend('Editor', i18n);
  */
 var Editor = {
     
+    TAG : 'Editor -> ',
+    
     AUTO_SAVE_INTERVAL : 5*60*1000, // 5 min 
     
     isReady : false, 
@@ -112,7 +114,7 @@ var Editor = {
         
         // Force save when title onChange
         this.titleElem.bind('change', function(){
-            console.log('on title change');
+            console.log(self.TAG, 'on title change');
             self.doSave(true);
         });
         
@@ -279,7 +281,7 @@ var Editor = {
         
         this.setDefaultContent();
         // debug
-        console.log('repaint with data: ');
+        console.log(this.TAG, 'repaint with data: ');
         console.dir(data); 
     },
     
@@ -310,7 +312,7 @@ var Editor = {
     
     // update id dom element's value
     updateId: function($id) {
-        console.log('update Id by Server callback');
+        console.log(this.TAG, 'update Id by Server callback');
         this.setId(this.getCache('diary').id);
     },
     
@@ -384,7 +386,7 @@ var Editor = {
     
     // Save the content into the textarea, so isChanged can read it
     rteSave: function(force) {
-        console.log('rte save.');
+        console.log(this.TAG, 'rte save.');
         var force = force || false,
             rte = this.getRTEditor();
         if (force || (rte && rte.isDirty()) ) {
@@ -400,11 +402,13 @@ var Editor = {
                 $form = $(this.settings.formElem);
 
             this.rteSave();
-            if ( this.isEmpty() || this.isSaving ) {
+            // 标题和内容都不能为空
+            if ( !force && (this.isEmpty() || this.isSaving) ) {
+                console.log(this.TAG, 'Content/Title is empty, don\'t Save');
                 return; // do nothing
             }
             if ( force || this.isChanged() ) {
-                console.log('do save');
+                console.log(this.TAG, 'do save');
                 $.ajax({
                     url: self.settings.saveUrl,
                     type: 'POST',
@@ -425,7 +429,7 @@ var Editor = {
                 });
             }
         } catch (e) {
-            console.log('error by dosave :' + e);
+            console.log(this.TAG, 'error by dosave :' + e);
         }
     },
     // do save success callback
@@ -465,7 +469,7 @@ var Editor = {
      * @return boolan false only when has a error
      */ 
     checkData: function(data) {
-        console.log("Get data form server : " + data);
+        console.log(this.TAG, "Get data form server : " + data);
         console.dir(data);
         if (null == data) {
             return false;
@@ -510,7 +514,7 @@ var Editor = {
     },
 
     doDelete: function() {
-        console.log('do delete');
+        console.log(this.TAG, 'do delete');
     },
     
     setupAjax: function() {
@@ -538,7 +542,8 @@ var Editor = {
     
     // set/get Cache
     cache: function(key, value) {
-        console.log('cache data ' + key + ' : ' + value);
+        //console.log(this.TAG, 'cache data ' + key + ' :');
+        //console.dir(value);
         this.element.data(key, value);
     },
     getCache: function(key) {

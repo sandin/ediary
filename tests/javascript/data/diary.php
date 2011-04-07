@@ -5,7 +5,8 @@ $data = array(
    		'diary' =>  array(
     		'title' => 'diary_title',
         	'content' => 'diary_content',
-        	'id'    => 123),
+        	'id'    => 123,
+            'saved_at' => "2011-04-07 13:47:05"),
          'callback' => 'updateId'
 );
 

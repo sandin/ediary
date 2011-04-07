@@ -4,6 +4,7 @@ $(window).load(function(){
     Ediary.Editor.init();
 });
 */
+var TAG = 'Editor-testing -> ';
 
 Ediary.baseUrl = '/test/yiriji/tests/javascript';
 
@@ -15,7 +16,8 @@ module("Module Editor", {
             },
             saveUrl: Ediary.baseUrl + '/data/diary.php?op=doSave', 
          };
-        this.obj = Ediary.Editor.init(options); // 初始化对象
+        Ediary.Editor.init(options); // 初始化对象
+        this.obj =  Ediary.Editor;
         
         stop();
         setTimeout(function(){ start(); }, 50); // wait for tinyMCE  
@@ -31,8 +33,6 @@ test("init", function() {
     console.dir(this.obj);
     ok("OK");
 });
-
-/*
 
 test('testSetTitle', function() {
     expect(1);
@@ -212,12 +212,14 @@ test('testDoSave', function() {
     
     var obj = this.obj,
         ajaxCount = 0;
-        newContent = "<p>new content</p>";
+        newContent = "<p>new content</p>",
+        newTitle = 'new title';
     
     //obj.doSave(); // will not post data, Case's content is not change.
     
     // trigger do save action
     obj.setContent(newContent);
+    obj.setTitle(newTitle);
     obj.doSave();
     
     // test repaint
@@ -230,7 +232,8 @@ test('testDoSave', function() {
         // check cache flush
         var diaryCache = obj.getCache('diary');
         ok(diaryCache !== null);
-        equals(diaryCache.content,  response.diary.content);
+        console.log(TAG, diaryCache);
+        equals(diaryCache.title,  response.diary.title);
         
         // check callback
         equals($(obj.settings.idElem).val(), diaryCache.id + "");
@@ -250,7 +253,7 @@ test('testDoSaveOnFail', function() {
     obj.doSave(true);
     
     setTimeout(function() {
-        equals(E.Notice.getMessage(), E.i18n.get('Editor').JSON_PARSE_ERROR);
+        equals(E.Notice.getMessage(), E.i18n.get('Editor').SAVE_FAIL);
         start();
     }, 100);
     
@@ -287,7 +290,5 @@ module("Module Pad", {
 
 test('testInit', function() {
 });
-
-*/
 
 })(jQuery, window);

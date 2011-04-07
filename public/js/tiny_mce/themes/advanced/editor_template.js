@@ -688,8 +688,10 @@
                 });
                 etb = DOM.add(n, 'tbody');
                 var el = document.getElementById(s.theme_penzu_toolbar_location_docked_element_id);
-                el.className = "mceEditor " + ed.settings.skin + "Skin";
-                el.appendChild(c);
+                if (el != null) {
+                    el.className = "mceEditor " + ed.settings.skin + "Skin";
+                    el.appendChild(c);
+                }
                 t._addToolbars(etb, o);
             }
 			// Create external toolbar
