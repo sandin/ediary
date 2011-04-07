@@ -105,7 +105,6 @@ var Ediary = {
         js.type = 'text/javascript';
         js.charset = 'utf-8';
         js.src = jsurl;
-        console.log(js);
         $.ajaxSetup({ cache : true });
         $('head').append(js);
         //$.getScript(jsurl);
@@ -162,6 +161,7 @@ Ediary.extend('Date', function(E){
                    + this.dayNames[date.getDay()];
         }
     };
+    
 });
 
 })(jQuery);
@@ -1757,13 +1757,17 @@ Ediary.extend('Validator', function(E){
  * 
  */
 ;(function( $ ){
+    
 
 var methods = {
+    
     init : function( options ) {
-        var settings = {
+        var sTab = methods,
+            settings = {
                 select: 0,
                 useId: false,
-                useCache: true    // 是否只在第一次点击做ajax请求
+                useCache: true,    // 是否只在第一次点击做ajax请求
+                noCache: ['editor-btn-upload']
         };
         return this.each(function(){
             if (options) {
@@ -1802,13 +1806,14 @@ var methods = {
                 // <a>
                 $(this).click(function(e) {
                     var data = {}, // request data
-                        rev = $($(this).attr("rev")),  
+                        navBtn = $(this),
+                        rev = $(navBtn.attr("rev")),  
                         select = (o.useId) ? href : i, // select box
-                        url = $(this).data('url');
+                        url = navBtn.data('url');
                     
                     // open current box and hide the others
                     tabNavs.children('a').removeClass('open');
-                    $(this).addClass("open");
+                    navBtn.addClass("open");
                     methods.show.call(self, select);
                     
                     // 如果<a>存在 "rev" 属性, 则在请求时发送额外数据
@@ -1830,8 +1835,9 @@ var methods = {
                             data: data,
                             dataType: 'html',
                             success: function(data, textStatus, jqXHR) {
-                                var box = $(select).html(data);
-                                if (o.useCache) {
+                                var box = $(select).html(data),
+                                    id = navBtn.attr('id');
+                                if (o.useCache && -1 === $.inArray(id, o.noCache)) {
                                     box.data('hasCache',true);
                                 }
                             },
@@ -1841,10 +1847,12 @@ var methods = {
                         });
                     }
                     return false;
-                });
-            });
+                }); // end of click
+            }); // end of each <a>
 
-        });
+            console.log('dfsa', this);
+            $(this).data('simpleTabs', sTab);
+        }); 
     },
     destroy : function( ) {
         return this.each(function(){
@@ -1869,6 +1877,12 @@ var methods = {
         } else {
             // hide all
             $(this).children('div').hide().removeClass('simple-tabs-select');
+        }
+    },
+    reset: function(selector) {
+        var url = $(selector).data('url');
+        if (url) {
+            $(url).data('hasCache', false);
         }
     }
 };

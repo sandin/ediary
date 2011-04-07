@@ -161,6 +161,7 @@ Ediary.extend('Date', function(E){
                    + this.dayNames[date.getDay()];
         }
     };
+    
 });
 
 })(jQuery);

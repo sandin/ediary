@@ -20,13 +20,17 @@
  * 
  */
 ;(function( $ ){
+    
 
 var methods = {
+    
     init : function( options ) {
-        var settings = {
-                select: 0,
-                useId: false,
-                useCache: true    // 是否只在第一次点击做ajax请求
+        var sTab = methods,
+            settings = {
+                select: 0,         // 默认展开的index
+                useId: false,      // 是数字索引还是使用ID模式, 如果是则只用每个导航链接的href和box的id绑定
+                useCache: true,    // 是否缓存, 开缓存则只在第一次点击做ajax请求
+                noCache: []        // 开启缓存的模式下强制不缓存的某个导航id
         };
         return this.each(function(){
             if (options) {
@@ -65,13 +69,14 @@ var methods = {
                 // <a>
                 $(this).click(function(e) {
                     var data = {}, // request data
-                        rev = $($(this).attr("rev")),  
+                        navBtn = $(this),
+                        rev = $(navBtn.attr("rev")),  
                         select = (o.useId) ? href : i, // select box
-                        url = $(this).data('url');
+                        url = navBtn.data('url');
                     
                     // open current box and hide the others
                     tabNavs.children('a').removeClass('open');
-                    $(this).addClass("open");
+                    navBtn.addClass("open");
                     methods.show.call(self, select);
                     
                     // 如果<a>存在 "rev" 属性, 则在请求时发送额外数据
@@ -93,8 +98,9 @@ var methods = {
                             data: data,
                             dataType: 'html',
                             success: function(data, textStatus, jqXHR) {
-                                var box = $(select).html(data);
-                                if (o.useCache) {
+                                var box = $(select).html(data),
+                                    id = navBtn.attr('id');
+                                if (o.useCache && -1 === $.inArray(id, o.noCache)) {
                                     box.data('hasCache',true);
                                 }
                             },
@@ -104,10 +110,12 @@ var methods = {
                         });
                     }
                     return false;
-                });
-            });
+                }); // end of click
+            }); // end of each <a>
 
-        });
+            console.log('dfsa', this);
+            $(this).data('simpleTabs', sTab);
+        }); 
     },
     destroy : function( ) {
         return this.each(function(){
@@ -132,6 +140,12 @@ var methods = {
         } else {
             // hide all
             $(this).children('div').hide().removeClass('simple-tabs-select');
+        }
+    },
+    reset: function(selector) {
+        var url = $(selector).data('url');
+        if (url) {
+            $(url).data('hasCache', false);
         }
     }
 };

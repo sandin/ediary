@@ -29,7 +29,12 @@ var Pad = {
         });
         
         // Toolbar 
-        $("#editor-toolbar").simpleTabs({select: null, useId: true});
+        $("#editor-toolbar").simpleTabs({
+            select: null,
+            useId: true,
+            cache: true,
+            noCache: ['editor-btn-upload'],
+        });
         
         $('#editor-btn-open').click(function() {
             E.DiarysManager.init().flash();
