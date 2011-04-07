@@ -507,6 +507,8 @@ $image->thumnail($width, $height, $output);
     * 实现上传模块.
     * 获取某日记附件列表.
     * 删除附件功能.
+    * 04-03 重构create table等数据库
+    * 04-04 重构前端js, 将模块都分成独立文件, 使用ant自动合并, 删除不必要模块和代码.
 
 
     首页-登录 -> today页面

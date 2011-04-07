@@ -1,4 +1,9 @@
-(function($) {
+/**
+ * tipsy - Facebook-style tooltip plugin for jQuery
+ * (c) 2008-2009 Jason Frame (jason@onehackoranother.com)
+ * Released under The MIT License.
+ */
+;(function($) {
     $.fn.tipsy = function(options) {
 
         options = $.extend({}, $.fn.tipsy.defaults, options);
@@ -66,7 +71,7 @@
                     var tip = $.data(self, 'active.tipsy');
                     if (opts.fade) {
                         tip.stop().fadeOut(function() { $(this).remove(); });
-                    } else {
+                    } else if (tip) {
                         tip.remove();
                     }
                 }, 100);

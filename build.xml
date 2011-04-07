@@ -10,36 +10,80 @@
 		<mkdir dir="${build.dir}" />
 	</target>
 
-	<target name="default">
+	<target name="default" depends="minify">
 	</target>
+
+    <property name="concatenated" value="all" />
+    <property name="core.files" value="Ediary.js, Ediary-Events.js" />
+    <property name="js.dir" value="${public.dir}/js/ediary" />
+    <property name="js.src.dir" value="${js.dir}/development" />
 
 	<target name="clean" description="clean up">
 		<delete dir="${build.dir}" />
 	</target>
 
-    <!-- 压缩JS/CSS -->
-    <target name="minify" description="minfify files">
-        <echo message="正在压缩JS/CSS..." />
+    <target name="concatenate">
+        <echo message="正在合并js文件" />
+        <!-- 删除上次生成的文件-->
+        <delete file="${js.dir}/${concatenated}.js" />
 
-        <!-- minify javascript files -->
+         <!-- *.js => all.js -->
+        <concat destfile="${js.dir}/${concatenated}.js">
+            <filelist dir="${js.src.dir}" files="${core.files}" />
+            <fileset dir="${js.src.dir}" includes="*.js" excludes="${core.files}" />
+        </concat>
+    </target>
+
+    <!-- 压缩JS/CSS -->
+    <target name="minify" depends="concatenate" description="minfify files">
+        <echo message="正在压缩JS/CSS..." />
+        <delete file="${js.dir}/${concatenated}.min.js" />
+
+         <!-- 删除js代码中console.log等非生产环境信息 -->
+         <!-- all.js -> all.tmp.js -->
         <apply executable="java" parallel="false">
-            <fileset dir="${public.dir}/js">
-                <include name="ediary*.js" />
+            <fileset dir="${js.dir}">
+                <include name="*.js" />
                 <exclude name="*.min.js" />
             </fileset>
 			<arg line="-jar" />
+			<arg path="${minityJs-jar}" />
+            <arg value="-o" />
+            <mapper type="glob" from="*.js" to="${js.dir}/*.tmp.js" />
+			<targetfile />
+		</apply>
+
+        <!-- minify javascript files -->
+         <!-- all.tmp.js -> all.min.js -->
+        <apply executable="java" parallel="false">
+            <fileset dir="${js.dir}">
+                <include name="*.tmp.js" />
+            </fileset>
+			<arg line="-jar" />
 			<arg path="${closure-jar}" />
-			<arg value="--warning_level" />
-			<arg value="QUIET" />
+            <arg value="--warning_level" />
+            <arg value="QUIET" />
+			<arg value="--compilation_level" />
+			<arg value="SIMPLE_OPTIMIZATIONS" />
 			<arg value="--js_output_file" />
 			<targetfile />
 			<arg value="--js" />
-            <mapper type="glob" from="*.js" to="${public.dir}/js/*.min.js" />
+            <mapper type="glob" from="*.tmp.js" to="${js.dir}/*.min.js" />
 		</apply>
+
+        <!-- 删除临时文件 -->
+        <delete>
+            <fileset dir="${js.dir}">
+                <include name="*.tmp.js" />
+            </fileset>
+        </delete>
 
         <!-- minify css files -->
         <apply executable="java" parallel="false">
-			<fileset dir="${public.dir}/css" includes="*.css" />
+            <fileset dir="${public.dir}/css">
+                <include name="*.css" />
+                <exclude name="*.min.css" />
+            </fileset>
 			<arg line="-jar" />
 			<arg path="${yuicompressor-jar}" />
 			<arg line="--charset utf-8" />

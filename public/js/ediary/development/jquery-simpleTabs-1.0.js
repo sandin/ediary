@@ -19,7 +19,7 @@
  * @version 2011-03-30 $Id$
  * 
  */
-(function( $ ){
+;(function( $ ){
 
 var methods = {
     init : function( options ) {
@@ -133,7 +133,7 @@ var methods = {
             // hide all
             $(this).children('div').hide().removeClass('simple-tabs-select');
         }
-    },
+    }
 };
 
 $.fn.simpleTabs = function( method ) {

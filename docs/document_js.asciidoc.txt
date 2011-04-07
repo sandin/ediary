@@ -238,14 +238,15 @@ DOM Element selector
 
 Editor模块, 做为日记主编辑器, 处理与日记书写的主逻辑.
 
-=== Plugin 插件 ===
 
-编辑器支持 `Plugin` 系统.
+//=== Plugin 插件 ===
 
-编辑器中保存一个插件列表:
-`Editor.plugins = {}` 
+//编辑器支持 `Plugin` 系统.
 
-关于插件扩展方法参见 <<plugin>> .
+//编辑器中保存一个插件列表:
+//`Editor.plugins = {}` 
+
+//关于插件扩展方法参见 <<plugin>> .
 
 === Listener 监听器 ===
 
@@ -489,7 +490,8 @@ jQuery.Ajax.Options.
 .deleteUrl : ''       
 删除动作URL
 
-
+.已废除
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 == Plugin 插件 ==
 [[plugin]]
 
@@ -533,6 +535,7 @@ var SaveButton = Editor.Plugin.extend({
 .严格化Editor编辑器addPlugin时的检验:
     * 类型检验: 添加的插件必须是Plugin类的实例对象, 避免因类型错误,导致的异常.
     * 重名检验: 添加已注册过的插件名, 将不被允许, 会提示并拒绝添加.
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 == Events & Listener 事件监听器 ==
@@ -603,6 +606,8 @@ ln -s /path/to/root/public/js .
 ---------------------------------
 
 
+.已废除
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 == Class 继承模式 ==
 
 `window.Class`
@@ -647,6 +652,7 @@ n.swingSword(); // => true
 p instanceof Person && p instanceof Class &&
 n instanceof Ninja && n instanceof Person && n instanceof Class
 --------------------------------------------
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 == Libraries 外部库 ==
 

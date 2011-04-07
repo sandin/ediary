@@ -15,16 +15,16 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 <body>
 <div id="wrapper" <?php if(isset($this->pageClass)) echo 'class="'.$this->pageClass.'"'; ?>">
 
-<div id="header"><?php echo $this->render('header.phtml') ?></div><!-- /header -->
-<div id="nav"><?php echo $this->placeholder('nav') ?></div><!-- /nav -->
+    <div id="header"><?php echo $this->render('header.phtml') ?></div><!-- /header -->
+    <div id="nav"><?php echo $this->placeholder('nav') ?></div><!-- /nav -->
 
-<div id="content">
-<div class="inner clearfix">
-<?php echo $this->layout()->content ?>
-</div><!-- /innerContent -->
-</div><!-- /content -->
+    <div id="content">
+        <div class="inner clearfix">
+            <?php echo $this->layout()->content ?>
+        </div><!-- /innerContent -->
+    </div><!-- /content -->
 
-<div id="footer"><div class="inner clearfix"><?php echo $this->render('footer.phtml') ?></div></div><!-- /footer -->
+    <div id="footer"><div class="inner clearfix"><?php echo $this->render('footer.phtml') ?></div></div><!-- /footer -->
 
 </div><!-- /wrapper -->
 <?php echo $this->inlineScript() ?>

@@ -1,100 +1,98 @@
 <?php
-$this->loadJquery();
 $this->headLink()->appendStylesheet("/css/smoothness/jquery-ui-1.8.11.custom.css");
-$this->headLink()->appendStylesheet("/js/fancybox/jquery.fancybox-1.3.4.css");
+
+$this->loadJquery();
 $this->headScript()->appendFile("/js/jquery-ui-1.8.11.custom.min.js");
-$this->headScript()->appendFile("/js/jquery-simpleTabs-1.0.js");
-$this->headScript()->appendFile("/js/ediary.js?v=1");
-$this->headScript()->appendFile("/js/ediary-editor.js?v=1");
+$this->headScript()->appendFile("/js/ediary/all.js?v=1");
 $this->headScript()->appendFile("/js/tiny_mce/tiny_mce.js");
 $this->inlineScript()->appendScript('
 $(document).ready(function(){
-	Ediary.Pad.init();
-	
-	// DEBUG
-	$("#editor-btn-upload").trigger("click");
+Ediary.Pad.init();
+
+// DEBUG
+$("#editor-btn-upload").trigger("click");
 });
 ');
 ?>
 <div class="tooltip"></div>
 <!-- Toolbar -->
 <div id="editor-toolbar" class="toolbar">
-	<ul id="menu" class="toolbar-btns">
-		<li><a id="editor-btn-create" href="#"class="menu" title="新建">&nbsp;</a></li>
-		<li><a id="editor-btn-open" href="#toolbar-tabs-open" class="menu" title="打开">&nbsp;</a></li>
-		<li><a id="editor-btn-save" href="#" class="menu" title="保存">&nbsp;</a></li>
-		<li><a id="editor-btn-upload" href="/upload" rev="#diary_id" class="menu" title="附件">&nbsp;</a></li>
-		<li><a id="editor-btn-format" href="#toolbar-tabs-format" class="menu" title="格式">&nbsp;</a></li>
-		<li><a id="editor-btn-theme" href="/user/settings/theme_ajax" class="menu" title="主题">&nbsp;</a></li>
-	</ul>
-	
-	<div id="toolbar-tabs-format" class="innerBox">
-		<div id="diary_editor_toolbar_docked"></div>
-		<a class="toolbar-close-btn" href="#">&nbsp;close</a>
-	</div>
-	
-	<div id="toolbar-tabs-open" class="innerBox">
-		<div class="diarys_list_toolbar">
-			<label for="">从</label>
-			<input id="datepicker-start" type="text" name="" value="" />
-			<label for="">到</label>
-			<input id="datepicker-end" type="text" name="" value="" />
-			<a id="diarys_list_filter" href="#" class="">查看</a>
-			&nbsp;&nbsp;&nbsp;&nbsp;
-			<input type="text" name="" value="" />
-			<label for="">搜索</label>
-			&nbsp;&nbsp;&nbsp;&nbsp;
-			<a id="diarys_list_flash" href="#" class="">刷新</a>
-		</div>
-		<table class="Table" id="table_diary_list" width="100%">
-			<thead>
-				<tr>
-					<th width="135">标题</th>
-					<th>内容</th>
-					<th width="150">最后更新</th>
-					<th width="40">编辑</th>
-					<th width="40">删除</th>
-				</tr>
-			</thead>
-			<tbody></tbody> <!-- AJAX ZONE -->
-		</table>
-		<div class="diarys_list_footer">
-			<span id="diarys_list_pages"></span>
-			<a id="diarys_list_pre_page" href="#" class="btn">上一页</a> &nbsp;&nbsp;
-			<a id="diarys_list_next_page" href="#" class="btn">下一页</a>
-		</div>
-		<a class="toolbar-close-btn" href="#">&nbsp;close</a>
-	</div><!-- /tabs -->
-	
+    <ul id="menu" class="toolbar-btns">
+        <li><a id="editor-btn-create" href="#"class="menu" title="新建">&nbsp;</a></li>
+        <li><a id="editor-btn-open" href="#toolbar-tabs-open" class="menu" title="打开">&nbsp;</a></li>
+        <li><a id="editor-btn-save" href="#" class="menu" title="保存">&nbsp;</a></li>
+        <li><a id="editor-btn-upload" href="/upload" rev="#diary_id" class="menu" title="附件">&nbsp;</a></li>
+        <li><a id="editor-btn-format" href="#toolbar-tabs-format" class="menu" title="格式">&nbsp;</a></li>
+        <li><a id="editor-btn-theme" href="/user/settings/theme_ajax" class="menu" title="主题">&nbsp;</a></li>
+    </ul>
+
+    <div id="toolbar-tabs-format" class="innerBox">
+        <div id="diary_editor_toolbar_docked"></div>
+        <a class="toolbar-close-btn" href="#">&nbsp;close</a>
+    </div>
+
+    <div id="toolbar-tabs-open" class="innerBox">
+        <div class="diarys_list_toolbar">
+            <label for="">从</label>
+            <input id="datepicker-start" type="text" name="" value="" />
+            <label for="">到</label>
+            <input id="datepicker-end" type="text" name="" value="" />
+            <a id="diarys_list_filter" href="#" class="">查看</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="text" name="" value="" />
+            <label for="">搜索</label>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <a id="diarys_list_flash" href="#" class="">刷新</a>
+        </div>
+        <table class="Table" id="table_diary_list" width="100%">
+            <thead>
+                <tr>
+                    <th width="135">标题</th>
+                    <th>内容</th>
+                    <th width="150">最后更新</th>
+                    <th width="40">编辑</th>
+                    <th width="40">删除</th>
+                </tr>
+            </thead>
+            <tbody></tbody> <!-- AJAX ZONE -->
+        </table>
+        <div class="diarys_list_footer">
+            <span id="diarys_list_pages"></span>
+            <a id="diarys_list_pre_page" href="#" class="btn">上一页</a> &nbsp;&nbsp;
+            <a id="diarys_list_next_page" href="#" class="btn">下一页</a>
+        </div>
+        <a class="toolbar-close-btn" href="#">&nbsp;close</a>
+    </div><!-- /tabs -->
+
 </div><!-- /toolbar -->
 
 <!-- Editor -->
 <div id="diary">
-<div class="diary_wrapper">
-<form id="form_diary" method="post" action="<?php echo $this->baseUrl("/diary/save") ?>">
-	<div class="diary_header">
-		<div class="title clearfix">
-			<input id="diary_title" name="diary[title]" type="text" class="text" value="<?php echo $this->diary['title']; ?>" />
-			<div class="diary_weather">
-				<label for="diary_weather">天气</label>
-				<input id="diary_weather" name="diary[weather]" type="text" class="text" value="晴" />
-			</div>
-		</div>
-		<div class="lastupdate"><span class="icon_ok_16" id="diary_last_update_status">最后保存:</span> <span id="diary_last_update"><?php echo $this->diary['saved_at']?></span></div>
-	</div><!-- /header -->
-	
-	<div class="diary_body">
-		<div class="diary_container">
-			<textarea id="diary_content" class="" rows="40" cols="60" name="diary[content]"><?php echo $this->diary['content']; ?></textarea>
-		</div>
-	</div><!-- /body -->
-	
-	<div class="diary_footer">
-		<input type="submit" value="submit" class="hide" />
-		<input id="diary_id" type="hidden" name="diary[id]" value="<?php echo $this->diary['id']; ?>" />
-	</div><!-- footer -->
-</form>
-</div><!-- /diary_wrapper -->
+    <div class="diary_wrapper">
+        <form id="form_diary" method="post" action="<?php echo $this->baseUrl("/diary/save") ?>">
+            <div class="diary_header">
+                <div class="title clearfix">
+                    <input id="diary_title" name="diary[title]" type="text" class="text" value="<?php echo $this->diary['title']; ?>" />
+                    <div class="diary_weather">
+                        <label for="diary_weather">天气</label>
+                        <input id="diary_weather" name="diary[weather]" type="text" class="text" value="晴" />
+                    </div>
+                </div>
+                <div class="lastupdate"><span class="icon_ok_16" id="diary_last_update_status">最后保存:</span> <span id="diary_last_update"><?php echo $this->diary['saved_at']?></span></div>
+            </div><!-- /header -->
+
+            <div class="diary_body">
+                <div class="diary_container">
+                    <textarea id="diary_content" class="" rows="40" cols="60" name="diary[content]"><?php echo $this->diary['content']; ?></textarea>
+                </div>
+            </div><!-- /body -->
+
+            <div class="diary_footer">
+                <input type="submit" value="submit" class="hide" />
+                <input id="diary_id" type="hidden" name="diary[id]" value="<?php echo $this->diary['id']; ?>" />
+            </div><!-- footer -->
+        </form>
+    </div><!-- /diary_wrapper -->
 </div><!-- /diary -->
 
 

@@ -28,9 +28,11 @@ module("Module Editor", {
 });
 
 test("init", function() {
-    //console.dir(this.obj);
+    console.dir(this.obj);
     ok("OK");
 });
+
+/*
 
 test('testSetTitle', function() {
     expect(1);
@@ -219,12 +221,10 @@ test('testDoSave', function() {
     obj.doSave();
     
     // test repaint
-    /* depend addListener()
     obj.addListener('onSaveSuccess', function() {
         equals(obj.getContent(),  serverResponse);
         start();
     });
-    */
     
     setTimeout(function(){
         // check cache flush
@@ -287,5 +287,7 @@ module("Module Pad", {
 
 test('testInit', function() {
 });
+
+*/
 
 })(jQuery, window);

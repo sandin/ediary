@@ -20,10 +20,10 @@ array(
 <div class="diarys_list">
     <?php foreach ($this->paginator as $item): ?>
 	<?php 
-	    $date = new Zend_Date($item['created_at']);
+	    $date = new Zend_Date($item['created_date']);
 	    $year = $date->get(Zend_Date::YEAR);
 	    $month = $date->get(Zend_Date::MONTH_NAME);
-	    $day = $date->get(Zend_Date::DAY);
+	    $day = $date->get(Zend_Date::DAY_SHORT);
 	?>
 	<div class="diary_item clearfix">
 		<!-- div class="diary_item_mete"><span><?php echo $item['created_at']?></span></div-->

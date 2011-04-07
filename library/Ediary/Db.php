@@ -75,9 +75,7 @@ class Ediary_Db
         return self::$instance;
     }
 
-    public function __clone() {
-        trigger_error("This Object Cann't be Clone, It's a Singleton Object.", E_USER_ERROR);
-    }
+    private function __clone() {}
 
 
     // METHODS
