@@ -14,7 +14,7 @@
 	</target>
 
     <property name="concatenated" value="all" />
-    <property name="core.files" value="Ediary.js, Ediary-Events.js" />
+    <property name="core.files" value="jquery.hotkeys.js, Ediary.js, Ediary-Events.js" />
     <property name="js.dir" value="${public.dir}/js/ediary" />
     <property name="js.src.dir" value="${js.dir}/development" />
 
@@ -38,6 +38,13 @@
     <target name="minify" depends="concatenate" description="minfify files">
         <echo message="正在压缩JS/CSS..." />
         <delete file="${js.dir}/${concatenated}.min.js" />
+
+        <!-- 删除临时文件 -->
+        <delete>
+            <fileset dir="${js.dir}">
+                <include name="*.tmp.js" />
+            </fileset>
+        </delete>
 
          <!-- 删除js代码中console.log等非生产环境信息 -->
          <!-- all.js -> all.tmp.js -->
@@ -71,12 +78,7 @@
             <mapper type="glob" from="*.tmp.js" to="${js.dir}/*.min.js" />
 		</apply>
 
-        <!-- 删除临时文件 -->
-        <delete>
-            <fileset dir="${js.dir}">
-                <include name="*.tmp.js" />
-            </fileset>
-        </delete>
+       
 
         <!-- minify css files -->
         <apply executable="java" parallel="false">

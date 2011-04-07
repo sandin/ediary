@@ -50,10 +50,12 @@ E.extend('upload', function(){
         isReady: false,
 
         init: function(options) {
+            /* FIXME: 是不是应该把AJAX刷新的区域缩小的主题列表, 而上传按钮就可以复用了
             if (this.isReady) {
                 return; // 单例
             }
             this.isReady = true;
+            */
             
             var self = this, o = this.settings; 
             if (options) {

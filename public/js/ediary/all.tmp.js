@@ -1,4 +1,102 @@
-if (! window.console ) {
+/*
+ * jQuery Hotkeys Plugin
+ * Copyright 2010, John Resig
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ *
+ * Based upon the plugin by Tzury Bar Yochay:
+ * http://github.com/tzuryby/hotkeys
+ *
+ * Original idea by:
+ * Binny V A, http://www.openjs.com/scripts/events/keyboard_shortcuts/
+*/
+
+(function(jQuery){
+	
+	jQuery.hotkeys = {
+		version: "0.8",
+
+		specialKeys: {
+			8: "backspace", 9: "tab", 13: "return", 16: "shift", 17: "ctrl", 18: "alt", 19: "pause",
+			20: "capslock", 27: "esc", 32: "space", 33: "pageup", 34: "pagedown", 35: "end", 36: "home",
+			37: "left", 38: "up", 39: "right", 40: "down", 45: "insert", 46: "del", 
+			96: "0", 97: "1", 98: "2", 99: "3", 100: "4", 101: "5", 102: "6", 103: "7",
+			104: "8", 105: "9", 106: "*", 107: "+", 109: "-", 110: ".", 111 : "/", 
+			112: "f1", 113: "f2", 114: "f3", 115: "f4", 116: "f5", 117: "f6", 118: "f7", 119: "f8", 
+			120: "f9", 121: "f10", 122: "f11", 123: "f12", 144: "numlock", 145: "scroll", 191: "/", 224: "meta"
+		},
+	
+		shiftNums: {
+			"`": "~", "1": "!", "2": "@", "3": "#", "4": "$", "5": "%", "6": "^", "7": "&", 
+			"8": "*", "9": "(", "0": ")", "-": "_", "=": "+", ";": ": ", "'": "\"", ",": "<", 
+			".": ">",  "/": "?",  "\\": "|"
+		}
+	};
+
+	function keyHandler( handleObj ) {
+		// Only care when a possible input has been specified
+		if ( typeof handleObj.data !== "string" ) {
+			return;
+		}
+		
+		var origHandler = handleObj.handler,
+			keys = handleObj.data.toLowerCase().split(" ");
+	
+		handleObj.handler = function( event ) {
+			// Don't fire in text-accepting inputs that we didn't directly bind to
+			if ( this !== event.target && (/textarea|select/i.test( event.target.nodeName ) ||
+				 event.target.type === "text") ) {
+				return;
+			}
+			
+			// Keypress represents characters, not special keys
+			var special = event.type !== "keypress" && jQuery.hotkeys.specialKeys[ event.which ],
+				character = String.fromCharCode( event.which ).toLowerCase(),
+				key, modif = "", possible = {};
+
+			// check combinations (alt|ctrl|shift+anything)
+			if ( event.altKey && special !== "alt" ) {
+				modif += "alt+";
+			}
+
+			if ( event.ctrlKey && special !== "ctrl" ) {
+				modif += "ctrl+";
+			}
+			
+			// TODO: Need to make sure this works consistently across platforms
+			if ( event.metaKey && !event.ctrlKey && special !== "meta" ) {
+				modif += "meta+";
+			}
+
+			if ( event.shiftKey && special !== "shift" ) {
+				modif += "shift+";
+			}
+
+			if ( special ) {
+				possible[ modif + special ] = true;
+
+			} else {
+				possible[ modif + character ] = true;
+				possible[ modif + jQuery.hotkeys.shiftNums[ character ] ] = true;
+
+				// "$" can be triggered as "Shift+4" or "Shift+$" or just "$"
+				if ( modif === "shift+" ) {
+					possible[ jQuery.hotkeys.shiftNums[ character ] ] = true;
+				}
+			}
+
+			for ( var i = 0, l = keys.length; i < l; i++ ) {
+				if ( possible[ keys[i] ] ) {
+					return origHandler.apply( this, arguments );
+				}
+			}
+		};
+	}
+
+	jQuery.each([ "keydown", "keyup", "keypress" ], function() {
+		jQuery.event.special[ this ] = { add: keyHandler };
+	});
+
+})( jQuery );if (! window.console ) {
     window.console = {
         log:   function() {}, warn:  function() {},
         error: function() {}, fatal: function() {},
@@ -45,7 +143,6 @@ var Ediary = {
      */
     extend: function(name, object, options) {
         if (typeof this.modules[name] !== 'undefined') {
-            console.error("Duplication Module, The " + name + " module is exsits.");
             return;
         } 
         
@@ -91,7 +188,6 @@ var Ediary = {
                 fn = mod['origin']; //TODO: 暂时可加载已经load过的模块
                 mod.load = true;
             } else {
-                console.warn("The Module %s is not exsits.", module);
                 return;
             }
         }
@@ -105,7 +201,9 @@ var Ediary = {
         js.type = 'text/javascript';
         js.charset = 'utf-8';
         js.src = jsurl;
+        $.ajaxSetup({ cache : true });
         $('head').append(js);
+        //$.getScript(jsurl);
     },
     
     destroy: function() {
@@ -159,6 +257,7 @@ Ediary.extend('Date', function(E){
                    + this.dayNames[date.getDay()];
         }
     };
+    
 });
 
 })(jQuery);
@@ -245,8 +344,7 @@ Ediary.extend('Events', function(E) {
 
 });
 
-})(jQuery, Ediary, window);
-/**
+})(jQuery, Ediary, window);/**
  * Class DiarysManager extends Plugin
  * 打开按钮 - 日记管理列表 - 插件
  */
@@ -438,7 +536,6 @@ var DiarysManager = {
             dataType: 'json',
             success: function(data) {
                 if (data && data.result) {
-                    console.log(data);
                     callback();
                 }
                 E.Notice.showMessage("成功", 1000);
@@ -458,7 +555,6 @@ var DiarysManager = {
             data: post,
             beforeSendMessage: '正在请求服务器',
             success: function(data) {
-                console.log(data);
                 if (data && data.diarys) {
                     self.updateTable(data, post);
                     E.Notice.showMessage("成功", 1000);
@@ -528,8 +624,7 @@ var DiarysManager = {
 };
 E.DiarysManager = DiarysManager; // NAMESPACE
 
-})(jQuery, Ediary, window);
-/**
+})(jQuery, Ediary, window);/**
  * Editor Package
  * @author lds
  */
@@ -551,6 +646,8 @@ E.i18n.extend('Editor', i18n);
  * 主编辑器
  */
 var Editor = {
+    
+    TAG : 'Editor -> ',
     
     AUTO_SAVE_INTERVAL : 5*60*1000, // 5 min 
     
@@ -643,7 +740,6 @@ var Editor = {
         
         // Force save when title onChange
         this.titleElem.bind('change', function(){
-            console.log('on title change');
             self.doSave(true);
         });
         
@@ -709,6 +805,12 @@ var Editor = {
                 });
             },
             template_replace_values : {
+            },
+            setupcontent_callback: function(editor_id, body, doc) {
+                $(doc).bind('keydown', 'ctrl+shift+s', function() {
+                    //FIXME: 快捷键只能用一次...
+                    self.doSave(true);
+                });
             }
         });
     },
@@ -735,7 +837,6 @@ var Editor = {
             var elem = requiredElem[elem];
             
             if ($(o[elem]).length < 1) {
-                console.error(elem + " DOM element is missing, " + " it should be : " + o[elem]);
                 return false;
             }
         }
@@ -781,7 +882,6 @@ var Editor = {
         try {
             rte = window.tinyMCE.get(this.bodyElem.attr("id"));
         } catch (e) {
-            console.error(e);
         }
         return rte;
     },
@@ -810,8 +910,6 @@ var Editor = {
         
         this.setDefaultContent();
         // debug
-        console.log('repaint with data: ');
-        console.dir(data); 
     },
     
     newDiary: function() {
@@ -841,7 +939,6 @@ var Editor = {
     
     // update id dom element's value
     updateId: function($id) {
-        console.log('update Id by Server callback');
         this.setId(this.getCache('diary').id);
     },
     
@@ -854,7 +951,6 @@ var Editor = {
     // title or body has been changed
     isChanged: function() {
         //this.rteSave(true); // make sure rte has been saved.
-        //console.log(this.bodyElem.val(),  this.contentLength);
         return ( this.titleElem.val().length !== this.titleLength 
               || this.bodyElem.val().length !== this.contentLength ); 
     },
@@ -896,8 +992,6 @@ var Editor = {
             if ((elemHeight < scrollHeight + settings.margin) || (elemHeight - settings.increment > scrollHeight + settings.margin)) {
                 newHeight = Math.ceil((scrollHeight + settings.margin) / settings.increment) * settings.increment;
             }
-            //console.log($(rte.getBody()));
-            //console.log('scrool', scrollHeight);
             if (newHeight) {
                 newHeight = Math.max(settings.minHeight, newHeight);
                 elem.css('height', newHeight + "px");
@@ -915,7 +1009,6 @@ var Editor = {
     
     // Save the content into the textarea, so isChanged can read it
     rteSave: function(force) {
-        console.log('rte save.');
         var force = force || false,
             rte = this.getRTEditor();
         if (force || (rte && rte.isDirty()) ) {
@@ -931,11 +1024,11 @@ var Editor = {
                 $form = $(this.settings.formElem);
 
             this.rteSave();
-            if ( this.isEmpty() || this.isSaving ) {
+            // 标题和内容都不能为空
+            if ( !force && (this.isEmpty() || this.isSaving) ) {
                 return; // do nothing
             }
             if ( force || this.isChanged() ) {
-                console.log('do save');
                 $.ajax({
                     url: self.settings.saveUrl,
                     type: 'POST',
@@ -956,7 +1049,6 @@ var Editor = {
                 });
             }
         } catch (e) {
-            console.log('error by dosave :' + e);
         }
     },
     // do save success callback
@@ -996,8 +1088,6 @@ var Editor = {
      * @return boolan false only when has a error
      */ 
     checkData: function(data) {
-        console.log("Get data form server : " + data);
-        console.dir(data);
         if (null == data) {
             return false;
         }
@@ -1041,7 +1131,6 @@ var Editor = {
     },
 
     doDelete: function() {
-        console.log('do delete');
     },
     
     setupAjax: function() {
@@ -1049,7 +1138,6 @@ var Editor = {
             options = {
                 error: function(jqXHR, textStatus, errorThrown) {
                     if('parsererror' == textStatus) {
-                        console.warn("Response is not a valid JSON Object," + " Cann't parse it. Response is: \n" ,jqXHR.responseText);
                         E.Notice.showMessage(i18n.JSON_PARSE_ERROR);
                     }
                     self.hook('onError', arguments);
@@ -1069,7 +1157,6 @@ var Editor = {
     
     // set/get Cache
     cache: function(key, value) {
-        console.log('cache data ' + key + ' : ' + value);
         this.element.data(key, value);
     },
     getCache: function(key) {
@@ -1111,7 +1198,6 @@ var Editor = {
     
     // destroy the editor
     destroy : function() {
-        //console.log('destroy editor');
         
         this.stopAutoSave();
         this.stopResizer();
@@ -1169,7 +1255,6 @@ var Notice = {
         
         // DOM element Missing
         if (t.element.length == 0) {
-            console.warn("The Notice Element is Missing. It shout be : " + o.element);
             return;
         }
         
@@ -1193,7 +1278,9 @@ var Notice = {
     },
     
     getMessage: function() {
-        return this.element.html();
+        if (this.element) {
+            return this.element.html();
+        }
     },
     
     showDialog: function(message, title) {
@@ -1288,22 +1375,26 @@ var Pad = {
         });
         
         // Toolbar 
-        $("#editor-toolbar").simpleTabs({select: null, useId: true});
+        $("#editor-toolbar").simpleTabs({
+            select: null,
+            useId: true,
+            cache: true,
+            noCache: ['editor-btn-upload']
+        });
         
         $('#editor-btn-open').click(function() {
-            E.DiarysManager.init().flash();
+            E.DiarysManager.init();
         });
         
         $('#editor-btn-save').click(function() {
             editor.doSave(true); // force save
-        });
+        })
         
         $('#editor-btn-create').click(function() {
             editor.newDiary();
         });
         
         $('#editor-btn-upload').click(function() {
-            console.log(editor.getId());
             if (editor.getId() == '-1') {
                 E.Notice.showDialog("日记尚未被创建, 请先点击保存!", "友情提示");
                 return false;
@@ -1317,6 +1408,13 @@ var Pad = {
         
         // buttons tooltip
         $("#menu>li>a").tipsy({gravity: "s", fake: true});
+        
+        // hotkey of force save 
+        /*
+        $(document).bind('keydown', 'ctrl+shift+s', function() {
+            editor.doSave(true);
+        });
+        */
     },
     
     destroy: function() {
@@ -1381,7 +1479,6 @@ var ThemeManager = {
                 success: function(data) {
                     if (data && data.result) {
                         E.Notice.showMessage("成功更换主题", 2000);
-                        console.log(data);
                     }
                 }
             });
@@ -1401,7 +1498,8 @@ E.ThemeManager = ThemeManager; // NAMESPACE
 ;(function($, E, window){
 
 E.extend('upload', function(){
-
+    var TAG = 'Upload -> ';
+    
     var Upload = {
         element: null,
         settings : {
@@ -1446,10 +1544,12 @@ E.extend('upload', function(){
         isReady: false,
 
         init: function(options) {
+            /* FIXME: 是不是应该把AJAX刷新的区域缩小的主题列表, 而上传按钮就可以复用了
             if (this.isReady) {
                 return; // 单例
             }
             this.isReady = true;
+            */
             
             var self = this, o = this.settings; 
             if (options) {
@@ -1485,8 +1585,6 @@ E.extend('upload', function(){
             var self = this, o = this.settings,
                 url = target.attr('href') ;
             $.getJSON(url, function(data) {
-                console.log("delete file -> url " + url);
-                console.log(data);
                 if (data && data.status) {
                     target.parent().parent().hide();
                 }
@@ -1529,7 +1627,6 @@ E.extend('upload', function(){
         onSelectOnce: function(event, data) {
             // 每次都从idElem里读取id, 保证在id更改后依然发送正确的数据
             var id = $(this.settings.idElem).val();
-            console.log('upload file -> diary_id : ' + id);
             if (id  != '-1') {
                 $(event.target).uploadifySettings('scriptData', {'diary_id' : id});
             } 
@@ -1540,7 +1637,6 @@ E.extend('upload', function(){
         },
         onComplete: function(event, ID, fileObj, response, data) {
             var o = this.settings;
-            console.log(response);
             if (response) {
                 try {
                     var json = $.parseJSON(response);
@@ -1594,7 +1690,6 @@ E.extend('upload', function(){
             }
         },
         onAllComplete: function() {
-            //console.log('all complete');
         }
     };
 
@@ -1627,7 +1722,6 @@ Ediary.extend('Validator', function(E){
 
     // Need jQuery Validate Plugin
     if (typeof jQuery.validator == 'undefined') {
-        console.warn("jQuery Validator Plugin is not loaded.");
         return;
     }
     
@@ -1643,7 +1737,6 @@ Ediary.extend('Validator', function(E){
     
     // TODO: user Ediary.require method
     if (typeof E.i18n === 'undefined') {
-        console.warn("Validator Module require i18n module.");
         return;
     }
 
@@ -1748,13 +1841,17 @@ Ediary.extend('Validator', function(E){
  * 
  */
 ;(function( $ ){
+    
 
 var methods = {
+    
     init : function( options ) {
-        var settings = {
-                select: 0,
-                useId: false,
-                useCache: true    // 是否只在第一次点击做ajax请求
+        var sTab = methods,
+            settings = {
+                select: 0,         // 默认展开的index
+                useId: false,      // 是数字索引还是使用ID模式, 如果是则只用每个导航链接的href和box的id绑定
+                useCache: true,    // 是否缓存, 开缓存则只在第一次点击做ajax请求
+                noCache: []        // 开启缓存的模式下强制不缓存的某个导航id
         };
         return this.each(function(){
             if (options) {
@@ -1793,13 +1890,14 @@ var methods = {
                 // <a>
                 $(this).click(function(e) {
                     var data = {}, // request data
-                        rev = $($(this).attr("rev")),  
+                        navBtn = $(this),
+                        rev = $(navBtn.attr("rev")),  
                         select = (o.useId) ? href : i, // select box
-                        url = $(this).data('url');
+                        url = navBtn.data('url');
                     
                     // open current box and hide the others
                     tabNavs.children('a').removeClass('open');
-                    $(this).addClass("open");
+                    navBtn.addClass("open");
                     methods.show.call(self, select);
                     
                     // 如果<a>存在 "rev" 属性, 则在请求时发送额外数据
@@ -1821,8 +1919,9 @@ var methods = {
                             data: data,
                             dataType: 'html',
                             success: function(data, textStatus, jqXHR) {
-                                var box = $(select).html(data);
-                                if (o.useCache) {
+                                var box = $(select).html(data),
+                                    id = navBtn.attr('id');
+                                if (o.useCache && -1 === $.inArray(id, o.noCache)) {
                                     box.data('hasCache',true);
                                 }
                             },
@@ -1832,10 +1931,11 @@ var methods = {
                         });
                     }
                     return false;
-                });
-            });
+                }); // end of click
+            }); // end of each <a>
 
-        });
+            $(this).data('simpleTabs', sTab);
+        }); 
     },
     destroy : function( ) {
         return this.each(function(){
@@ -1843,7 +1943,6 @@ var methods = {
     },
     show : function(select) {
         $(this).children('div.simple-tabs-select').hide().remove('simple-tabs-select');
-        //console.log($(select));
         
         if (typeof select === 'string' && /#.+/.test(select)) {
             // HANDLE: '#id'
@@ -1860,6 +1959,12 @@ var methods = {
         } else {
             // hide all
             $(this).children('div').hide().removeClass('simple-tabs-select');
+        }
+    },
+    reset: function(selector) {
+        var url = $(selector).data('url');
+        if (url) {
+            $(url).data('hasCache', false);
         }
     }
 };

@@ -180,6 +180,14 @@ var Editor = {
                 });
             },
             template_replace_values : {
+            },
+            setupcontent_callback: function(editor_id, body, doc) {
+                console.log(body, doc);
+                console.log($(body));
+                $(doc).bind('keydown', 'ctrl+shift+s', function() {
+                    //FIXME: 快捷键只能用一次...
+                    self.doSave(true);
+                });
             }
         });
     },

@@ -33,16 +33,16 @@ var Pad = {
             select: null,
             useId: true,
             cache: true,
-            noCache: ['editor-btn-upload'],
+            noCache: ['editor-btn-upload']
         });
         
         $('#editor-btn-open').click(function() {
-            E.DiarysManager.init().flash();
+            E.DiarysManager.init();
         });
         
         $('#editor-btn-save').click(function() {
             editor.doSave(true); // force save
-        });
+        })
         
         $('#editor-btn-create').click(function() {
             editor.newDiary();
@@ -63,6 +63,13 @@ var Pad = {
         
         // buttons tooltip
         $("#menu>li>a").tipsy({gravity: "s", fake: true});
+        
+        // hotkey of force save 
+        /*
+        $(document).bind('keydown', 'ctrl+shift+s', function() {
+            editor.doSave(true);
+        });
+        */
     },
     
     destroy: function() {
