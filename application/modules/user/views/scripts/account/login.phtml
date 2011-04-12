@@ -14,7 +14,13 @@ $(document).ready(function(){
 <div id="login" class="content_box">
     <div class="login_main">
         <h2>登录</h2>
-        <?php echo $this->error; ?>
+        
+        <?php if(isset($this->error)): ?>
+        <!-- Error -->
+        <div class="messages"><?php echo $this->error; ?></div>
+    	<?php endif; ?>
+    	
+    	<!-- form_login -->
         <?php echo $this->form; ?>
     </div>
     <div class="login_side">

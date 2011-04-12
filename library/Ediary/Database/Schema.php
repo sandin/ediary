@@ -16,6 +16,8 @@ class Ediary_Database_Schema {
      * @var Ediary_Logger
      */
     private $logger = null;
+    
+    private static $isInstalled = false;
 
     /**
      * List of create table sql
@@ -121,7 +123,8 @@ class Ediary_Database_Schema {
      * 
      * @return boolean
      */
-    public function createTables() {
+    public function createTables($force = false) {
+        if ($force || )
         $this->dbh->beginTransaction();
         foreach ($this->tables as $tableName => $sql) {
             $this->_createTable($tableName, $sql);
@@ -138,7 +141,7 @@ class Ediary_Database_Schema {
     /**
      * Create a table 
      * 
-     * @param String $tableName
+     * @param String $tableName without prefix
      * @param String $sql
      * @return boolean if false check getError();
      * @throws PDOException
@@ -156,7 +159,7 @@ class Ediary_Database_Schema {
     /**
      * drop a table 
      * 
-     * @param String $tableName
+     * @param String $tableName without prefix
      */
     private function dropTable($tableName) {
         $this->logger->log("Drop table: " . $tableName);

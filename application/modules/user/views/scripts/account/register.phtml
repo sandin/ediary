@@ -15,7 +15,13 @@ $(document).ready(function(){
     <div class="login_main">
         <h2>注册帐号</h2>
         <p class="formTitle">宜日记提供绝对保密的个人网络日记本，欢迎注册使用！</p>
-        <div class="error"><?php echo $this->error; ?></div>
+        
+        <?php if(isset($this->error)): ?>
+        <!-- Error -->
+        <div class="messages"><?php echo $this->error; ?></div>
+    	<?php endif; ?>
+    	
+    	<!-- form_register -->
         <?php echo $this->form; ?>
     </div>
     <div class="login_side">
