@@ -51,7 +51,7 @@ class Ediary_Form_Decorator_Text extends Zend_Form_Decorator_Abstract
         if (empty($desc)) {
             return '';
         }
-        return sprintf($this->templete_description, desc); 
+        return sprintf($this->templete_description, $desc); 
     }
 
     public function render($content)

@@ -93,6 +93,13 @@ em {color:red;}
     width: 100%;
 }
 
+.messages {
+    border: 1px solid #FAF3CA;
+    padding: 10px;
+    background: #FFFADC;
+    margin-bottom: 10px;
+}
+
 /* newBtns */
 .newBtns { display: inline-block; background: #fff url("../images/bg_btns_1x20.gif") repeat-x; border: 1px solid #cecece; cursor: pointer; font-size: 12px; }
 .newBtns:link, .newBtns:visited { color: #000; }
@@ -825,6 +832,11 @@ form.profile #forget_pw {
 	background: url("../images/icon_checked.gif") no-repeat;
 	width: 14px;
 }
+.sForm .description {
+	display: inline;
+	margin-left: 5px;
+}
+
 /*}}}*/
 
 /* diary page */

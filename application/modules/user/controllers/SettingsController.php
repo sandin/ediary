@@ -19,7 +19,7 @@ class User_SettingsController extends Zend_Controller_Action
                 'url' => $cUrl . '/'
             ),
             array(
-                'title' => '外观设置',
+                'title' => '选择主题',
                 'url' => $cUrl . '/theme'
             ),
         );
@@ -28,47 +28,36 @@ class User_SettingsController extends Zend_Controller_Action
     public function indexAction()
     {
         $this->view->tabs[0]['current'] = true;
-        
-        $form = $this->getSettingsForm();
-        
-        if (!$this->getRequest()->isPost() || !$form->isValid($_POST)) {
-            return $this->view->form = $form;
-        }
-        
-        /*
-        // Load User
-        $user = new Ediary_User();
-        $user->loadById($this->_user->id);
-        var_dump($user->mName);
+        $user = Ediary_User::find($this->_user->id);
         if (! isset($user) ) {
-            return;
+            die(_t("无权访问该页面")); // invalid user
         }
         
-        $form = $this->view->form = $this->getSettingsForm();
-        if ( !$this->getRequest()->isPost() || !$form->isValid($_POST) ) {
-            // 表单数据验证失败
+        $form = $this->getSettingsForm($user);
+        if (! $this->getRequest()->isPost() ) {
+            // do nothing, just display the form
+        } else if (! $form->isValid($_POST) ) {
+            // post data invalid
             $this->view->messages = $form->getMessages();
         } else {
-            // 更新用户资料
             $this->view->messages = array('修改成功.');
-            $userData = array(
-                'username' => $form->getElement("username")->getValue()
-            );
-            $result = $user->update($user->getId(), $userData);
-            var_dump($result);
+            $form->saveToken();
+            $user->username = $form->getElement("username")->getValue();
+            $password = $form->getElement('password')->getValue();
+            if (isset($password)) {
+                $user->changePassword($password);
+            }
+            $result = $user->update();
         }
-        $this->view->username = $user->mName;
-        */
+        
+        return $this->view->form = $form;
     }
     
     public function themeAction() {
         $this->view->tabs[1]['current'] = true;
-        
-        $this->view->name = "LDS";
     }
     
     public function themeajaxAction() {
-        
         $this->_helper->layout->disableLayout();
     }
     
@@ -79,25 +68,26 @@ class User_SettingsController extends Zend_Controller_Action
     public function saveAction()
     {
         $result = false;
-        $filterRules = array();
-        $validatorRules = array();
-        $input = new Zend_Filter_Input($filterRules, $validatorRules, $_GET);
+        
+        $input = new Zend_Filter_Input(array(), array(), $_GET);
+        $user = Ediary_User::find($this->_user->id);
+        if ($user == null) {
+            return;
+        }
         
         if ($input->isValid()) {
-            $theme = $input->theme;
-            //TODO: 处理post的各种情况
-            $user = new Ediary_User();
-            $userData = array();
-            $userData['theme'] = $theme;
-            $result = $user->update($this->_user->id, $userData);
-            if ($result > 0) {
-                // 更换主题后需要刷新储存在session里的缓存值
-                $this->_user->theme = $theme;
+            $user->theme = $input->theme;
+            $result = $user->update();
+            if ($result) { // 更换主题后需要刷新储存在session里的缓存值
+                $this->_user->theme = $input->theme;
                 Zend_Registry::set('user', $this->_user); 
             }
-            $result = ($result > 0) ? true : false;
-            
-            /* update metadata 
+           
+        }
+        $this->_helper->json( array('result' => $result) );
+    }
+    
+             /* update metadata 
             $user_metadata = new Ediary_Metadata_User(3);
             $result = array();
             foreach ($input->getEscaped() as $key => $value) {
@@ -105,43 +95,49 @@ class User_SettingsController extends Zend_Controller_Action
             }
             $this->_helper->json( array('result' => !in_array(0, $result)) );
             */
-        }
-        $this->_helper->json( array('result' => $result) );
-    }
-    
-   
-    
 
     /**
      * @return Ediary_Form
      */
-    private function getSettingsForm() {
+    private function getSettingsForm($user) {
         $form = new Ediary_Form();
-        $form->setAttrib('class', "labelForm sForm");
+        $form->setAttrib('class', "labelForm sForm")
+             ->setAttrib('id', 'form_settings')
+             ->setAction('/user/settings')
+             ->setMethod('post');
          
      	$username = $form->createElement('text', 'username');
      	$username->setRequired(true)
      	         ->setLabel(_t("用户名"))
      	         ->setAttrib('class', 'text')
      	         ->addValidator(Ediary_User::getUserNameValidate())
-     			 ->addFilter('StringTrim');
+     			 ->addFilter('StringTrim')
+     			 ->setValue($user->username)
+     			 ->setOrder(0);
      
      	$password = $form->createElement('password', 'password');
      	$password->setLabel(_t("密码"))
      	         ->setAttrib('class', 'text')
      	         ->setAttrib('disabled', 'disabled')
      	         ->setAttrib('readonly', 'readonly')
-     	         ->addValidator(Ediary_User::getPasswordValidate());
-     	
+     	         ->addValidator(Ediary_User::getPasswordValidate())
+     	         ->setDecorators(array(new Ediary_Form_Decorator_Text()))
+     	         //->addDecorator('Description', array('tag' => '', 'class' => 'description',
+     	          //                            'escape' => false, "placement" => "append"))
+     	         ->setDescription('<a href="#" id="ableToChangePassword">修改</a>')
+     	         ->setOrder(1);
+     	         
      	$rePassword = $form->createElement('password', 'rePassword');
      	$rePassword->setLabel(_t("确认密码"))
      	         ->setAttrib('class', 'text')
      	         ->setAttrib('disabled', 'disabled')
-     	         ->setAttrib('readonly', 'readonly'); // 只做前端验证
-     	         
+     	         ->setAttrib('readonly', 'readonly')
+     	         ->setOrder(2); // 只在前端验证两次输入的密码是否相同
      			 
-        $form->addElements2(array($username, $password, $rePassword));
-             
+        $form->addElements2(array($username, $rePassword));
+        $form->addElement($password);
+      	$form->addElement('submit', 'op', array('label' => _t('保存'), 'class' => 'nolabel button'));
+      	
         return $form;
     }
     

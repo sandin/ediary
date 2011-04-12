@@ -4,8 +4,14 @@ $this->headScript()->appendFile("/js/jquery.validate.js");
 $this->headScript()->appendFile("/js/ediary/all.js");
 $this->inlineScript()->appendScript('
 $(document).ready(function(){
-	Ediary.loadModule("Validator");
-    $("#form_settings").validate(Ediary.Validator.getFormOptions("form_settings"));
+	var E = Ediary; E.loadModule("Validator");
+	
+    $("#form_settings").validate(E.Validator.getFormOptions("form_settings"));
+    $("#ableToChangePassword").click(function(){
+    	$("#password, #rePassword").removeAttr("readonly").removeAttr("disabled");
+    	$(this).hide();
+ 		return false;
+    });
 });
 ');
 ?>
@@ -17,34 +23,12 @@ $(document).ready(function(){
     </div>
     <div class="innerBox">
     	<?php if(isset($this->messages)): ?>
-    	<div class="error">
+    	<div class="messages">
     	    <?php foreach($this->messages as $msg) { echo $msg; } ?>
     	</div>
     	<?php endif; ?>
-    	<?php echo $this->form; ?>
     	
-    	<!-- Settings From 
-    	<form id="form_setttings" action="/user/settings/" method="post" class="labelForm sForm">
-        	<div class="element">
-        		<label for="username">姓名 :</label>
-        		<input name="username" type="text" class="text" value="<?php echo $this->username ?>" autocomplete="off" />
-	        	<?php echo $this->partial('form_error.phtml', array('form' => $this->form,'element' => 'username')); ?>
-        	</div>
-        	<div class="element">
-        		<label for="password">修改密码 :</label>
-        		<input name="password" readonly="readonly" disabled="disabled" type="text" class="text" value="" />
-	        	<?php echo $this->partial('form_error.phtml', array('form' => $this->form,'element' => 'password')); ?>
-        	</div>
-        	<div class="element">
-        		<label for="re-password">确认密码 :</label>
-        		<input name="re-password" readonly="readonly" disabled="disabled" type="text" class="text" value="" />
-	        	<?php echo $this->partial('form_error.phtml', array('form' => $this->form,'element' => 're-password')); ?>
-        	</div>
-        	<div class="element">
-        		<label>&nbsp;</label>
-        		<input class="button" type="submit" value="确定" />
-        	</div>
-        </form>
-    	-->
+    	<!-- form_settings -->
+    	<?php echo $this->form; ?>
     </div>
 </div><!-- /settings-tabs -->

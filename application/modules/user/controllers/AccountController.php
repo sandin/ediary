@@ -36,18 +36,15 @@ class User_AccountController extends Zend_Controller_Action
 		$rememberMe = isset($_POST['rememberMe']) ? true : false;
 		$auth_result = Ediary_User::login($_POST['email'], $_POST['password'], $rememberMe);
 		
+        // Auth fail, email/password wrong
 		if (! $auth_result->result ) {
-		    // Auth fail, email/password wrong
 		    $this->view->error = _t("用户名或密码错误.");
 		    return $this->view->form = $form;
 		}
 		
-	    // OK, register this user
-	    
+		// Auth Ok.
 		$this->view->form = _t("登录成功");
 	    $form->saveToken(); // in case reSubmit
-	    
-	    // redirect to front page
         $this->_redirect('/diary');
     }
 
@@ -77,10 +74,11 @@ class User_AccountController extends Zend_Controller_Action
 	    // OK, register this user
 	    
         // Create the user into database
-	    $user = new Ediary_User();
-	    $userId = $user->create($_POST['email'], $_POST['password'], '');
-	    
-	    if ($userId > 0) {
+	    $user = Ediary_User::create(array(
+            'email' => $form->getValue('email'),
+            'password' => $form->getValue('password')
+	    ));
+	    if ($user->id > 0) {
 		    $this->view->form = _t("注册成功");
 	        $form->saveToken(); // in case reSubmit
 	    
@@ -107,11 +105,11 @@ class User_AccountController extends Zend_Controller_Action
         $form->setAction('/register')
      		 ->setMethod('post');
      		 
-    	$validator = new Zend_Validate_Alnum();
+    	$passValidator = Ediary_User::getPasswordValidate();
     	$textElement = new Ediary_Form_Decorator_Text();
      		 
-     	$username = new Zend_Form_Element_Text('email');
-     	$username->setLabel(_t("邮箱"))
+     	$email = new Zend_Form_Element_Text('email');
+     	$email->setLabel(_t("邮箱"))
      			 ->setRequired(true)
      			 ->addValidator(new Zend_Validate_EmailAddress(array('mx' => false)))
      	         ->setAttrib('class', 'text')
@@ -120,18 +118,18 @@ class User_AccountController extends Zend_Controller_Action
      	$password = new Zend_Form_Element_Password('password');
      	$password->setLabel(_t("密码"))
      			 ->setRequired(true)
-	     		 ->addValidator($validator)
+	     		 ->addValidator($passValidator)
      	         ->setAttrib('class', 'text')
      			 ->setDecorators(array($textElement));
 	     		 
 	    $rePassword = new Zend_Form_Element_Password('rePassword');
      	$rePassword->setLabel(_t("确认密码"))
      			   ->setRequired(true)
-	     		   ->addValidator($validator)
+	     		   ->addValidator($passValidator)
      	           ->setAttrib('class', 'text')
      			   ->setDecorators(array($textElement));
         
-     	$form->addElements(array($username, $password, $rePassword));
+     	$form->addElements(array($email, $password, $rePassword));
      	$form->addElement('submit', 'op', array(
      							'label' => _t('立即注册'),
      	                        'class' => 'nolabel button'));

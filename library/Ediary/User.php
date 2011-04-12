@@ -34,7 +34,7 @@ class Ediary_User extends Ediary_Query_Adapter
         parent::__construct($params);
     }
     
- 	/**
+    /**
      * Create a User
      * 使用前应该对$data进行数据格式等验证
      *
@@ -59,7 +59,7 @@ class Ediary_User extends Ediary_Query_Adapter
         $this->newFields['last_logined'] = Ediary_Db::datetime();
         $this->newFields['security_code'] = $securityCode;
         $this->newFields['password'] = $encodedPassword;
-        return parent::insertRow(self::$table);
+        return parent::insertRow(Ediary_Db::prefix('users'));
     }
 
     /**
@@ -69,20 +69,27 @@ class Ediary_User extends Ediary_Query_Adapter
      * @return Ediary_User
      */
     public static function find( $who )  {
-		if ( is_numeric( $who ) ) {
-			// Got a User ID
-			$user = self::findById( $who );
-		} elseif ( strpos( $who, '@' ) !== FALSE ) {
-			// Got an email address
-			$user = self::findByEmail( $who );
-		} else {
-		    //TODO: other case
-		}
-		return $user;
+        if ( self::isAId($who) ) {
+            $user = self::findById( $who );
+        } elseif ( self::isAEmail($who) ) {
+            $user = self::findByEmail( $who );
+        } else {
+            //TODO: other case
+            $user = null;
+        }
+        return $user;
+    }
+    
+    public static function isAId($who) {
+        return is_numeric($who);
+    }
+    
+    public static function isAEmail($who) {
+        return (strpos($who, '@') !== false);
     }
     
     public static function findById($id) {
-        $row =  parent::findRowById(self::$table, $id);
+        $row =  parent::findRowById(Ediary_Db::prefix('users'), $id);
         if (null != $row) {
             return new self($row);
         }
@@ -97,10 +104,10 @@ class Ediary_User extends Ediary_Query_Adapter
     public static function findByEmail( $email ) {
         $db = self::getDb();
         $select = $db->select()
-                     ->from(self::$table)
+                     ->from(Ediary_Db::prefix('users'))
                      ->where('email = ?', $email)
                      ->limit(1,0);
-        $row = $db->fetchRow($select->__toString());
+        $row = $db->fetchRow($select);
         if (null != $row) {
             return new self($row);
         }
@@ -112,6 +119,13 @@ class Ediary_User extends Ediary_Query_Adapter
      */
     public function update() {
         return parent::updateRowById(self::$table);
+    }
+    
+    public function changePassword($newPassword) {
+        $securityCode = self::getSecurtiyCode($this->email);
+        $encodedPassword = self::encryptPassword($newPassword, $securityCode);
+        $this->password = $encodedPassword;
+        return $this->update();
     }
     
     /**
@@ -235,7 +249,7 @@ class Ediary_User extends Ediary_Query_Adapter
      * @return boolean
      */
     public static function isExistsId($id) {
-        return parent::isExistsRow(self::$table, 'id = ?', $id);
+        return parent::isExistsRow(Ediary_Db::prefix("users"), 'id = ?', $id);
     }
     
     /**
@@ -243,7 +257,7 @@ class Ediary_User extends Ediary_Query_Adapter
      * @return boolean
      */
     public static function isExistsEmail($email) {
-        return parent::isExistsRow(self::$table, 'email = ?', $email);
+        return parent::isExistsRow(Ediary_Db::prefix("users"), 'email = ?', $email);
     }
     
     /**

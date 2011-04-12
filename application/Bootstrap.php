@@ -76,17 +76,14 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	    // must before setSaveHandler
 	    Zend_Session::setOptions(array('gc_maxlifetime' => strval(60*60*24*30))); // a month
 	    Zend_Session::setSaveHandler(new Zend_Session_SaveHandler_DbTable($config));
-	    /* if(!isset($_SESSION)){ Zend_Session::start(); } */
-	    //var_dump(Zend_Session::getOptions());
     }
     
     protected function _initAuth() {
         $auth = Zend_Auth::getInstance();
         $storage = new Zend_Auth_Storage_Session(Ediary_Application::SESSION_AUTH);
         $auth->setStorage($storage);
+        
         $user = $auth->getIdentity();
-        //TODO: loadUser
-        //var_dump($user);
         Zend_Registry::set('user', $user);
         
         /*
@@ -97,7 +94,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $hack->email = "admin@lds.com";
         $hack->theme = 't0';
         Zend_Registry::set('user', $hack);
-        //TODO: DELETE ME ****** HACK **************************
+        // DELETE ME ****** HACK **************************
          */
     }
     
@@ -256,7 +253,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
              ->setSeparator(' - ')
              ->setDefaultAttachOrder('PREPEND');
         
-        // 'views/script' has some share templates
+        // 公共模板在 'views/script' 目录下
         $view->addBasePath(APPLICATION_PATH . '/views');
         
         // Register Helpers

@@ -18,7 +18,7 @@ class Ediary_Auth_Database
         $auth = Zend_Auth::getInstance();
         $auth->setStorage($storage);
         
-        $authAdapter = new Zend_Auth_Adapter_DbTable($db->getConnection());
+        $authAdapter = new Zend_Auth_Adapter_DbTable($db->getAdapter());
         $authAdapter->setTableName($db->users)
                     ->setIdentityColumn('email')
                     ->setCredentialColumn('password')
@@ -34,14 +34,15 @@ class Ediary_Auth_Database
             $result->message = $result->getMessages() ;
         } else {
             // Authentication Success
+            $user = Ediary_User::find($email);
+            
+            // Store into SESSION
             $storage = $auth->getStorage();
-            $user_email = $result->getIdentity();
-            $user = Ediary_User::find($user_email);
-            $storage->write($user->toArray());
+            $storage->write((object) $user->toArray());
 
             // rememberMe
             if ($rememberMe) {
-                setcookie('ue', $user_email, time() + 2592000, '/', false);
+                setcookie('ue', $user->email, time() + 2592000, '/', false);
                 Zend_Session::rememberMe(2592000);
             }
             $result->result = true;
@@ -53,13 +54,10 @@ class Ediary_Auth_Database
     
     public static function logout() {
         $user = Zend_Auth::getInstance()->getIdentity();
-        if (isset($user)) {
-            $email = $user->email;
-            if (isset($email)) {
-                setcookie('ue', $email, -1, '/', false);
-                Zend_Auth::getInstance()->clearIdentity();
-                Zend_Session::forgetMe();
-            }
+        if (isset($user) && isset($user->email)) {
+            setcookie('ue', $user->email, -1, '/', false);
+            Zend_Auth::getInstance()->clearIdentity();
+            Zend_Session::forgetMe();
         }
     }
 }

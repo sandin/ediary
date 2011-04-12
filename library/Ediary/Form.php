@@ -23,7 +23,9 @@ class Ediary_Form extends Zend_Form
     public function saveToken() {
         $session = new Zend_Session_Namespace('form-token');
      	$session->setExpirationSeconds(20); // 20秒内不得重复提交同一表单
-     	$session->{$this->getName()} = md5($this->getName());
+     	if (null != $this->getName()) {
+     	    $session->{$this->getName()} = md5($this->getName());
+     	}
     }
     
     /**
@@ -34,7 +36,7 @@ class Ediary_Form extends Zend_Form
     public function isValid($data) {
       	// ReSubmitted Check
         $session = new Zend_Session_Namespace('form-token');
-    	if ( isset($session->{$this->getName()}) &&
+    	if (null != $this->getName() && isset($session->{$this->getName()}) &&
         	$session->{$this->getName()} == $data['token'] ) {
         	    $this->setErrorMessages(array(_t("请勿重复提交表单")));
         		return false;

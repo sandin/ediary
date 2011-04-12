@@ -1750,8 +1750,7 @@ Ediary.extend('Validator', function(E){
             },
             password: {
                 required: true,
-                minlength: 8,
-                alnum : true
+                minlength: 8
             },
             rePassword: {
                 required: true,
@@ -1789,11 +1788,11 @@ Ediary.extend('Validator', function(E){
         },
         messages : {
             email : {
-                required : E.i18n.EMAIL_IS_NULL,
-                email    : E.i18n.EMAIL_INVALID
+                required : i18n.EMAIL_IS_NULL,
+                email    : i18n.EMAIL_INVALID
             },
             password : {
-                required  : E.i18n.PASSWORD_IS_NULL
+                required  : i18n.PASSWORD_IS_NULL
             }
         }
     };
@@ -1803,11 +1802,23 @@ Ediary.extend('Validator', function(E){
             rules : {
                 username : {
                     regex: /^[\w\ ]+$/
+                },
+                password: {
+                    minlength: 8
+                },
+                rePassword: {
+                    equalTo : "#password"
                 }
             },
             messages : {
+                password: {
+                    minlength: i18n.PASSWORD_TOO_SHORT
+                },
                 username : {
-                    regex: E.i18n.USERNAME_INVALID
+                    regex: i18n.USERNAME_INVALID
+                },
+                rePassword: {
+                    equalTo : i18n.PASSWORD_NOT_SAME
                 }
             }
         }
