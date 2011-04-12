@@ -89,6 +89,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         //var_dump($user);
         Zend_Registry::set('user', $user);
         
+        /*
         //TODO: DELETE ME ****** HACK **************************
         $hack = new stdClass();
         $hack->username = 'admin';
@@ -97,6 +98,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $hack->theme = 't0';
         Zend_Registry::set('user', $hack);
         //TODO: DELETE ME ****** HACK **************************
+         */
     }
     
     protected function _initCache() {

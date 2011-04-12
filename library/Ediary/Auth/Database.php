@@ -6,6 +6,7 @@ class Ediary_Auth_Database
         $result = new stdClass();
         $result->result  = false;
         $result->message = '';
+        $result->user = null;
         
         $db = Ediary_Db::getInstance();
         
@@ -19,8 +20,8 @@ class Ediary_Auth_Database
         
         $authAdapter = new Zend_Auth_Adapter_DbTable($db->getConnection());
         $authAdapter->setTableName($db->users)
-                    ->setIdentityColumn(Ediary_User::EMAIL)
-                    ->setCredentialColumn(Ediary_User::PASSWORD)
+                    ->setIdentityColumn('email')
+                    ->setCredentialColumn('password')
                     ->setIdentity($email)
                     ->setCredential($password);
 
@@ -32,24 +33,19 @@ class Ediary_Auth_Database
             $result->result =  false;
             $result->message = $result->getMessages() ;
         } else {
-
+            // Authentication Success
             $storage = $auth->getStorage();
-            $storage->write(
-                $authAdapter->getResultRowObject(array(
-                    Ediary_User::EMAIL,
-                    Ediary_User::NAME,
-                    Ediary_User::ID,
-                    'theme')
-            ));
-
-            // set a cookie to save user info
             $user_email = $result->getIdentity();
+            $user = Ediary_User::find($user_email);
+            $storage->write($user->toArray());
+
             // rememberMe
             if ($rememberMe) {
                 setcookie('ue', $user_email, time() + 2592000, '/', false);
                 Zend_Session::rememberMe(2592000);
             }
             $result->result = true;
+            $result->user = $user;
         }
         
         return $result;

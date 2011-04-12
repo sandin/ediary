@@ -2,6 +2,10 @@
 
 class Ediary_Form_Decorator_Text extends Zend_Form_Decorator_Abstract
 {
+    private $templete_error = '<div class="error">%s</div>';
+    private $templete_description = '<div class="description">%s</div>';
+    private $templete_element = '<div class="form_element">%s</div>';
+    
     public function buildLabel()
     {
         $element = $this->getElement();
@@ -36,8 +40,8 @@ class Ediary_Form_Decorator_Text extends Zend_Form_Decorator_Abstract
         if (empty($messages)) {
             return '';
         }
-        return '<div class="errors">' .
-               $element->getView()->formErrors($messages) . '</div>';
+        return sprintf($this->templete_error, 
+                       $element->getView()->formErrors($messages));
     }
 
     public function buildDescription()
@@ -47,7 +51,7 @@ class Ediary_Form_Decorator_Text extends Zend_Form_Decorator_Abstract
         if (empty($desc)) {
             return '';
         }
-        return '<div class="description">' . $desc . '</div>';
+        return sprintf($this->templete_description, desc); 
     }
 
     public function render($content)
@@ -67,12 +71,8 @@ class Ediary_Form_Decorator_Text extends Zend_Form_Decorator_Abstract
         $errors    = $this->buildErrors();
         $desc      = $this->buildDescription();
 
-        $output = '<div class="form element">'
-                . $label
-                . $input
-                . $errors
-                . $desc
-                . '</div>';
+        $output = sprintf($this->templete_element,
+                          $label . $input . $errors . $desc);
 
         switch ($placement) {
             case (self::PREPEND):

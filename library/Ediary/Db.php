@@ -127,6 +127,15 @@ class Ediary_Db
         return $this->conn;
     }
     
+    /**
+     * Get Zend_Db_Adapter
+     * 
+     * @return Zend_Db_Adapter_Abstract
+     */
+    public function getAdapter() {
+        return $this->conn;
+    }
+    
  	/**
      *  set charset and collation
      */

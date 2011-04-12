@@ -1833,6 +1833,21 @@ Ediary.extend('Validator', function(E){
             }
         }
     };
+    
+    var formOptions =  {
+        'form_settings' : {
+            rules : {
+                username : {
+                    regex: /^[\w\ ]+$/
+                }
+            },
+            messages : {
+                username : {
+                    regex: E.i18n.USERNAME_INVALID
+                }
+            }
+        }
+    };
 
     var Validator = {
         init: function() {},
@@ -1848,6 +1863,11 @@ Ediary.extend('Validator', function(E){
         },
         getLoginForm: function() {
             return $.extend({}, this.options, loginForm);
+        },
+        getFormOptions: function(formName) {
+            if (formOptions[formName] != null) {
+                return $.extend({}, this.options, formOptions[formName])
+            }
         }
     };
     E.Validator = Validator;

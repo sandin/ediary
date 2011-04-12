@@ -11,24 +11,69 @@ class User_SettingsController extends Zend_Controller_Action
         if (!isset($this->_user)) {
             $this->_redirect('/');
         }
+        
+        $cUrl = $this->view->baseUrl('/user/settings');
+        $this->view->tabs = array(
+            array(
+                'title' => '个人设置',
+                'url' => $cUrl . '/'
+            ),
+            array(
+                'title' => '外观设置',
+                'url' => $cUrl . '/theme'
+            ),
+        );
     }
     
     public function indexAction()
     {
-        // action body
-        $form = $this->view->form = $this->getSettingsForm();
+        $this->view->tabs[0]['current'] = true;
         
-        if ( !$this->getRequest()->isPost() || !$form->isValid($_POST) ) {
-            var_dump($form->getMessages());
-            return $form;
-        } else {
-            var_dump('Your name : ' . $form->getElement("username")->getValue());
-            var_dump("OK");
+        $form = $this->getSettingsForm();
+        
+        if (!$this->getRequest()->isPost() || !$form->isValid($_POST)) {
+            return $this->view->form = $form;
         }
+        
+        /*
+        // Load User
+        $user = new Ediary_User();
+        $user->loadById($this->_user->id);
+        var_dump($user->mName);
+        if (! isset($user) ) {
+            return;
+        }
+        
+        $form = $this->view->form = $this->getSettingsForm();
+        if ( !$this->getRequest()->isPost() || !$form->isValid($_POST) ) {
+            // 表单数据验证失败
+            $this->view->messages = $form->getMessages();
+        } else {
+            // 更新用户资料
+            $this->view->messages = array('修改成功.');
+            $userData = array(
+                'username' => $form->getElement("username")->getValue()
+            );
+            $result = $user->update($user->getId(), $userData);
+            var_dump($result);
+        }
+        $this->view->username = $user->mName;
+        */
+    }
+    
+    public function themeAction() {
+        $this->view->tabs[1]['current'] = true;
+        
+        $this->view->name = "LDS";
+    }
+    
+    public function themeajaxAction() {
+        
+        $this->_helper->layout->disableLayout();
     }
     
     /**
-     * Enter description here ...
+     * Update theme
      * FIXME: filter input
      */
     public function saveAction()
@@ -36,11 +81,10 @@ class User_SettingsController extends Zend_Controller_Action
         $result = false;
         $filterRules = array();
         $validatorRules = array();
-        $input = new Zend_Filter_Input($filterRules, $validatorRules, $_POST);
+        $input = new Zend_Filter_Input($filterRules, $validatorRules, $_GET);
         
         if ($input->isValid()) {
             $theme = $input->theme;
-            
             //TODO: 处理post的各种情况
             $user = new Ediary_User();
             $userData = array();
@@ -65,29 +109,39 @@ class User_SettingsController extends Zend_Controller_Action
         $this->_helper->json( array('result' => $result) );
     }
     
-    public function themeAction() {
-        $this->view->name = "LDS";
-    }
-    
-    public function themeajaxAction() {
-        
-        $this->_helper->layout->disableLayout();
-    }
+   
     
 
     /**
      * @return Ediary_Form
      */
     private function getSettingsForm() {
-        $form = new Zend_Form();
+        $form = new Ediary_Form();
+        $form->setAttrib('class', "labelForm sForm");
          
-     	$username = new Zend_Form_Element_Text('username');
+     	$username = $form->createElement('text', 'username');
      	$username->setRequired(true)
+     	         ->setLabel(_t("用户名"))
+     	         ->setAttrib('class', 'text')
      	         ->addValidator(Ediary_User::getUserNameValidate())
-     			 //->addValidator(new Zend_Validate_Alnum(), false, array("messages" => '只能输入数字和字符'))
      			 ->addFilter('StringTrim');
+     
+     	$password = $form->createElement('password', 'password');
+     	$password->setLabel(_t("密码"))
+     	         ->setAttrib('class', 'text')
+     	         ->setAttrib('disabled', 'disabled')
+     	         ->setAttrib('readonly', 'readonly')
+     	         ->addValidator(Ediary_User::getPasswordValidate());
+     	
+     	$rePassword = $form->createElement('password', 'rePassword');
+     	$rePassword->setLabel(_t("确认密码"))
+     	         ->setAttrib('class', 'text')
+     	         ->setAttrib('disabled', 'disabled')
+     	         ->setAttrib('readonly', 'readonly'); // 只做前端验证
+     	         
      			 
-        $form->addElement($username);
+        $form->addElements2(array($username, $password, $rePassword));
+             
         return $form;
     }
     

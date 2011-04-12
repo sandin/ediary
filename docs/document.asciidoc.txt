@@ -114,6 +114,70 @@ Ediary_Db::addMagicQuotes($array);
 在 `controller` 或 `view` 里都可以自动统一的翻译函数:
 `echo _t("需要翻译的输出信息")`
 
+== 数据库表类 ==
+
+几个基本类, 例如 `User` , `Diary` 在进行 *增删改查* 的基本数据库操作时几乎都使用了一个中间层, `Ediary_Query_Record` , 该类是结构基本上是使用 `Habari` 代码中的 `/system/classes/QueryRecord.php` .
+
+该类的基本结构是:
+[source]
+---------------------------------------
+<?php
+
+class Ediary_Query_Record {
+    // 字段集合
+    protected $fields = array();
+    // 修改集合
+    protected $newFields = array();
+
+    // 增
+    public function insertRow($tableName);
+    // 删
+    public function deleteRow($tableName);
+    // 改
+    public function updateRow($tableName);
+
+    // 魔法GET, 取$fields和$newFields的值
+    public function __get($name);
+
+    // 魔法SET
+    // 如果$fields没有设置$name的值,则设置到$fields里面
+    // 若$fields中已存在$name的值, 就将新的$name值视作修改值, 设置到$newFields
+    public function __set($name);
+}
+----------------------------------------
+
+在此类的基础上建立一个帮助行的中间层, 完善了几个基本的数据库操作:
+[source]
+------------------------------------------------
+<?php
+
+class Ediary_Query_Adapter extends Ediary_Query_Record {
+    // 字段的默认值
+    protected $defaultFields = array();
+
+    // 增, 添加后会将newFields更新到fields, 并清空newFields.
+    public function insertRow($table);
+
+    // 删, 根据主键id进行删除
+    public function deleteRowById($table);
+
+    // 改, 根据主键id进行更新
+    public function updateRowById($table);
+
+    // 查, 根据主键id进行查找
+    public static function findRowById($table, $id);
+
+    // 检查是否存在某条数据, $where, $bind为Zend_Db_Select中的where子句.
+    public static function isExistsRow($table, $where, $bind);
+
+    // 将fields转为数组
+    public function toArray();
+
+}
+-----------------------------------------------
+
+    
+
 
 == Testing 单元测试 ==
 

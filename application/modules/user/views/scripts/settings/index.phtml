@@ -4,56 +4,47 @@ $this->headScript()->appendFile("/js/jquery.validate.js");
 $this->headScript()->appendFile("/js/ediary/all.js");
 $this->inlineScript()->appendScript('
 $(document).ready(function(){
-    var i18n = Ediary.i18n;
-
-    $("#form_setttings").validate({
-        //debug : true, 	// do not submit the form
-        errorElement: "span",
-        rules : {
-            username : {
-                regex: /^[\w\ ]+$/
-            }
-        },
-        messages : {
-        	username : {
-        		regex: i18n.USERNAME_INVALID
-            }
-        },
-        success: function(label) {
-            label.html("Ok!").addClass("valid");
-        }
-    }); //end of validate
+	Ediary.loadModule("Validator");
+    $("#form_settings").validate(Ediary.Validator.getFormOptions("form_settings"));
 });
 ');
 ?>
 <div id="settings-tabs" class="content_box">
 	<div class="contentBox_tabNav">
-		<a class="contentBox_tabNav_tab first current" href="#">个人资料</a>
-		<a class="contentBox_tabNav_tab" href="#">隐私设置</a>
+		<?php foreach($this->tabs as $i => $tab): ?>
+		<a class="contentBox_tabNav_tab<?php if ($i == 0) {echo ' first';} if (isset($tab['current'])) {echo ' current'; }?>" href="<?php echo $tab['url'] ?>"><?php echo $tab['title'] ?></a>
+		<?php endforeach; ?>
     </div>
     <div class="innerBox">
-    	<form id="form_setttings" action="#" method="post" class="labelForm sForm">
+    	<?php if(isset($this->messages)): ?>
+    	<div class="error">
+    	    <?php foreach($this->messages as $msg) { echo $msg; } ?>
+    	</div>
+    	<?php endif; ?>
+    	<?php echo $this->form; ?>
+    	
+    	<!-- Settings From 
+    	<form id="form_setttings" action="/user/settings/" method="post" class="labelForm sForm">
         	<div class="element">
         		<label for="username">姓名 :</label>
-        		<input name="username" type="text" class="text" value="" />
+        		<input name="username" type="text" class="text" value="<?php echo $this->username ?>" autocomplete="off" />
+	        	<?php echo $this->partial('form_error.phtml', array('form' => $this->form,'element' => 'username')); ?>
         	</div>
         	<div class="element">
-        		<label for="username">修改密码 :</label>
-        		<input name="username" disabled="disabled" type="text" class="text" value="" />
+        		<label for="password">修改密码 :</label>
+        		<input name="password" readonly="readonly" disabled="disabled" type="text" class="text" value="" />
+	        	<?php echo $this->partial('form_error.phtml', array('form' => $this->form,'element' => 'password')); ?>
         	</div>
         	<div class="element">
-        		<label for="username">确认密码 :</label>
-        		<input name="username" disabled="disbaled" type="text" class="text" value="" />
+        		<label for="re-password">确认密码 :</label>
+        		<input name="re-password" readonly="readonly" disabled="disabled" type="text" class="text" value="" />
+	        	<?php echo $this->partial('form_error.phtml', array('form' => $this->form,'element' => 're-password')); ?>
         	</div>
-        	<div class="element">
-        		<label for="username">设置1 :</label>
-        		<input name="username" type="text" class="text" value="" />
-        	</div>
-        		<?php //echo $this->partial('form_error.phtml', array('form' => $this->form,'element' => 'username')); ?>
         	<div class="element">
         		<label>&nbsp;</label>
         		<input class="button" type="submit" value="确定" />
         	</div>
         </form>
+    	-->
     </div>
 </div><!-- /settings-tabs -->

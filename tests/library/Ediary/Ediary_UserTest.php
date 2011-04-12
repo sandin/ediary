@@ -19,6 +19,17 @@ class Ediary_UserTest extends ControllerTestCase
             array('lds2012@gmail.com', 'password', 'username', true),
         );
     }
+    
+    public function dataProvider2() {
+        $r = substr(microtime(), 3, 7); // random string
+        return array(
+            array(
+            	array('email' => 'lds2012@gmail.com'. $r,
+            	      'password' => 'password',
+            	      'username' => 'username')
+            )
+        );
+    }
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -29,8 +40,8 @@ class Ediary_UserTest extends ControllerTestCase
         parent::setUp();
         $this->object = new Ediary_User();
         
-        $r = substr(microtime(), 3, 7); // random string
-        $this->data['email'] = $r . 'lds2012@gmail.com';
+        $this->r = substr(microtime(), 3, 7); // random string
+        $this->data['email'] = $this->r . 'lds2012@gmail.com';
         $this->data['name'] = "username";
         $this->data['password'] = 'asdfzf34sdfa';
     }
@@ -79,86 +90,52 @@ class Ediary_UserTest extends ControllerTestCase
     /**
      * @todo Implement testLoadFromRow().
      */
-    public function testLoadFromArray()
-    {
-        $mockRow = array(
-            Ediary_User::ID => '1234',
-            Ediary_User::NAME => 'lds',
-            Ediary_User::EMAIL => 'lds2012@gmail.com',
-            Ediary_User::ACCOUNT => '100000000',
-            Ediary_User::CREATED => '2010-12-21 12:12:12',
-            Ediary_User::LAST_TIME => '2011-12-23 12:12:12',
-            Ediary_User::PIC => 'dsafas421423',
-            Ediary_User::PASSWORD => 'dsafas13421423',
-            Ediary_User::SECURITY_CODE => 'dsafadsfs13421423',
-        );
-        $user = $this->object->loadFromArray($mockRow);
-        
-        $this->assertEquals($mockRow[Ediary_User::ID], $user->getId());
-        $this->assertEquals($mockRow[Ediary_User::EMAIL], $user->mEmail);
-        $this->assertEquals($mockRow[Ediary_User::NAME], $user->mName);
-        $this->assertEquals($mockRow[Ediary_User::ACCOUNT], $user->mAccount);
-        $this->assertEquals($mockRow[Ediary_User::CREATED], $user->mCreated);
-        $this->assertEquals($mockRow[Ediary_User::LAST_TIME], $user->mLastTime);
-        $this->assertEquals($mockRow[Ediary_User::PIC], $user->mPic);
-        
-        $this->assertTrue($user->isLoad());
-    }
-
-    /**
-     * depend User#create()
-     */
-    public function testLoadById()
-    {
-        // create a user and load it by id
-        $userId = $this->_createUser();
-        $this->assertTrue($userId > 0);
-        $user = $this->object->loadById($userId);
-        
-        $this->assertEquals($userId, $user->getId());
-        $this->assertEquals($this->data['email'], $user->mEmail);
-    }
-    
-    /**
-     * depend User#create()
-     */
-    public function testLoadByEmail()
-    {
-        // create a user and load it by email
-        $userId = $this->_createUser();
-        $user = $this->object->loadByEmail($this->data['email']);
-        
-        $this->assertEquals($userId, $user->getId());
-        $this->assertEquals($this->data['email'], $user->mEmail);
-    }
-
-    /**
-     * @todo Implement testInsert().
-     */
     public function testCreate()
     {
-        $userId = $this->_createUser();
-        $this->assertTrue($userId > 0);
+        $mockRow = array(
+            'username' => 'lds',
+            'email' => 'lds2012@gmail.com' . $this->r,
+            'account' => '100000000',
+            'photo' => 'dsafas421423',
+            'password' => 'dsafas13421423',
+            'security_code' => 'dsafadsfs13421423',
+        );
+        $user = Ediary_User::create($mockRow);
+        
+        $this->assertNotNull($user->id);
+        $this->assertEquals($mockRow['email'], $user->email);
+        $this->assertEquals($mockRow['username'], $user->username);
+        $this->assertEquals($mockRow['account'], $user->account);
+        $this->assertNotNull($user->created_at);
+        $this->assertNotNull($user->last_logined);
+        $this->assertEquals($mockRow['photo'], $user->photo);
     }
-    
-    /**
-     * @dataProvider dataProvider
-     */
-    public function testCreate2($email, $password, $name, $valid) {
-        /*
-        $userId = $this->_createUser2($email, $password, $name);
-        if ($valid) {
-            $this->assertTrue($userId > 0);
-        } else {
-            $this->assertEquals(-1, $userId); // return -1 on fail
-        }
-        */
-    } 
-    
-    public function testLogin() {
-        $userId = $this->_createUser();
-        $email = $this->data['email'];
-        $password = $this->data['password'];
+
+    /** @dataProvider dataProvider2 */
+    public function testLoadByEmail($userDate)
+    {
+        // create a new user
+        $user_except = Ediary_User::create($userDate);
+        $this->assertNotNull($user_except);
+        $this->assertTrue($user_except->id > 0);
+        
+        // find it
+        $user = Ediary_User::find($user_except->email);
+        $this->assertNotNull($user);
+        $this->assertTrue($user->id > 0);
+        
+        $this->assertEquals($user_except->id, $user->id);
+        $this->assertEquals($user_except->email, $user->email);
+        $this->assertTrue($user->equals($user_except));
+    }
+
+    /** @dataProvider dataProvider2 */
+    public function testLogin($data) {
+        $user = Ediary_User::create($data);
+        $email = $data['email'];
+        $password = $data['password'];
+        
+        sleep(1); // 等待几秒以便查看 last_logined 字段是否被更新
         
         $result_fail = Ediary_User::login($email, 'wrong password');
         $result_ok = Ediary_User::login($email, $password);
@@ -166,58 +143,57 @@ class Ediary_UserTest extends ControllerTestCase
         $this->assertFalse($result_fail->result);
         $this->assertNotNull($result_fail->message); // has a message on fail
         $this->assertTrue($result_ok->result);
+        
+        // check last_logined
+        $loginedUser = $result_ok->user;
+        $this->assertTrue($loginedUser->created_at !== $loginedUser->last_logined);
     }
 
-    private function _createUser() {
-        return $userId = $this->object->create(
-            $this->data['email'],
-            $this->data['password'],
-            $this->data['name']
-        );
-    }
-    
-    private function _createUser2($email, $password, $name) {
-        return $userId = $this->object->create(
-            $email, $password, $name
-        );
-    }
-
-    /**
-     * @todo Implement testDelete().
-     */
-    public function testDelete()
+    /** @dataProvider dataProvider2 */
+    public function testDelete($data)
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-          );
+        $user = Ediary_User::create($data);
+        $this->assertTrue($user->id > 0);
+        
+        $user->delete();
+        $this->assertNull(Ediary_User::find($user->id));
     }
 
-    /**
-     * @todo Implement testUpdate().
-     */
-    public function testUpdate()
+    /** @dataProvider dataProvider2 */
+    public function testUpdate($data)
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-          );
+        $newName = 'newName';
+        
+        // create a new user
+        $user = Ediary_User::create($data);
+        $this->assertEquals($user->username, $data['username']);
+        
+        // change username
+        $user->username = $newName;
+        $user->update();
+        $this->assertEquals($newName, $user->username);
+        
+        // check in DB
+        $userDb = Ediary_User::find($user->id);
+        $this->assertEquals($newName, $userDb->username);
     }
 
-    public function testIsExistsEmail() {
+    /** @dataProvider dataProvider2 */
+    public function testIsExistsEmail($userData) {
         // pre check
-        $this->assertFalse(Ediary_User::isExistsEmail($this->data['email']));
+        $this->assertFalse(Ediary_User::isExistsEmail($userData['email']));
 
         // create user
-        $userId = $this->_createUser();
+        $user = Ediary_User::create($userData);
         
         // post check
-        $this->assertTrue(Ediary_user::isExistsEmail($this->data['email']));
+        $this->assertTrue(Ediary_user::isExistsEmail($userData['email']));
         
         // test isExistsId()
-        $this->assertTrue(Ediary_user::isExistsId($userId));
+        $this->assertTrue(Ediary_user::isExistsId($user->id));
         $this->assertFalse(Ediary_user::isExistsId('unExistsUserId'));
     }
+    /*
     
     // depends : Ediary_Journal::create()
     public function testGetJournals() {
@@ -242,6 +218,9 @@ class Ediary_UserTest extends ControllerTestCase
         $this->assertEquals(1, count($journals_from_db));
         $this->assertEquals($journal->id, $journals_from_db[0]->id);
     }
+    */
+    
+    /********************* test validator ***********************************/
     
     public function emailDataProvider() {
         return array( 
@@ -264,7 +243,9 @@ class Ediary_UserTest extends ControllerTestCase
         $this->assertEquals($isValid, Ediary_User::isValidEmail($email));
     }
     
+    /*
     // for testIsValidUser
+    */
     public function usernameDataProvider() {
         return array(
             array('lastname', true),
@@ -287,7 +268,9 @@ class Ediary_UserTest extends ControllerTestCase
         }
     }
     
+    /*
     // for testIsValidPassword
+    */
     public function passwordDataProvider() {
         return array(
             array('123456', false),    // too short

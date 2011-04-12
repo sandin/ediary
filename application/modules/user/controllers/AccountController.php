@@ -128,7 +128,7 @@ class User_AccountController extends Zend_Controller_Action
      	$rePassword->setLabel(_t("确认密码"))
      			   ->setRequired(true)
 	     		   ->addValidator($validator)
-     	         ->setAttrib('class', 'text')
+     	           ->setAttrib('class', 'text')
      			   ->setDecorators(array($textElement));
         
      	$form->addElements(array($username, $password, $rePassword));

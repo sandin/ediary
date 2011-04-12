@@ -1,0 +1,3 @@
+<?php foreach($this->tabs as $i => $tab): ?>
+<a class="contentBox_tabNav_tab<?php if ($i == 0) {echo ' first';} if (isset($tab['current'])) {echo ' current'; }?>" href="<?php echo $tab['url'] ?>"><?php echo $tab['title'] ?></a>
+<?php endforeach; ?>

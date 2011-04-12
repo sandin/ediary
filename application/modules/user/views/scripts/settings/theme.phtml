@@ -4,27 +4,24 @@ $this->headScript()->appendFile("/js/ediary/all.js");
 ?>
 <div id="settings-tabs" class="content_box">
 	<div class="contentBox_tabNav">
-		<a class="contentBox_tabNav_tab first" href="#">个人资料</a>
-		<a class="contentBox_tabNav_tab" href="#">隐私设置</a>
-		<a class="contentBox_tabNav_tab current" href="#">选择主题</a>
+		<?php foreach($this->tabs as $i => $tab): ?>
+		<a class="contentBox_tabNav_tab<?php if ($i == 0) {echo ' first';} if (isset($tab['current'])) {echo ' current'; }?>" href="<?php echo $tab['url'] ?>"><?php echo $tab['title'] ?></a>
+		<?php endforeach; ?>
     </div>
     <div class="innerBox">
     
    	<div id="toolbar-tabs-theme">
 		<ul class="theme_list clearfix">
-			<li><a class="preview-theme-btns" href="t0"><img src="/theme/t0/preview.jpg" />主题0</a></li>
-			<li><a class="preview-theme-btns" href="t1"><img src="/theme/t1/preview.jpg" />主题1</a></li>
-			<li><a class="preview-theme-btns" href="t2"><img src="/theme/t2/preview.jpg" />主题2</a></li>
-			<li><a class="preview-theme-btns" href="t3"><img src="/theme/t3/preview.jpg" />主题3</a></li>
-			<li><a class="preview-theme-btns" href="t4"><img src="/theme/t4/preview.jpg" />主题3</a></li>
+			  <li><a class="preview-theme-btns" href="t0"><img src="/theme/t0/preview.jpg" width="120" height="120" />主题0</a></li>
+        <li><a class="preview-theme-btns" href="t1"><img src="/theme/t1/preview.jpg" width="120" height="120" />主题1</a></li>
+        <li><a class="preview-theme-btns" href="t2"><img src="/theme/t2/preview.jpg" width="120" height="120" />主题2</a></li>
+        <li><a class="preview-theme-btns" href="t3"><img src="/theme/t3/preview.jpg" width="120" height="120" />主题3</a></li>
+        <li><a class="preview-theme-btns" href="t4"><img src="/theme/t4/preview.jpg" width="120" height="120" />主题3</a></li>
 		</ul>
 		<div class="theme_list_footer">
 			<a href="#" id="change-theme-btn" class="btn">保存</a>
 		</div>
-		<a class="toolbar-close-btn" href="#">&nbsp;close</a>
-		<script type="text/javascript">
-			new Ediary.ThemeManager();
-		</script>
+		<script type="text/javascript"> (function() { Ediary.ThemeManager.init(); })(); </script>
 	</div><!-- /toolbar-tabs-theme -->
 		
     </div>

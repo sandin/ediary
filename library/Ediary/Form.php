@@ -8,13 +8,13 @@ class Ediary_Form extends Zend_Form
                             		'Ediary/Form/Decorator/',
                             		'decorator');
         
+        //$this->setElementDecorators(array(new Ediary_Form_Decorator_Text()));
+        
         // Add Token element into the form
         $token = new Zend_Form_Element_Hidden('token');
         $token->setValue(md5($this->getName()))
               ->removeDecorator('Label');
-              
-        $this->addElement($token);
-        
+        $this->addElement($token, false);
     }
     
     /**
@@ -45,5 +45,27 @@ class Ediary_Form extends Zend_Form
     
     protected function getToken() {
         
+    }
+    
+    /**
+     * Enter description here ...
+     * @param Zend_Form_Element $element
+     * @return Ambiguous
+     */
+    public function setDefaultOptions($element) {
+        $elementDecorator = array(new Ediary_Form_Decorator_Text());
+        
+        $element->addFilter('StringTrim')
+     	        ->setDecorators($elementDecorator);
+     	return $element;
+    }
+    
+    public function addElements2($elements, $useDefaultOptions = true) {
+        if ($useDefaultOptions) {
+            foreach ($elements as &$elem) {
+                $this->setDefaultOptions($elem);
+            }
+        }
+        return parent::addElements($elements);
     }
 }

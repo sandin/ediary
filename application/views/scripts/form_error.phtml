@@ -1,3 +1,9 @@
+<?php
+    // 表单中没有该元素
+    if (null == ($this->form->getElement($this->element)) ) {
+        return;
+    }
+?>
 <?php if( null !== $this->form->getMessages($this->element) ):?>
 <span class="error">
 <?php 
