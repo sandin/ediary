@@ -177,7 +177,7 @@ class Ediary_UserTest extends ControllerTestCase
         $userDb = Ediary_User::find($user->id);
         $this->assertEquals($newName, $userDb->username);
     }
-
+    
     /** @dataProvider dataProvider2 */
     public function testIsExistsEmail($userData) {
         // pre check

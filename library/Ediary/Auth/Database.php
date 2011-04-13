@@ -1,6 +1,32 @@
 <?php
 class Ediary_Auth_Database 
 {
+    private static $auth = null;
+    
+    /**
+     * Just Auth
+     * 
+     * @param String $email
+     * @param String $password
+     * @param  $storage
+     * @return Zend_Auth_Result
+     */
+    public static function simpleAuth($email, $password, $storage = null) {
+        $db = Ediary_Db::getInstance();
+        $auth = self::$auth =  Zend_Auth::getInstance();
+        
+        if (isset($storage)) {
+            $auth->setStorage($storage);
+        }
+        
+        $authAdapter = new Zend_Auth_Adapter_DbTable($db->getAdapter());
+        $authAdapter->setTableName($db->users)
+                    ->setIdentityColumn('email')
+                    ->setCredentialColumn('password')
+                    ->setIdentity($email)
+                    ->setCredential($password);
+        return $auth->authenticate($authAdapter);
+    }
     
     public static function authenticate($email, $password, $rememberMe = false) {
         $result = new stdClass();
@@ -8,6 +34,7 @@ class Ediary_Auth_Database
         $result->message = '';
         $result->user = null;
         
+        /*
         $db = Ediary_Db::getInstance();
         
         $storage = new Zend_Auth_Storage_Session(Ediary_Application::SESSION_AUTH);
@@ -27,7 +54,11 @@ class Ediary_Auth_Database
 
         // 执行认证查询，并保存结果
         $result = $auth->authenticate($authAdapter);
-      
+        */
+        
+        $storage = new Zend_Auth_Storage_Session(Ediary_Application::SESSION_AUTH);
+        $result = self::simpleAuth($email, $password, $storage);
+        
         if (!$result->isValid()) {
             // Authentication failed; print the reasons why
             $result->result =  false;
@@ -37,7 +68,7 @@ class Ediary_Auth_Database
             $user = Ediary_User::find($email);
             
             // Store into SESSION
-            $storage = $auth->getStorage();
+            $storage = self::$auth->getStorage();
             $storage->write((object) $user->toArray());
 
             // rememberMe

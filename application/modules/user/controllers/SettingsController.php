@@ -37,17 +37,37 @@ class User_SettingsController extends Zend_Controller_Action
         if (! $this->getRequest()->isPost() ) {
             // do nothing, just display the form
         } else if (! $form->isValid($_POST) ) {
-            // post data invalid
             $this->view->messages = $form->getMessages();
         } else {
-            $this->view->messages = array('修改成功.');
             $form->saveToken();
-            $user->username = $form->getElement("username")->getValue();
-            $password = $form->getElement('password')->getValue();
-            if (isset($password)) {
-                $user->changePassword($password);
+            
+            // set username if exists
+            $newUsername = $form->getElement("username")->getValue();
+            if (! empty($newUsername) && $newUsername !== $user->username) {
+                $user->username = $newUsername;
             }
+           
+            // set password if exists
+            $oldPassword = $form->getElement('oldPassword')->getValue();
+            $password = $form->getElement('password')->getValue();
+            if (! empty($oldPassword) && ! empty($password) ) {
+                if ( Ediary_User::auth($user->email, $oldPassword) ) {
+                    $user->setPassword($password);
+                } else {
+                    $form->getElement('oldPassword')->addError(_t("旧密码不正确"));
+                    $form->addError(_t("旧密码不正确"));
+                }
+            }
+            
+            // update all
             $result = $user->update();
+            if (! $result) {
+                $form->addError(_t("更新失败"));
+            }
+            
+            // display messages
+            $errors = $form->getErrorMessages();
+            $this->view->messages = (count($errors) == 0) ? array(_t("保存成功.")) : $errors;
         }
         
         return $this->view->form = $form;
@@ -112,30 +132,27 @@ class User_SettingsController extends Zend_Controller_Action
      	         ->setAttrib('class', 'text')
      	         ->addValidator(Ediary_User::getUserNameValidate())
      			 ->addFilter('StringTrim')
-     			 ->setValue($user->username)
-     			 ->setOrder(0);
+     			 ->setValue($user->username);
      
-     	$password = $form->createElement('password', 'password');
-     	$password->setLabel(_t("密码"))
+     	$oldPassword = $form->createElement('password', 'oldPassword');
+     	$oldPassword->setLabel(_t("当前密码"))
+     	         ->setAttrib('class', 'text')
+     	         ->setAttrib('autocomplete', 'off');
+     	         
+        $password = $form->createElement('password', 'password');
+     	$password->setLabel(_t("新密码"))
      	         ->setAttrib('class', 'text')
      	         ->setAttrib('disabled', 'disabled')
      	         ->setAttrib('readonly', 'readonly')
-     	         ->addValidator(Ediary_User::getPasswordValidate())
-     	         ->setDecorators(array(new Ediary_Form_Decorator_Text()))
-     	         //->addDecorator('Description', array('tag' => '', 'class' => 'description',
-     	          //                            'escape' => false, "placement" => "append"))
-     	         ->setDescription('<a href="#" id="ableToChangePassword">修改</a>')
-     	         ->setOrder(1);
+     	         ->addValidator(Ediary_User::getPasswordValidate());
      	         
      	$rePassword = $form->createElement('password', 'rePassword');
      	$rePassword->setLabel(_t("确认密码"))
      	         ->setAttrib('class', 'text')
      	         ->setAttrib('disabled', 'disabled')
-     	         ->setAttrib('readonly', 'readonly')
-     	         ->setOrder(2); // 只在前端验证两次输入的密码是否相同
+     	         ->setAttrib('readonly', 'readonly'); // 只在前端验证两次输入的密码是否相同
      			 
-        $form->addElements2(array($username, $rePassword));
-        $form->addElement($password);
+        $form->addElements2(array($username, $oldPassword, $password, $rePassword));
       	$form->addElement('submit', 'op', array('label' => _t('保存'), 'class' => 'nolabel button'));
       	
         return $form;

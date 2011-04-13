@@ -121,11 +121,11 @@ class Ediary_User extends Ediary_Query_Adapter
         return parent::updateRowById(self::$table);
     }
     
-    public function changePassword($newPassword) {
+    public function setPassword($newPassword) {
         $securityCode = self::getSecurtiyCode($this->email);
         $encodedPassword = self::encryptPassword($newPassword, $securityCode);
         $this->password = $encodedPassword;
-        return $this->update();
+        //return $this->update();
     }
     
     /**
@@ -323,6 +323,22 @@ class Ediary_User extends Ediary_Query_Adapter
     }
     
     /**
+     * Just check email and password
+     * 
+     * @param String $email
+     * @param String $password
+     * @return boolean
+     */
+    public static function auth($email, $password) {
+        $securityCode = self::getSecurtiyCode($email);
+        $encodedPassword = self::encryptPassword($password, $securityCode);
+        $result = self::getDb()->fetchOne('SELECT COUNT(*) FROM {users} ' 
+                           . ' WHERE email = ? AND password = ?', 
+                           array($email, $encodedPassword));
+        return (intval($result) > 0); 
+    }
+    
+    /**
      * Get current user's journals
      * 
      * @deprecated
@@ -342,6 +358,22 @@ class Ediary_User extends Ediary_Query_Adapter
      */
     public static function getMetadata($user_id) {
         return Ediary_Metadata::getAll('usermeta', 'user_id', $user_id);
+    }
+    
+    /**
+     * Get the user's groups
+     * @return Array a list of Groups' name 
+     */
+    public function getGroups() {
+        return Ediary_UserGroup::getUserGroups($this->id);
+    }
+    
+    /**
+     * Whether the user is admin
+     * @return boolean
+     */
+    public function isAdmin() {
+        return Ediary_UserGroup::isAdmin($this->id);
     }
     
     /**

@@ -7,9 +7,8 @@ $(document).ready(function(){
 	var E = Ediary; E.loadModule("Validator");
 	
     $("#form_settings").validate(E.Validator.getFormOptions("form_settings"));
-    $("#ableToChangePassword").click(function(){
+    $("#oldPassword").focus(function(){
     	$("#password, #rePassword").removeAttr("readonly").removeAttr("disabled");
-    	$(this).hide();
  		return false;
     });
 });
@@ -24,7 +23,7 @@ $(document).ready(function(){
     <div class="innerBox">
     	<?php if(isset($this->messages)): ?>
     	<div class="messages">
-    	    <?php foreach($this->messages as $msg) { echo $msg; } ?>
+    	    <?php foreach($this->messages as $msg) { echo $msg . '<br />'; } ?>
     	</div>
     	<?php endif; ?>
     	

@@ -324,7 +324,7 @@ div.content_box h3 {
     font-weight: bold;
 }
 .content_box .innerBox {
-	padding: 10px;
+	padding: 20px;
 }
 
 #content .index_loginModel_header a {
@@ -822,7 +822,7 @@ form.profile #forget_pw {
 .sForm input.error {
 	border: 1px solid red;
 }
-.sForm span.error,
+.sForm .error,
 .sForm .errors {
 	margin-left: 5px;
 	display: inline-block;
@@ -836,6 +836,21 @@ form.profile #forget_pw {
 .sForm .description {
 	display: inline;
 	margin-left: 5px;
+}
+
+.settingsForm label {
+    background: #F5F5F5;
+    color: #4F545A;
+    width: 150px;
+    padding: 20px 15px;
+    text-align: right;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 38px;
+}
+.settingsForm .form_element {
+    border-top: 1px solid #D9D9DA;
+    margin-bottom: 0;
 }
 
 /*}}}*/

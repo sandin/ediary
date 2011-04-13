@@ -40,6 +40,15 @@ class Ediary_Query_Adapter extends Ediary_Query_Record
             'SELECT * FROM ' . $table. ' WHERE id=?', $id);
     }
     
+    public static function findRowByField($table, $fieldName, $fieldValue) {
+        $db = self::getDb();
+        $select = $db->select()
+                     ->from($table)
+                     ->where($fieldName . ' = ?', $fieldValue)
+                     ->limit(1,0);
+        return $db->fetchRow($select);
+    }
+    
      /**
      * Row is exists or not
      *
@@ -86,6 +95,10 @@ class Ediary_Query_Adapter extends Ediary_Query_Record
     
     public function toArray() {
         return array_merge($this->fields, $this->newFields);
+    }
+    
+    public static function isAId($who) {
+        return is_numeric($who);
     }
 
 }

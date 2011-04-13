@@ -50,6 +50,7 @@ class Ediary_Ddatabase_SchemaTest extends ControllerTestCase
     
     /**
      * @deprecated 该测试会删除并创建所有表, 只应在测试环境进行
+     */
     public function testCreateTables() {
         $obj = $this->object;
         $this->assertTrue($obj->createTables());
@@ -58,7 +59,6 @@ class Ediary_Ddatabase_SchemaTest extends ControllerTestCase
         $this->assertNotNull($sql);
         //var_dump($sql);
     }
-     */
 
 
 }

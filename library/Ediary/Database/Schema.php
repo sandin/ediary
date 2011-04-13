@@ -50,6 +50,21 @@ class Ediary_Database_Schema {
             KEY user_id  (user_id),
             KEY meta_key (meta_key)
         ) %s;",
+        'users_groups' => "CREATE TABLE {users_groups} (
+  			`id`   int(10) 		NOT NULL AUTO_INCREMENT,
+  			`name` varchar(50)	NOT NULL DEFAULT '',
+  			`permission` longtext,
+  			
+  			PRIMARY KEY (`id`),
+  			UNIQUE KEY name (`name`)
+		) %s;",
+        'users_groups_link' => "CREATE TABLE {users_groups_link} (
+  			`user_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  			`group_id` int(10) unsigned NOT NULL DEFAULT '0',
+  			
+  			PRIMARY KEY (`user_id`,`group_id`),
+  			KEY `group_id` (`group_id`)
+		) %s;",
         'diarys' => "CREATE TABLE {diarys} (
             id  bigint(20)      unsigned NOT NULL auto_increment,
             title           text           NOT NULL,
@@ -124,7 +139,6 @@ class Ediary_Database_Schema {
      * @return boolean
      */
     public function createTables($force = false) {
-        if ($force || )
         $this->dbh->beginTransaction();
         foreach ($this->tables as $tableName => $sql) {
             $this->_createTable($tableName, $sql);
@@ -149,11 +163,14 @@ class Ediary_Database_Schema {
     public function createTable($tableName, $sql) {
         $this->dropTable($tableName);
         $result = $this->dbh->exec($sql);
+        
         if ($result !== false) {
             $this->logger->log("Create table: " . $tableName);
             return true;
+        } else {
+            $this->logger->log("Cann't create table: " . $tableName);
+            return false;
         }
-        return false;
     }
     
     /**

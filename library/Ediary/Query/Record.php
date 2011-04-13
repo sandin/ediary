@@ -21,6 +21,10 @@ class Ediary_Query_Record
      * @param Array $params initial field values
      */
     public function __construct($params = array()) {
+        if (! is_array($params) ) {
+            throw new Ediary_Exception(__CLASS__ . ' Argument #1($params) is not an array.');
+        }
+            
         $this->fields = array_merge(
             $this->fields,
             $params
