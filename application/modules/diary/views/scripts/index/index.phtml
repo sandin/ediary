@@ -72,7 +72,9 @@ Ediary.Pad.init();
         <form id="form_diary" method="post" action="<?php echo $this->baseUrl("/diary/save") ?>">
             <div class="diary_header">
                 <div class="title clearfix">
-                    <input id="diary_title" name="diary[title]" type="text" class="text" value="<?php echo $this->diary['title']; ?>" />
+                	<div class="diary_title">
+	                    <input id="diary_title" name="diary[title]" type="text" class="text" value="<?php echo $this->diary['title']; ?>" />
+                	</div>
                     <div class="diary_weather">
                         <label for="diary_weather">天气</label>
                         <input id="diary_weather" name="diary[weather]" type="text" class="text" value="晴" />

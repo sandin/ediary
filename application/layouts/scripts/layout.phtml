@@ -10,10 +10,12 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 <?php echo $this->headLink() ?>
 <link media="all" rel="stylesheet" href="/css/style.css"" type="text/css" />
 <link id="theme-css" media="all" rel="stylesheet" href="<?php echo $this->theme?>" type="text/css" />
+<!--[if lt IE 7]>
+<![endif]-->
 <?php echo $this->headScript() ?>
 </head>
 <body>
-<div id="wrapper" <?php if(isset($this->pageClass)) echo 'class="'.$this->pageClass.'"'; ?>">
+<div id="wrapper" <?php if(isset($this->pageClass)) {echo 'class="'.$this->pageClass.'"';} ?>>
 
     <div id="header"><?php echo $this->render('header.phtml') ?></div><!-- /header -->
     <div id="nav"><?php echo $this->placeholder('nav') ?></div><!-- /nav -->

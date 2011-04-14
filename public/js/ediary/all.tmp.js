@@ -727,6 +727,7 @@ var Editor = {
         
         // Tasks FIXME:
         if (! this.isReadonly()) {
+            //FIXME:
             this.resizer = setInterval(function () { t.resize(); }, 500);
             this.startAutoSave(true);
         }
@@ -980,13 +981,15 @@ var Editor = {
         if (rte) {
             elem = $('iframe', $(rte.getContentAreaContainer()));
             elemHeight = elem.height(); // iframe height
-            // iframe's body height
-            scrollHeight = $.browser.chrome ? $(rte.getBody()).insideHeight() : $(rte.getBody()).height();
+            //scrollHeight = $.browser.chrome ? $(rte.getBody()).insideHeight() : $(rte.getBody()).height();
+            // Penzu的算法在IE6下有BUG, body的高总等于iframe的高
+            // 新算法使用: 行数 X 行高  = 内容总高
+            scrollHeight = $(rte.getBody()).children().length * 24; // content height
             settings.margin = 40;
         } else if (!this.isReadonly()) {
             elem = this.bodyElem;
             elemHeight = elem.height();
-            scrollHeight = elem.get(0).scrollHeight;
+            scrollHeight = $(elem.get(0)).scrollTop(); // TODO: 这里可能有问题
         }
         if (elem) {
             if ((elemHeight < scrollHeight + settings.margin) || (elemHeight - settings.increment > scrollHeight + settings.margin)) {
@@ -1396,7 +1399,6 @@ var Pad = {
         
         $('#editor-btn-upload').click(function() {
             if (editor.getId() == '-1') {
-                editor.setContent("&nbsp;");
                 editor.doSave(true);
                 //E.Notice.showDialog("日记尚未被创建, 请先点击保存!", "友情提示");
                 return false;
