@@ -3,14 +3,12 @@
 class Diary_IndexController extends Zend_Controller_Action
 {
     private $_user;
-
+    
     public function init()
     {
         /* Initialize action controller here */
-        $this->_user = Zend_Registry::get('user');
-        if (!isset($this->_user)) {
-			$this->_redirect('/login');
-		};
+        Ediary_Auth::authRedirect();
+        $this->_user = Zend_Registry::get(Ediary_Auth::KEY);
     }
 
     public function indexAction()

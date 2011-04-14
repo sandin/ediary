@@ -7,11 +7,9 @@ class Admin_ThemeController extends Zend_Controller_Action
     public function init()
     {
         /* Initialize action controller here */
-        //FIXME: 判断是否为管理员
-        $this->_user = Zend_Registry::get('user');
-        if (!isset($this->_user) || $this->_user->id != 3) {
-            $this->_redirect("/");
-        }
+        Ediary_Auth::checkAccessPermission('admin');
+        $this->_helper->layout->setLayout('admin');
+        $this->_user = Zend_Registry::get(Ediary_Auth::KEY);
     }
 
     public function indexAction()

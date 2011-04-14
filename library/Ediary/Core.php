@@ -23,5 +23,12 @@ class Ediary_Core
                . '&title=' . urlencode($title);
         
     }
+    
+    public static function baseUrl($url) {
+        $view = Zend_Layout::getMvcInstance()->getView();
+        if (null != $view) {
+            return $view->baseUrl($url);
+        }
+    }
 
 }

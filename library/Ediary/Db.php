@@ -186,7 +186,7 @@ class Ediary_Db
      */
     public function create($force = false) {
         if ( $force || $this->isInstalled() ) { 
-            return Ediary_Logger::log2('The application is already installed');
+            return Ediary_Logger::log2('The application has already been installed', Zend_Log::ERR);
         }
 
         // Setup charset and collation

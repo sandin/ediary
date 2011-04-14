@@ -6,11 +6,11 @@ body,h1,h2,h3,h4,h5,h6,hr,p,blockquote,dl,dt,dd,ul,ol,li,pre,form,fieldset,legen
 /* base {{{ 
 ------------------*/
 body {
-    background: #F2EFE9;
-    color: #666;
+    background: #F9F9F9;
+    color: #333;
 }
 
-a:link { color: #0063DC; text-decoration: none; }
+a:link { color: #21759B; text-decoration: none; }
 a:visited { color: #0063DC;/*change it*/ text-decoration: none; }
 a:hover { color: #d93939; text-decoration: none; }
 a:active { color: #d93939; text-decoration: none;}
@@ -148,15 +148,7 @@ em {color:red;}
 -------------------------*/
 #wrapper {
 }
-#header .inner,
-#content .inner,
-#footer .inner {
-    position: relative;
-    width: 950px; /* 页面宽 */
-    margin: 0 auto;
-}
 .aside, .article {
-    margin-top: 28px;
     _height: 500px;
 }
 #content {
@@ -164,20 +156,44 @@ em {color:red;}
     _height: 500px;
     padding: 30px 0;
 }
+#content .aside {
+	float: left;
+clear: left;
+width: 145px;
+margin-right: 5px;
+margin-bottom: 15px;
+margin-left: -160px;
+position: relative;
+padding: 0;
+list-style: none;
+}
+
+#content .article {
+	float: left;
+    width: 99%;
+}
+
+.wp_content {
+  margin-left: 175px;
+}
+	
 /*}}}*/
  
 /* header + footer {{{
 --------------------------*/
 /* header */
 #header {
-    background: url("../images/bg_header.png") repeat-x scroll -50% 0 transparent;
+    border-bottom: #C6C6C6 1px solid;
+background: #D9D9D9;
+background: -moz-linear-gradient(bottom,#D7D7D7,#E4E4E4);
+background: -webkit-gradient(linear,left bottom,left top,from(#D7D7D7),to(#E4E4E4));
+color: #333;
 }
 #header .inner {
     height: 44px;
     line-height: 44px;
 }
 #stripe {
-    background: url("../images/bg_stripe2.png") repeat-x scroll -200% 0 #089CC8;
     height: 4px;
     width: 100%;
 }
@@ -191,13 +207,11 @@ em {color:red;}
     display: inline;
 }
 #header ul.user_info li a {
-    color:#E8E8E8;
     font-size: 12px;
     text-decoration: none;
 }
 #header ul.user_info li a:hover{text-decoration:underline;}
 #header ul.menu li a {
-    color: #FFFFFF;
     display: inline-block;
     font-family: "Microsoft Yahei";
     font-size: 16px;
@@ -208,7 +222,7 @@ em {color:red;}
     background: url("../images/logo.png") no-repeat scroll 0 0 transparent;
     position: absolute;
     top: 7px;
-    left: -9px;
+    left: 9px;
     width: 163px;
     height: 30px;
     text-indent: -2000px;
@@ -682,6 +696,13 @@ div.content_box h3 {
 }
 .diarylist .number a{
     font-size:12px !important;color:#999 !important;float:right;padding-right:5px;font-weight:100 !important;
+}
+
+#admin-report p {
+	color: green;
+}
+#admin-report p.error {
+	color: red;
 }
 
 
@@ -1221,6 +1242,22 @@ form.profile #forget_pw {
 	margin-top: 10px;
 }
 
+#form_admin_command {
+	min-height: 200px;
+	_height: 200px;
+}
+#form_admin_command, 
+#form_admin_command input {
+	background: #000;
+	color: #fff;
+	font-size: 14px;
+}
+#form_admin_command input {
+	line-height: 24px;
+	border: none;
+	width: 600px;
+}
+
 	
 
 /* Debug {{{ 
@@ -1235,12 +1272,12 @@ form.profile #forget_pw {
 .article,
 .aside,
 .toplink {
-    /*border: 1px red solid*/;
+    /*border: 1px red solid;*/
 }
 
 #diary input,
 #diary textarea {
-	/*border: 1px solid #DDD*/;
+	/*border: 1px solid #DDD;*/
 }
 /*}}}*/
 

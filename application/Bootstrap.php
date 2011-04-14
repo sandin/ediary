@@ -79,12 +79,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     }
     
     protected function _initAuth() {
-        $auth = Zend_Auth::getInstance();
-        $storage = new Zend_Auth_Storage_Session(Ediary_Application::SESSION_AUTH);
-        $auth->setStorage($storage);
-        
-        $user = $auth->getIdentity();
-        Zend_Registry::set('user', $user);
+        $user = Ediary_Auth::getIndentity();
+        Zend_Registry::set(Ediary_Auth::KEY, $user);
         
         /*
         //TODO: DELETE ME ****** HACK **************************
@@ -259,7 +255,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // Register Helpers
         $view->addHelperPath(APPLICATION_PATH. '/../library/Ediary/View/Helper', 'Ediary_View_Helper');
         
-        // shortcut for view script
+        // vars in view
         $view->user = Zend_Registry::get('user');
         $theme = (isset($view->user->theme)) ? $view->user->theme : 't0';
         $view->theme = $view->baseUrl("/theme/") . $theme . "/style.css";

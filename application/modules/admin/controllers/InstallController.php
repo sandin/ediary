@@ -6,6 +6,9 @@ class Admin_InstallController extends Zend_Controller_Action
 
     public function init()
     {
+        Ediary_Auth::checkAccessPermission('admin');
+        $this->_helper->layout->setLayout('admin');
+        
         $this->view->headTitle(_t("安装程序"));
         $this->view->error = '';
         

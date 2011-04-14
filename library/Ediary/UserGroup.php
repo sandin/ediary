@@ -23,10 +23,15 @@ class Ediary_UserGroup extends Ediary_Query_Adapter
     );
     
     public function __construct($params = array()) {
-        self::$table = Ediary_Db::prefix('users_groups');
-        self::$linkTable = Ediary_Db::prefix('users_groups_link');
-        
+        self::prepareTable();
         parent::__construct($params);
+    }
+    
+    private static function prepareTable() {
+        if (self::$table === null) {
+            self::$table = Ediary_Db::prefix('users_groups');
+            self::$linkTable = Ediary_Db::prefix('users_groups_link');
+        }
     }
     
   	/**
@@ -100,19 +105,44 @@ class Ediary_UserGroup extends Ediary_Query_Adapter
     }
     
     /**
+     * Get user's groups (support cache)
+     * 
+     * @param String $user_id
+     * @param boolean $useCache use cache or not
+     * @return Array a list of Groups' name
+     */
+    public static function getUserGroups($user_id, $useCache = false) {
+        $result = array();
+        
+        if ( $useCache ) {
+            $cacheKey = $user_id . '_userGroups'; 
+            $cache = Ediary_Cache::getCache();
+            if ( ($result = $cache->load($cacheKey)) === false ) {
+                $result = self::_getUserGroups($user_id);
+                $cache->save($result, $cacheKey);
+            }
+        } else {
+            $result = self::_getUserGroups($user_id);
+        }
+        
+        return $result;
+    }
+    
+ 	/**
      * Get user's groups
      * 
      * @param String $user_id
      * @return Array a list of Groups' name
      */
-    public static function getUserGroups($user_id) {
-        $db = self::getDb();
+    private static function _getUserGroups($user_id) {
+        self::prepareTable();
         
+        $db = self::getDb();
         $select = $db->select()
                      ->from(array('g' => self::$table), array('g.name'))
                      ->join(array('l' => self::$linkTable), 'g.id = l.group_id', array())
                      ->where('l.user_id = ?', $user_id);
-        
+
         //TODO: 目前并非使用group的permission, 所以只取出了group name,
         // 今后需要扩展时, 可以返回fetchAll, 并取消select中col限制
         return $db->fetchCol($select);
@@ -201,7 +231,9 @@ class Ediary_UserGroup extends Ediary_Query_Adapter
      * @return int number of row
      */
     private static function _removeLink($user_id, $group_id) {
+        self::prepareTable();
         $db = self::getDb();
+        
         if (null !== $user_id) {
             $where[] = $db->quoteInto("user_id = ?", $user_id); 
         }
@@ -216,6 +248,8 @@ class Ediary_UserGroup extends Ediary_Query_Adapter
      * @return int number of row
      */
     private static function _makeLink($user_id, $group_id) {
+        self::prepareTable();
+        
         return self::getDb()->insert(self::$linkTable, array(
             'user_id' => $user_id,
             'group_id' => $group_id

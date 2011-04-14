@@ -1,0 +1,87 @@
+<!DOCTYPE html
+PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<?php echo $this->headMeta() ?>
+<?php echo $this->headTitle() . "\n"?>
+<?php echo $this->headStyle() ?>
+<?php echo $this->headLink() ?>
+<link media="all" rel="stylesheet" href="/css/admin-style.css"" type="text/css" />
+<link media="all" rel="stylesheet" href="/css/smoothness/jquery-ui-1.8.11.custom.css" type="text/css" />
+<script type="text/javascript" src="/js/jquery-1.5.1.min.js"></script>
+<script type="text/javascript" src="/js/jquery-ui-1.8.11.custom.min.js"></script>
+<script type="text/javascript" src="/js/ediary/all.js?v=1"></script>
+<script type="text/javascript">
+(function($) {
+	$(document).ready(function(){
+		$('#accordion').accordion();
+	});
+})(jQuery);
+</script>
+<?php echo $this->headScript() ?>
+</head>
+<body>
+<div id="wrapper" class="admin">
+    <div id="header"><?php echo $this->render('header.phtml') ?></div><!-- /header -->
+    <div id="nav"><?php echo $this->placeholder('nav') ?></div><!-- /nav -->
+
+    <div id="content">
+        <div class="wp_content clearfix">
+            <div class="aside">
+            	<!-- 控制面板 -->
+            	<div class="ui-accordion">
+            		<h3 class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all"><a href="#">控制面板</a></h3>
+                	<ul class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active">
+                   		<li><a href="/admin/">基本信息</a></li>
+                  		<li><a href="/admin/index/report">日志查看</a></li>
+                	</ul>
+            	</div><br />
+                
+                <!-- 侧栏导航 -->
+                <div id="accordion">
+                    
+                    <h3><a href="#">用户</a></h3>
+                    <ul>
+                    	<li><a href="/admin/users">用户列表</a></li>
+                    	<li><a href="/admin/users">管理员列表</a></li>
+                    </ul>
+                    <h3><a href="#">权限</a></h3>
+                    <ul>
+                    	<li><a href="/admin/users">用户组</a></li>
+                    	<li><a href="/admin/users">权限设置</a></li>
+                    </ul>
+                    <h3><a href="#">外观</a></h3>
+                    <ul>
+                    	<li><a href="/admin/theme">主题管理</a></li>
+                    </ul>
+                    <h3><a href="#">设置</a></h3>
+                    <ul>
+                    	<li><a href="/admin/theme">常规设置</a></li>
+                    	<li><a href="/admin/theme">安全设置</a></li>
+                    	<li><a href="/admin/theme">数据库设置</a></li>
+                    </ul>
+                   
+                </div>
+            </div>
+            <div class="article">
+	            <?php echo $this->layout()->content ?>
+            </div>
+        </div><!-- /innerContent -->
+    </div><!-- /content -->
+
+    <div id="footer">
+    	<div class="inner clearfix">
+    		<div class="copyright"> Copyright &copy; 2010 宜日记 All Rights Reserved. </div>
+			<div class="links">
+    			<a href="/">首页</a> | 
+			    <a href="mailto:lds2012@gmail.com">技术支持</a>
+			</div>
+		</div>
+	</div><!-- /footer -->
+    
+</div><!-- /wrapper -->
+<?php echo $this->inlineScript() ?>
+</body>
+</html>

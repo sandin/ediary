@@ -1,13 +1,20 @@
-<div id="welcome">
-    <h1>Welcome to the <span id="zf-name">Zend Framework!</span></h1>
-
-    <h3>Admin page</h3>
-
-    <div id="more-information">
-        <p>
-            Helpful Links: <br />
-            <a href="http://framework.zend.com/">Zend Framework Website</a> |
-            <a href="http://framework.zend.com/manual/en/">Zend Framework Manual</a>
-        </p>
-    </div>
+<div class="content_box">
+<div class="innerBox">
+	<h3>高级管理员命令行</h3>
+	<form id="form_admin_command" action="/admin/index/debug" method="POST">
+		$ <input type="text" id="admin_command" name="command" />
+		<div id="admin_command_result"></div>
+	</form>
+	<script>
+		$(document).ready(function(){
+			$('#form_admin_command').submit(function() {
+				$.post($(this).attr('action'), $(this).serialize(), function(data){
+					$("#admin_command_result").append(data);
+					//$('#admin_command').val('');
+				});
+				return false;
+			});
+		});
+	</script>
+</div>
 </div>
