@@ -8,12 +8,14 @@ class Ediary_Form extends Zend_Form
                             		'Ediary/Form/Decorator/',
                             		'decorator');
         
-        //$this->setElementDecorators(array(new Ediary_Form_Decorator_Text()));
+        $d = new Ediary_Form_Decorator_Text();
+        $d->setElementTemp('<div style="display:none">%s</div>');
+        
         
         // Add Token element into the form
         $token = new Zend_Form_Element_Hidden('token');
         $token->setValue(md5($this->getName()))
-              ->removeDecorator('Label');
+              ->setDecorators(array($d));
         $this->addElement($token, false);
     }
     
@@ -55,7 +57,7 @@ class Ediary_Form extends Zend_Form
      * @return Ambiguous
      */
     public function setDefaultOptions($element) {
-        $elementDecorator = array(new Ediary_Form_Decorator_Text());
+        $elementDecorator = array('Label2', 'Text');
         
         $element->addFilter('StringTrim')
      	        ->setDecorators($elementDecorator);
@@ -70,4 +72,20 @@ class Ediary_Form extends Zend_Form
         }
         return parent::addElements($elements);
     }
+    
+    public function addButtons($elements) {
+        foreach ($elements as $i => &$elem) {
+            $elem->setAttrib('class', 'nolabel button');
+            if ($i === 0) {
+                $elem->setDecorators(array(
+                     array('HtmlTag', array('tag' => 'label')),
+                     'Text'));
+            } else {
+                // TODO: 处理多按钮情况
+                $elem->setDecorators(array('Text'));
+            }
+        }
+        return parent::addElements($elements);
+    }
+    
 }

@@ -1,9 +1,7 @@
 <div class="content">
     <div class="content_box">
-        <div class="index_introModel">
-            <img class="index_introModel_pic" src="images/index_introModel_pic.png">
-            <img class="index_introModel_logo" src="images/index_introModel_logo.png">
-            <div class="index_introModel_text">
+        <div class="innerBox">
+            <div class="">
                 尊重每一个生命  <br />
                 敬畏自然  <br />
                 守候每一份回忆  --   《宜日记》 <br /><br />              
@@ -11,9 +9,7 @@
                 宜日记努力为每个用户创造一个写日记的心情； <br />
                 宜日记用心记录您人生的点点滴滴，为您默默守候；<br />
             </div>
-            <div class="clearfix"></div>
         </div>
-
     </div>
 </div><!-- /content -->
 
@@ -23,18 +19,25 @@
             <h3>用户登录</h3>
             <a href="/user/account/forgetpassword">忘记密码</a>
         </div>
-        <div class="index_loginfrom">
-            <form action="<?php echo $this->baseUrl("login") ?>" method="post" class="index_loginModel_middle">
-                <p class="index_loginModel_email">
-                <span class="userlogin">用户名：</span><input type="text" id="email" name="email">
-                </p>
-                <p class="index_loginModel_password">
-                <span class="userlogin">密码：</span><input type="password" id="password" name="password">
-                </p>
-                <label class="index_loginModel_remember">
-                    <input type="checkbox" value="1" name="rememberMe"><span class="index_loginModel_rememberme">下次自动登陆</span>
-                </label>
-                <input type="submit" class="button index_loginModel_submit" value="登 录">
+        <div class="innerBox">
+            <form id="form_index_login" action="/login" method="post" class="labelForm tinyForm">
+                <div class="form_element">
+                	<label for="email">用户名：</label>
+                	<input type="text" class="text" id="email" name="email">
+                </div>
+                <div class="form_element">
+                	<label for="password">密码：</label>
+                	<input type="password" class="text" id="password" name="password">
+                </div>
+                <div class="form_element clearfix" style="margin-bottom:0">
+                	<div class="remeberMe">
+	                    <input type="checkbox" value="1" name="rememberMe">
+	                    <span class="index_loginModel_rememberme">下次自动登陆</span>
+                	</div>
+                	<div class="submit">
+		                <input type="submit" class="button index_loginModel_submit" value="登 录">
+                	</div>
+                </div>
             </form>
         </div>
         <div class="index_loginModel_footer">

@@ -2,25 +2,18 @@
 
 class Ediary_Form_Decorator_Text extends Zend_Form_Decorator_Abstract
 {
+    const WRAP = 'WRAP';
+    
     private $templete_error = '<div class="error">%s</div>';
     private $templete_description = '<div class="description">%s</div>';
     private $templete_element = '<div class="form_element">%s</div>';
     
-    public function buildLabel()
-    {
-        $element = $this->getElement();
-        $label = $element->getLabel();
-        if ($translator = $element->getTranslator()) {
-            $label = $translator->translate($label);
+    public function setElementTemp($templete) {
+        if (strpos($templete, '%s') !== false) {
+            $this->templete_element = $templete;
         }
-        if ($element->isRequired()) {
-            //$label .= '*';
-        }
-        $label .= ' : ';
-        return $element->getView()
-                       ->formLabel($element->getName(), $label);
     }
-
+    
     public function buildInput()
     {
         $element = $this->getElement();
@@ -63,23 +56,29 @@ class Ediary_Form_Decorator_Text extends Zend_Form_Decorator_Abstract
         if (null === $element->getView()) {
             return $content;
         }
+        
+        //var_dump($content);
 
         $separator = $this->getSeparator();
         $placement = $this->getPlacement();
-        $label     = $this->buildLabel();
         $input     = $this->buildInput();
         $errors    = $this->buildErrors();
         $desc      = $this->buildDescription();
 
-        $output = sprintf($this->templete_element,
-                          $label . $input . $errors . $desc);
+        $output = sprintf($this->templete_element, $input . $errors . $desc);
 
         switch ($placement) {
+              
             case (self::PREPEND):
                 return $output . $separator . $content;
             case (self::APPEND):
+                //return $content . $separator . $output;
+            case (self::WRAP): 
             default:
-                return $content . $separator . $output;
+                $output = sprintf($this->templete_element, 
+                    $content . $separator. $input . $errors . $desc);
+                return $output;
+                
         }
     }
 }
