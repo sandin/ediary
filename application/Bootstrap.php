@@ -80,6 +80,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     
     protected function _initAuth() {
         $user = Ediary_Auth::getIndentity();
+        //var_dump($user);
         Zend_Registry::set(Ediary_Auth::KEY, $user);
         
         /*
@@ -263,7 +264,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         return $view;
     }
 
-    protected function no_initZFDebug() {
+    protected function _initZFDebug() {
         if ('development' !== APPLICATION_ENV) return;
         
         $autoloader = Zend_Loader_Autoloader::getInstance();

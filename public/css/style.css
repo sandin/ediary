@@ -236,6 +236,7 @@ em {color:red;}
 	color: #fff;
 	text-align: center;
 	font-weight: bold;
+	line-height: 42px;
 }
 #notice.active {
 }

@@ -3,6 +3,24 @@
  * 保存按钮 - 插件
  */
 ;(function($, E, window) {
+    
+$.fn.switchTheme = function( options ) {
+    var settings = {
+        file: ''
+    };
+    
+    return this.each(function() {
+        if (options) {
+            $.extend(settings, options);
+        }
+        var o = options;
+        
+        this.disabled = true;
+        $(this).attr('href', o.file);
+        this.disabled = false;
+    });
+    
+};
 
 var ThemeManager = {
     
@@ -36,7 +54,7 @@ var ThemeManager = {
                 var themeName = $(this).attr('href'),
                     themeCSS = o.themeRoot + themeName + '/style.css';
                 
-                $(o.themeLinkElem).attr('href', themeCSS);
+                $(o.themeLinkElem).switchTheme({file:themeCSS});
                 self.select = themeName;
                 return false;
             });

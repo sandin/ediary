@@ -425,6 +425,12 @@ $paginator = Ediary_Paginator::factory('{diarys}', 'user_id = ?', 3, 1, 20);
 
 NOTE: 为复用考虑, 建议使用写好的独立模板来显示分页列表. 
 
+== 权限设置 ==
+
+直接用户组系统.
+
+可新建用户组, 将用户加入用户组, 然后给用户组分配权限.
+
 == library 库 ==
 
 根目录下的 `/library` 文件夹是自动设置到 `include_path` 里面的, 并且使用 `Zend frameword` 统一的命名约定.

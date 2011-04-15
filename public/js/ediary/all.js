@@ -1423,10 +1423,9 @@ var Pad = {
         });
         
         $('#editor-btn-upload').click(function() {
-            console.log(editor.getId());
             if (editor.getId() == '-1') {
-                editor.doSave(true);
-                //E.Notice.showDialog("日记尚未被创建, 请先点击保存!", "友情提示");
+                //editor.doSave(true);
+                E.Notice.showDialog("日记尚未被创建, 请先点击保存!", "友情提示");
                 return false;
             }
         });
@@ -1460,6 +1459,24 @@ E.extend('Pad', Pad);
  * 保存按钮 - 插件
  */
 ;(function($, E, window) {
+    
+$.fn.switchTheme = function( options ) {
+    var settings = {
+        file: ''
+    };
+    
+    return this.each(function() {
+        if (options) {
+            $.extend(settings, options);
+        }
+        var o = options;
+        
+        this.disabled = true;
+        $(this).attr('href', o.file);
+        this.disabled = false;
+    });
+    
+};
 
 var ThemeManager = {
     
@@ -1493,7 +1510,7 @@ var ThemeManager = {
                 var themeName = $(this).attr('href'),
                     themeCSS = o.themeRoot + themeName + '/style.css';
                 
-                $(o.themeLinkElem).attr('href', themeCSS);
+                $(o.themeLinkElem).switchTheme({file:themeCSS});
                 self.select = themeName;
                 return false;
             });
@@ -1531,6 +1548,7 @@ E.ThemeManager = ThemeManager; // NAMESPACE
 E.extend('upload', function(){
     var TAG = 'Upload -> ';
     
+    console.log(document.cookie);
     var Upload = {
         element: null,
         settings : {
@@ -1539,7 +1557,7 @@ E.extend('upload', function(){
             targetElem : '#diary_file_list', // 需要将服务器响应结果刷新到的元素
             deleteElem : '#diary_file_list .delete',
             titleElem  : '#diary_file_list>li>p',
-            deleteUrl : '/upload/index/delete?id=',
+            deleteUrl : '/upload/index/delete?id=', // 删除API
             js : ['/js/uploadify/swfobject.js', 
                   '/js/uploadify/jquery.uploadify.v2.1.4.js',
                   '/js/fancybox/jquery.fancybox-1.3.4.js'],
@@ -1547,7 +1565,7 @@ E.extend('upload', function(){
             previewSize : [160, 120],
             uploadify : {
                 'uploader'  : '/js/uploadify/uploadify.swf',
-                'script'    : '/upload/index/images',
+                'script'    : '/upload/index/images', // 上传API
                 'buttonText': 'Upload',
                 'cancelImg' : '/js/uploadify/cancel.png',
                 'folder'    : '/uploads',
@@ -1651,18 +1669,21 @@ E.extend('upload', function(){
                     self.onComplete.apply(self, arguments);
                 },
                 'onError': function(event,ID,fileObj,errorObj) {
-                    $.error(errorObj);
+                    console.warn(event, ID, fileObj, errorObj);
                 }
             };
             this.element.uploadify($.extend(params, o.uploadify));
         },
         
         onSelectOnce: function(event, data) {
-            // 每次都从idElem里读取id, 保证在id更改后依然发送正确的数据
+            // 每次都直接从idElem里读取id, 保证在日记替换后(不同id)依然发送正确的数据
             var id = $(this.settings.idElem).val();
             console.log('upload file -> diary_id : ' + id);
-            if (id  != '-1') {
-                $(event.target).uploadifySettings('scriptData', {'diary_id' : id});
+            if (id  != '-1' && event.target) {
+                $(event.target).uploadifySettings('scriptData', {
+                    'diary_id' : id,
+                    'PHPSESSID' : this.getPHPSESSION()
+                });
             } 
         },
         
@@ -1670,8 +1691,10 @@ E.extend('upload', function(){
             // AJAX delete
         },
         onComplete: function(event, ID, fileObj, response, data) {
-            var o = this.settings;
+            console.log(TAG, 'complete');
             console.log(response);
+            
+            var o = this.settings;
             if (response) {
                 try {
                     var json = $.parseJSON(response);
@@ -1726,6 +1749,12 @@ E.extend('upload', function(){
         },
         onAllComplete: function() {
             //console.log('all complete');
+        },
+        getPHPSESSION: function() {
+            var start = document.cookie.indexOf("PHPSESSID="),
+                end = document.cookie.indexOf(";", start); // First ; after start
+            if (end == -1) end = document.cookie.length; // failed indexOf = -1
+            return document.cookie.substring(start+10, end);
         }
     };
 

@@ -1,6 +1,11 @@
 <?php
 class Ediary_Form extends Zend_Form
 {
+    /**
+   	 * N秒内不得重复提交同一表单
+     * @var int
+     */
+    const EXPIRATION_SECONDS = 10;
     
     public function init()
     {
@@ -24,7 +29,7 @@ class Ediary_Form extends Zend_Form
      */
     public function saveToken() {
         $session = new Zend_Session_Namespace('form-token');
-     	$session->setExpirationSeconds(20); // 20秒内不得重复提交同一表单
+     	$session->setExpirationSeconds(self::EXPIRATION_SECONDS);
      	if (null != $this->getName()) {
      	    $session->{$this->getName()} = md5($this->getName());
      	}

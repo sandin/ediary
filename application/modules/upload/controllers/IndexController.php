@@ -7,10 +7,8 @@ class Upload_IndexController extends Zend_Controller_Action
     public function init()
     {
         /* Initialize action controller here */
-        $this->_user = Zend_Registry::get('user');
-        if (!isset($this->_user)) {
-			$this->_redirect('/login');
-		};
+		//Ediary_Auth::authRedirect();
+        $this->_user = Zend_Registry::get(Ediary_Auth::KEY);
     }
 
     /**
@@ -60,6 +58,16 @@ class Upload_IndexController extends Zend_Controller_Action
      */
     public function imagesAction()
     {
+        // FLASH在有些浏览器下使用独立的SESSION
+        $phpSessId = $this->getRequest()->getParam('PHPSESSID');
+        if (!empty($phpSessId) && session_id() != $phpSessId) {
+            session_destroy();
+            session_id($phpSessId);
+            session_start();
+            // 直接从Zend_Auth里取User
+            $this->_user = Ediary_Auth::getIndentity();
+        }
+        
         $this->_helper->layout->disableLayout();
         $this->_helper->viewRenderer->setNoRender();
         
@@ -74,8 +82,8 @@ class Upload_IndexController extends Zend_Controller_Action
                 // Recevie and Move file to the upload dir
                 $upload = new Ediary_Upload_Images(APPLICATION_PATH . '/../public/uploads');
                 $upload->useSubDir(true);
-                if (! $upload->recevie('Filedata') ) {
-                    // File is invalid
+                if (! $upload->recevie('Filedata') ) { // Uploadify默认为$_FILES['FileData']
+                    // File invalid
                    $this->_helper->json(array('error' => $upload->getError())); 
                    return;
                 }

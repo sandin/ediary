@@ -4,6 +4,19 @@ class Ediary_User extends Ediary_Query_Adapter
 {
     const PASSWORD_MIN_LENGTH = 8;
     const PASSWORD_MAX_LENGTH = 18;
+    
+    protected $defaultFields = array(
+        /* id */
+        'email'          =>	 '',
+        'username'       =>  '',
+        'password'       =>  '',
+        'securtity_code' =>  '',
+        'created_at'     =>  '0000-00-00 00:00:00',
+        'last_logined'   =>  '0000-00-00 00:00:00',
+        'account'        =>  '0',
+        'theme'          =>  't0',
+        'photo'          =>  ''
+    );
 
     /**
      * @var String table name
@@ -308,9 +321,13 @@ class Ediary_User extends Ediary_Query_Adapter
         $result = Ediary_Auth_Database::authenticate($email, $encodedPassword, $rememberMe);
         
         // udate last_logined
-        if ($result->result && isset($result->user)) {
-            $result->user->last_logined = Ediary_Db::datetime();
-            $result->user->update();
+        if ($result->result && isset($result->id)) {
+            $user = Ediary_User::find($resutl->id);
+            // touch user last logined time
+            if (null != $user) {
+                $user->last_logined = Ediary_Db::datetime();
+                $user->update();
+            }
         }
         return $result;
     }

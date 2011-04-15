@@ -2,26 +2,36 @@
 class Ediary_Auth 
 {
     const KEY = 'user';
-    private static $_isLogined = false;
     
+    /**
+     * Get Indentity from the auth strorage
+     * 
+     * @return stdClass
+     */
     public static function getIndentity() {
         $auth = Zend_Auth::getInstance();
         $storage = new Zend_Auth_Storage_Session(Ediary_Application::SESSION_AUTH);
         $auth->setStorage($storage);
         
         $user = $auth->getIdentity();
-        self::$_isLogined = (null != $user);
         return $user;
     }
     
-    /** @deprecated */
+    /** 
+     * Get user data in the session
+     * 
+     * @return stdClass
+     */
     public static function getUser() {
         if (Zend_Registry::isRegistered(self::KEY)) {
             return Zend_Registry::get(self::KEY);
         }
     }
     
-    public static function registerUser() {
+    /**
+     * Put user data into the session
+     */
+    public static function registerUser($user) {
         Zend_Registry::set(self::KEY, $user);
     }
     
@@ -32,7 +42,7 @@ class Ediary_Auth
      * @return boolean true on is Logined 
      */
     public static function authRedirect() {
-        if (! self::$_isLogined) {
+        if (! self::isLogined()) {
             Ediary_Core::gotoUrl(Ediary_Core::baseUrl('/login'));
         }
         return true;
@@ -50,10 +60,17 @@ class Ediary_Auth
         }
     }
     
+    /**
+     * Check authed user's access permission
+     * if cann't access current page, application will exit.
+     * 
+     * @param string|array $group
+     * @return void|boolean 
+     */
     public static function checkAccessPermission($group) {
         $user = self::getUser();
         if (self::isSuperUser($user)) {
-            return; // super user is God, no need to check
+            return true; // super user is God, no need to check
         }
         
         if (null != $user) {
@@ -85,6 +102,6 @@ class Ediary_Auth
     }
     
     public static function isLogined() {
-        return self::$_isLogined;
+        return (null != self::getUser());
     }
 }
