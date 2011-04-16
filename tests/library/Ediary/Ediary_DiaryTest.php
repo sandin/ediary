@@ -28,7 +28,7 @@ class Ediary_DiaryTest extends ControllerTestCase
         'weather' => 'sunshine',
         'mood' => 'normal',
     	'status' => Ediary_Diary::STATUS_PRIVATE,
-        'user_id' => '3',
+        'user_id' => '10000000',
         'journal_id' => '1'
         );
         

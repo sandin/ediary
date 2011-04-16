@@ -167,6 +167,25 @@ class Ediary_Diary extends Ediary_Query_Record
     //SELECT * FROM diarys d where created_date >= '2011-03-28' AND created_date < '2011-03-29' LIMIT 0,1000
     
     /**
+     * Get all diarys of the user
+     * 
+     * @param String $userId user id
+     * @param int $limit rows limit
+     * @return Array rows from DB
+     */
+    public static function getDiarys($userId, $limit = null) {
+        $db = self::getDb();
+        $select = $db->select()
+                     ->from(Ediary_Db::prefix('diarys'))
+                     ->where('user_id = ?', $userId);
+        if (null != $limit) {
+            $select->limit($limit);
+        }
+        
+        return $db->fetchAll($select);
+    }
+    
+    /**
      * Delete current diary
      * 
      * @return boolean success or not
