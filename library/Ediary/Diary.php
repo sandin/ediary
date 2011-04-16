@@ -221,7 +221,7 @@ class Ediary_Diary extends Ediary_Query_Record
     }
     
     /**
-     * This diary is belong to someone
+     * Whethe Current diary is belong to someone
      * 
      * @param mixed $who username, email, userId
      * @return boolean is belong or not
@@ -233,6 +233,7 @@ class Ediary_Diary extends Ediary_Query_Record
     
     /**
      * Check if user has permission to edit diary
+     * Whether the diary is belong to the user
      * 
      * @param String $userId
      * @param String $diaryId
@@ -248,6 +249,26 @@ class Ediary_Diary extends Ediary_Query_Record
         $count = $db->fetchOne($select->__toString());
         return ($count > 0);
     }
+    
+    /**
+     * Search Diary's title and content by keyword
+     * TODO: 暂时和wordpress一样使用LIKE, 而没有使用MySQL FULLTEXT索引(不支持longtext),
+     * 		 今后可改进: 
+     * 			1. 分词系统(二元分词或智能词库分词).
+     * 		    2. 建搜索索引(可使用Zend_Search_Lucene
+     * 
+     * @param String $user_id
+     * @param String $keywords
+     * @return Array rows
+     */
+    public static function search($user_id, $keywords) {
+        $db = self::getDb();
+        return $db->fetchAll('SELECT * FROM {diarys} WHERE id = ? '
+        				   . ' AND title LIKE ? OR content LIKE ?',
+        					  array($user_id,
+        					  		'%' . $keywords . '%',
+        					        '%' . $keywords . '%'));
+    } 
     
     /**
      * Convert this Object to an Array

@@ -12,7 +12,7 @@ class Ediary_DiaryTest extends ControllerTestCase
      */
     protected $object;
     
-    protected $data = array();
+    protected $data1 = array();
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -22,7 +22,7 @@ class Ediary_DiaryTest extends ControllerTestCase
     {
         parent::setUp();
         
-        $this->data = array(
+        $this->data1 = array(
         'title' => 'title',
         'content' => 'content',
         'weather' => 'sunshine',
@@ -32,7 +32,7 @@ class Ediary_DiaryTest extends ControllerTestCase
         'journal_id' => '1'
         );
         
-        $this->object = new Ediary_Diary($this->data);
+        $this->object = new Ediary_Diary($this->data1);
     }
 
     /**
@@ -55,14 +55,14 @@ class Ediary_DiaryTest extends ControllerTestCase
     
     public function testCreate() {
         // create 
-        $diary = Ediary_Diary::create( $this->data ) ;
-        $this->assertEquals($this->data['title'], $diary->title);
-        $this->assertEquals($this->data['content'], $diary->content);
-        $this->assertEquals($this->data['user_id'], $diary->user_id);
+        $diary = Ediary_Diary::create( $this->data1 ) ;
+        $this->assertEquals($this->data1['title'], $diary->title);
+        $this->assertEquals($this->data1['content'], $diary->content);
+        $this->assertEquals($this->data1['user_id'], $diary->user_id);
     }
     
     public function testDeleteById() {
-        $diary = Ediary_Diary::create( $this->data );
+        $diary = Ediary_Diary::create( $this->data1 );
         $this->assertTrue($diary->id > 0);
         
         // delete
@@ -72,11 +72,11 @@ class Ediary_DiaryTest extends ControllerTestCase
     
     public function testUpdate() {
         // create a new diary for this test
-        $newDiary = Ediary_Diary::create( $this->data );
+        $newDiary = Ediary_Diary::create( $this->data1 );
         
         // find the diary
         $diary = Ediary_Diary::find($newDiary->id);
-        $this->assertEquals($this->data['content'], $diary->content);
+        $this->assertEquals($this->data1['content'], $diary->content);
         
         $old_saved_at = $diary->saved_at;
         sleep(1); // wait for update saved_at time
@@ -91,7 +91,7 @@ class Ediary_DiaryTest extends ControllerTestCase
     }
     
     public function testFind() {
-        $diary = Ediary_Diary::create( $this->data );
+        $diary = Ediary_Diary::create( $this->data1 );
         $diaryId = $diary->id;
         
         $diaryFined = Ediary_Diary::find($diaryId);
@@ -99,12 +99,12 @@ class Ediary_DiaryTest extends ControllerTestCase
     }
     
     public function testFindByDate() {
-        $diary = Ediary_Diary::create( $this->data );
+        $diary = Ediary_Diary::create( $this->data1 );
         $diaryId = $diary->id;
         $today = Ediary_Db::today();
         
 //        $start = xdebug_time_index();
-        $diaryFined = Ediary_Diary::findByDate($today, $this->data['user_id']);
+        $diaryFined = Ediary_Diary::findByDate($today, $this->data1['user_id']);
 //        $end = xdebug_time_index();
 //        var_dump($end - $start);
 
@@ -113,7 +113,7 @@ class Ediary_DiaryTest extends ControllerTestCase
     }
     
     public function testFindByUser() {
-        $diary = Ediary_Diary::create( $this->data );
+        $diary = Ediary_Diary::create( $this->data1 );
         $diaryId = $diary->id;
         $user_id = $diary->user_id;
         
@@ -127,7 +127,7 @@ class Ediary_DiaryTest extends ControllerTestCase
         }
         
         // test just get select 
-        $diary = Ediary_Diary::create( $this->data );
+        $diary = Ediary_Diary::create( $this->data1 );
         $prePage = 2; // just create 2 diarys in this test
         
         // get 2 items in page 1
@@ -137,10 +137,44 @@ class Ediary_DiaryTest extends ControllerTestCase
     }
     
     public function testCheckAccess() {
-        $diary = Ediary_Diary::create( $this->data );
+        $diary = Ediary_Diary::create( $this->data1 );
         
         $this->assertTrue(Ediary_Diary::checkAccess($diary->id, $diary->user_id));
         $this->assertFalse(Ediary_Diary::checkAccess($diary->id, '3244235'));
+    }
+    
+    public function dataProvider() {
+        return array(
+            array( array(
+        		'title' => 'title1',
+        		'content' => 'english language test',
+        		'user_id' => '3'
+            ), array('english')),
+            array( array(
+        		'title' => '中文测试',
+        		'content' => '如果那些公司不是将大量的资源投在怎样更好的让用户去点击广告上，或许我们现在已经用它们解决了许多重大科学问题了',
+        		'user_id' => '3',
+            ), array('公司')),
+            array( array(
+        		'title' => '中文 测试',
+        		'content' => '谷歌收盘下跌47.81‎美元，报530.7美元，跌幅8.26%。该公司在周四盘后宣布第一财季净利润攀升17%，达23亿美元，但低于市场预期。谷歌业绩下滑的原因是来自Facebook与苹果(AAPL)的竞争压力增大，使其人力和产品研发支出增加。',
+        		'user_id' => '3'
+            ), array('谷')),
+            array( array(
+        		'title' => '中文测 试',
+        		'content' => '这是一个关于二战的故事题材，爱与被爱的伤感短片，残疾鞋匠收养牺牲战友的儿子相依为命，士兵在血火里煎熬扔将未婚妻照片天天贴在心里，也是因为爱，他们才会去战场抛撒热血保卫家园，即便他们曾经掠夺、践踏过别人的家园。',
+        		'user_id' => '3',
+            ), array('故事')),
+        );
+    }
+    
+    /** @dataProvider dataProvider */
+    public function testSearch($data, $keywords) {
+        $diary = Ediary_Diary::create($data);
+        $this->assertTrue($diary->id > 0);
+        $result = Ediary_Diary::search($data['user_id'], $keywords[0]);
+        $this->assertNotNull($result);
+        $this->assertTrue(count($result) > 0);
     }
 }
 ?>

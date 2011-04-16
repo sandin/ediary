@@ -1382,14 +1382,11 @@ var Pad = {
     initEditor: function(options) {
         $.extend(this.options, options);
         
-        /*
         var editor = E.Editor.init(this.options.editor);
-            //notice = E.Notice.init(this.options.notice),
         
         // add listeners
         editor.addListener("onSaveSuccess", function(data, textStatus, jqXHR){
         });
-        */
         
         // Toolbar 
         $("#editor-toolbar").simpleTabs({
@@ -1399,15 +1396,6 @@ var Pad = {
             noCache: ['editor-btn-upload']
         });
         
-        /*
-        $('#editor-btn-theme').click(function() {
-            setTimeout(function() {
-                E.ThemeManager.init();
-            }, 2000);
-        });
-        */
-        
-        /*
         $('#editor-btn-open').click(function() {
             E.DiarysManager.init();
         });
@@ -1436,12 +1424,10 @@ var Pad = {
         // buttons tooltip
         $("#menu>li>a").tipsy({gravity: "s", fake: true});
         
-        // hotkey of force save 
+        // hotkey of save 
         //$(document).bind('keydown', 'ctrl+shift+s', function() {
         //    editor.doSave(true);
         //});
-        
-         */
     },
     
     destroy: function() {
