@@ -10,7 +10,7 @@ class Ediary_User extends Ediary_Query_Adapter
         'email'          =>	 '',
         'username'       =>  '',
         'password'       =>  '',
-        'securtity_code' =>  '',
+        'security_code' =>  '',
         'created_at'     =>  '0000-00-00 00:00:00',
         'last_logined'   =>  '0000-00-00 00:00:00',
         'account'        =>  '0',

@@ -110,6 +110,18 @@ var Ediary = {
         //$.getScript(jsurl);
     },
     
+    /** @deprecated */
+    loadCSS: function (url) {
+        if (url == null || typeof(url) != 'string') return;
+        var style = top.document.createElement('link');
+        style.rel = 'stylesheet'; 
+        style.type = 'text/css'; 
+        style.href = url; 
+        $.ajaxSetup({ cache : true });
+        $('head').append(style);
+        //$.getScript(jsurl);
+    },
+    
     destroy: function() {
     }
 };

@@ -38,6 +38,7 @@ var ThemeManager = {
     },
     
     init: function() {
+        console.log('ThemeManager init');
         $.extend(this.options, this.extData);
         var o = this.options;
 
@@ -51,10 +52,11 @@ var ThemeManager = {
         // preview theme buttons, no really change the theme, just preview
         $(o.previewElem).each(function(i) {
             $(this).click(function(e) {
-                var themeName = $(this).attr('href'),
+                var themeName = $(this).attr('title'),
                     themeCSS = o.themeRoot + themeName + '/style.css';
                 
-                $(o.themeLinkElem).switchTheme({file:themeCSS});
+                //self.switchTheme(themeCSS);
+                $(o.themeLinkElem).switchTheme({file: themeCSS});
                 self.select = themeName;
                 return false;
             });
@@ -76,6 +78,12 @@ var ThemeManager = {
             });
             
         });
+    },
+    
+    /** @deprecated */
+    switchTheme: function(css) {
+        $(this.options.themeLinkElem).remove();
+        E.loadCSS(css);
     },
     
     destroy : function() {

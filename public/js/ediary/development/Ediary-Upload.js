@@ -6,7 +6,6 @@
 E.extend('upload', function(){
     var TAG = 'Upload -> ';
     
-    console.log(document.cookie);
     var Upload = {
         element: null,
         settings : {
@@ -173,7 +172,7 @@ E.extend('upload', function(){
                     // Create DOM element, like:
                     // <li>
                     //    <a href="" rel=""><img src="" /></a>
-                    //    <p>title<a class="delete"></a></p>
+                    //    <p>title<a class="icon_del2_16"></a></p>
                     // </li>
                     $('<li />').append(
                         $('<a />', {
@@ -191,7 +190,7 @@ E.extend('upload', function(){
                     ).append(
                         $('<p />').text(json.filename).append(
                             $('<a />', {
-                                'class' : 'delete',
+                                'class' : 'icon_del2_16',
                                 'href'  : o.deleteUrl + json.id,
                                 html : '&nbsp'
                             })

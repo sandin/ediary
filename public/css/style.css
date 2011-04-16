@@ -68,6 +68,7 @@ em {color:red;}
 .btn:visited {
     -moz-border-radius: 6px 6px 6px 6px;
     -moz-box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+    background: #01B4FE; /* for ie */
     background: -moz-linear-gradient(100% 100% 90deg, #047BB7, #01B4FE) repeat scroll 0 0 transparent;
     border-width: 0;
     color: #FFFFFF;
@@ -80,7 +81,8 @@ em {color:red;}
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3) !important;
     text-transform: lowercase !important;
 }
-.btn:hover {
+.btn:hover, .btn:active {
+    background: #01B4FE; /* for ie */
     background: -moz-linear-gradient(100% 100% 90deg, #01B4FE, #08ACFD) repeat scroll 0 0 transparent;
 }
 .btn.sidebig {
@@ -116,11 +118,19 @@ em {color:red;}
    margin-bottom: 20px;
 }
 
-/* icon TODO: 合并小图 */
+/* icon sprite */
+.icon_16,
+.icon_ok_16,
+.icon_del_16,
+.icon_del2_16,
+.icon_edit_16 {
+    background: url("../images/icon_sp.gif") no-repeat;
+}
 .icon_16,
 .icon_loading_16,
 .icon_ok_16,
 .icon_del_16,
+.icon_del2_16,
 .icon_edit_16 {
 	display: inline-block;
 	vertical-align: text-bottom;
@@ -135,15 +145,18 @@ em {color:red;}
 	background: url("../images/icon_loading.gif") no-repeat;
 }
 .icon_ok_16 {
-    background: url("../images/icon_ok_16x16.png") no-repeat;
+    background-position: -60px 0;
 }
 .icon_del_16 {
-    background: url("../images/icon_uidesignicons_delete.png") no-repeat;
+    background-position: -80px 0;
 }
 .icon_edit_16 {
-    background: url("../images/icon_edit_16x16.png") no-repeat;
+    background-position: -40px 0;
 }
-	
+
+.icon_del2_16 {
+    background-position: -20px 0;
+}
 
 /*}}}*/
 
@@ -173,7 +186,7 @@ em {color:red;}
 --------------------------*/
 /* header */
 #header {
-    background: url("../images/bg_header_t.png") repeat-x scroll -50% 0 transparent;
+    background: url("../images/bg_header_t.png") repeat-x transparent;
 }
 #header .inner {
     height: 42px;
@@ -216,9 +229,10 @@ em {color:red;}
 }
 
 #header .logo {
-	float: left;
-    width: 163px;
-    margin-top: 3px;
+    /*width: 163px*/;
+    position: absolute;
+    top: 2px;
+    left: 0;
 }
 #header .logo a {
     outline: medium none;
@@ -556,8 +570,7 @@ table, img {
     top: 15px;
 }
 
-
-/*diary*/
+/* diary */
 
 .contentBox_nav {
     padding: 10px 15px;
@@ -673,7 +686,7 @@ div.content_box h3 {
 }
 
 
-/*zhuce*/
+/* zhuce */
 form.profile p {
     color: #6F6F6F;
     line-height: 25px;
@@ -718,7 +731,7 @@ form.profile .nolabel {
     margin-left: 140px;
 }
 
-/*login*/
+/* login */
 .login_main {
     float: left;
     color: #6F6F6F;
@@ -775,6 +788,10 @@ form.profile #forget_pw {
 
 /* Form {{{
 -------------------*/
+form .text {
+    border: 1px solid #E0E0E0;
+}
+
  /* labelForm */
  .labelForm dt,
  .labelForm dd {
@@ -809,10 +826,6 @@ form.profile #forget_pw {
 	height: 16px;
 	line-height: 16px;
 	padding: 3px 4px;
-}
-
-form .text {
-    border: 1px solid #E0E0E0;
 }
 
 .sForm {
@@ -885,6 +898,9 @@ form .text {
 	background: none;
 	border: none;
 }
+.diary_wrapper textarea {
+    line-height: 24px; /* equals 2 */
+}
 .diary_wrapper .diary_container {
     margin: 0 auto;
     width: 572px;
@@ -933,8 +949,6 @@ form .text {
     text-align: center;
 }
 
-.diary_body {
-}
 .diary_footer {
 	height: 20px;
 }
@@ -954,7 +968,7 @@ form .text {
     width: 42px;
     margin-bottom: 3px;
     */
-    background-image:url(/images/menu.png);
+    background-image:url("/images/menu.png");
     background-position:0 0;
     width:42px; 
     height:36px;
@@ -1009,7 +1023,6 @@ form .text {
 #menu a#menu_comments:active{background-position:-420px -72px}
 #menu a#menu_comments.open{background-position:-420px -108px}
 /* from penzu */
-
 
 .toolbar-btns li {
 	display: inline;
@@ -1136,10 +1149,7 @@ form .text {
 	color: #333;
 	font-weight: bold;
 }
-.photo_list li a.delete {
-    background: url("../images/icon_delete_16.png") no-repeat center center;
-	width: 16px;
-	height: 16px;
+.photo_list li a.icon_del2_16 {
 	display: none;
 	position: absolute;
 	bottom: 5px;

@@ -208,6 +208,18 @@ var Ediary = {
         //$.getScript(jsurl);
     },
     
+    /** @deprecated */
+    loadCSS: function (url) {
+        if (url == null || typeof(url) != 'string') return;
+        var style = top.document.createElement('link');
+        style.rel = 'stylesheet'; 
+        style.type = 'text/css'; 
+        style.href = url; 
+        $.ajaxSetup({ cache : true });
+        $('head').append(style);
+        //$.getScript(jsurl);
+    },
+    
     destroy: function() {
     }
 };
@@ -1395,12 +1407,14 @@ var Pad = {
     initEditor: function(options) {
         $.extend(this.options, options);
         
+        /*
         var editor = E.Editor.init(this.options.editor);
             //notice = E.Notice.init(this.options.notice),
         
         // add listeners
         editor.addListener("onSaveSuccess", function(data, textStatus, jqXHR){
         });
+        */
         
         // Toolbar 
         $("#editor-toolbar").simpleTabs({
@@ -1410,6 +1424,15 @@ var Pad = {
             noCache: ['editor-btn-upload']
         });
         
+        /*
+        $('#editor-btn-theme').click(function() {
+            setTimeout(function() {
+                E.ThemeManager.init();
+            }, 2000);
+        });
+        */
+        
+        /*
         $('#editor-btn-open').click(function() {
             E.DiarysManager.init();
         });
@@ -1439,11 +1462,11 @@ var Pad = {
         $("#menu>li>a").tipsy({gravity: "s", fake: true});
         
         // hotkey of force save 
-        /*
-        $(document).bind('keydown', 'ctrl+shift+s', function() {
-            editor.doSave(true);
-        });
-        */
+        //$(document).bind('keydown', 'ctrl+shift+s', function() {
+        //    editor.doSave(true);
+        //});
+        
+         */
     },
     
     destroy: function() {
@@ -1494,6 +1517,7 @@ var ThemeManager = {
     },
     
     init: function() {
+        console.log('ThemeManager init');
         $.extend(this.options, this.extData);
         var o = this.options;
 
@@ -1507,10 +1531,11 @@ var ThemeManager = {
         // preview theme buttons, no really change the theme, just preview
         $(o.previewElem).each(function(i) {
             $(this).click(function(e) {
-                var themeName = $(this).attr('href'),
+                var themeName = $(this).attr('title'),
                     themeCSS = o.themeRoot + themeName + '/style.css';
                 
-                $(o.themeLinkElem).switchTheme({file:themeCSS});
+                //self.switchTheme(themeCSS);
+                $(o.themeLinkElem).switchTheme({file: themeCSS});
                 self.select = themeName;
                 return false;
             });
@@ -1534,6 +1559,12 @@ var ThemeManager = {
         });
     },
     
+    /** @deprecated */
+    switchTheme: function(css) {
+        $(this.options.themeLinkElem).remove();
+        E.loadCSS(css);
+    },
+    
     destroy : function() {
     }
 };
@@ -1548,7 +1579,6 @@ E.ThemeManager = ThemeManager; // NAMESPACE
 E.extend('upload', function(){
     var TAG = 'Upload -> ';
     
-    console.log(document.cookie);
     var Upload = {
         element: null,
         settings : {
@@ -1715,7 +1745,7 @@ E.extend('upload', function(){
                     // Create DOM element, like:
                     // <li>
                     //    <a href="" rel=""><img src="" /></a>
-                    //    <p>title<a class="delete"></a></p>
+                    //    <p>title<a class="icon_del2_16"></a></p>
                     // </li>
                     $('<li />').append(
                         $('<a />', {
@@ -1733,7 +1763,7 @@ E.extend('upload', function(){
                     ).append(
                         $('<p />').text(json.filename).append(
                             $('<a />', {
-                                'class' : 'delete',
+                                'class' : 'icon_del2_16',
                                 'href'  : o.deleteUrl + json.id,
                                 html : '&nbsp'
                             })

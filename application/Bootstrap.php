@@ -264,7 +264,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         return $view;
     }
 
-    protected function _initZFDebug() {
+    protected function no_initZFDebug() {
         if ('development' !== APPLICATION_ENV) return;
         
         $autoloader = Zend_Loader_Autoloader::getInstance();
