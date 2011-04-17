@@ -16,7 +16,7 @@ class Oauth_IndexController extends Zend_Controller_Action
     {
         // action body
         $config = array(
-    		'callbackUrl' => 'http://yiriji.com/oauth/index/mock',
+    		'callbackUrl' => 'http://yiriji.com/oauth/index/callback',
     		'siteUrl' => 'http://yiriji.com/oauth/index',
     		'consumerKey' => 'key',
     		'consumerSecret' => 'secret'
@@ -34,9 +34,65 @@ class Oauth_IndexController extends Zend_Controller_Action
         $consumer->redirect();
     }
     
-    public function mockAction() {
+    /**
+     * Mock client callback page
+     */
+    public function callbackAction() {
         $this->_helper->JsonHelper->setNoView();
-        var_dump($this->getRequest()->getParams());
+        
+         // action body
+        $config = array(
+    		'callbackUrl' => 'http://yiriji.com/oauth/index/mock',
+    		'siteUrl' => 'http://yiriji.com/oauth/index',
+    		'consumerKey' => 'key',
+    		'consumerSecret' => 'secret'
+        );
+        $consumer = new Zend_Oauth_Consumer($config);
+        
+        if (!empty($_GET) && isset($_SESSION['TWITTER_REQUEST_TOKEN'])) {
+            $token = $consumer->getAccessToken($_GET,
+                unserialize($_SESSION['TWITTER_REQUEST_TOKEN'])
+            );
+            $_SESSION['TWITTER_ACCESS_TOKEN'] = serialize($token);
+
+            // Now that we have an Access Token, we can discard the Request Token
+            $_SESSION['TWITTER_REQUEST_TOKEN'] = null;
+        } else {
+            // Mistaken request? Some malfeasant trying something?
+            exit('Invalid callback request. Oops. Sorry.');
+        }
+    }
+    
+    /**
+     * Mock client call API page
+     */
+    public function clientAction() {
+        $this->_helper->JsonHelper->setNoView();
+        
+        $config = array(
+    		'callbackUrl' => 'http://yiriji.com/oauth/index/mock',
+    		'siteUrl' => 'http://yiriji.com/oauth/index',
+    		'consumerKey' => 'key',
+    		'consumerSecret' => 'secret'
+        );
+        
+        $content = 'I\'m posting to Twitter using Zend_Oauth!';
+        $title = 'title I\'m posting to Twitter using Zend_Oauth!';
+
+        $token = unserialize($_SESSION['TWITTER_ACCESS_TOKEN']);
+        $client = $token->getHttpClient($config);
+        $client->setUri('http://yiriji.com/api/diarys');
+        $client->setMethod(Zend_Http_Client::POST);
+        $client->setParameterPost('content', $content);
+        $client->setParameterPost('title', $title);
+        $response = $client->request();
+
+        $data = Zend_Json::decode($response->getBody());
+        $result = $response->getBody();
+        if (isset($data->text)) {
+            $result = 'true';
+        }
+        echo $result;
     }
 
     /**
@@ -46,17 +102,7 @@ class Oauth_IndexController extends Zend_Controller_Action
     {
         $this->_helper->JsonHelper->setNoView();
         
-        $server = new Ediary_OAuth_Server(new Ediary_OAuth_Database());
-        
-        $rsa_method = new Ediary_OAuth_Signature_Method_RSA_SHA1();
-        $hmac_method = new OAuthSignatureMethod_HMAC_SHA1();
-        $plaintext_method = new OAuthSignatureMethod_PLAINTEXT();
-
-        $server->add_signature_method($hmac_method);
-        $server->add_signature_method($plaintext_method);
-        $server->add_signature_method($rsa_method);
-
-        $sig_methods = $server->get_signature_methods();
+        $server = Ediary_OAuth_Server::getInstance();
 
         // action body
         try {
@@ -94,6 +140,23 @@ class Oauth_IndexController extends Zend_Controller_Action
         if ($this->getRequest()->isPost() && null != $callback && null != $token) {
             // TODO: 在数据库中标记该token为已授权
             $this->_redirect($callback . '?oauth_token=' . $token);
+        }
+    }
+    
+    /**
+     * Access Token
+     */
+    public function accesstokenAction()
+    {
+        $server = Ediary_OAuth_Server::getInstance();
+        try {
+            $req = OAuthRequest::from_request();
+            $token = $server->fetch_access_token($req);
+            print $token;
+        } catch (OAuthException $e) {
+            print($e->getMessage() . "\n<hr />\n");
+            print_r($req);
+            die();
         }
     }
 

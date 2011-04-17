@@ -209,12 +209,6 @@ class Diary_DoController extends Zend_Controller_Action
         }
     }
     
-    private function createDiary($data) {
-    }
-    
-    private function updateDiary($data) {
-    }
-
     public function createAction() {
         $params = $this->_parsePost();
         $diary = Ediary_Diary::create($params);

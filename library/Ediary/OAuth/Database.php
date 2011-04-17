@@ -3,6 +3,7 @@ require_once('OAuth/OAuth.php');
 
 /**
  * A mock store for testing
+ * TODO: 建立持久层支持
  */
 class Ediary_OAuth_Database extends OAuthDataStore {
     private $consumer;
