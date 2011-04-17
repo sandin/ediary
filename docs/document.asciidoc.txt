@@ -547,7 +547,17 @@ $image->thumnail($width, $height, $output);
 可以直接调用 `class Gmagick` 的任何方法.
 
 
-=== 第三方库 ===
+== OAuth ==
+
+OAuth的服务提供使用的是 http://code.google.com/p/oauth-php/[oauth-php] 库.
+
+注意 `OAuth` 的数据表使用的是独立的前缀名, 并且在安装其他系统表时并不会自动安装这些表.
+
+整个 `OAuth` 部分保持其高度独立性和可移植性, 故在使用提供API服务前必须运行数据库的安装脚本:  `/library/oauth-php/store/mysql/index.php` .
+
+OAuth的客户端基本只是用于测试, 使用的是 `Zend_OAuth` . 需要注意 `Zend_OAuth`  和 `php-oauth`在签名算法为HMAC-SHA1时会出现不兼容情况, 目前尚不知道是哪个的算法有问题, 需要使用Java和其他PHP库进行测试.
+
+== 第三方库 ==
     * http://code.google.com/p/zfdebug/[ZFDebug]
 
 

@@ -41,9 +41,11 @@ class Ediary_Auth
      * 
      * @return boolean true on is Logined 
      */
-    public static function authRedirect() {
+    public static function authRedirect($redirect = null) {
         if (! self::isLogined()) {
-            Ediary_Core::gotoUrl(Ediary_Core::baseUrl('/login'));
+            $url = isset($redirect) ? '/login?redirect=' . urlencode($redirect)
+                                    : '/login';
+            Ediary_Core::gotoUrl($url);
         }
         return true;
     }

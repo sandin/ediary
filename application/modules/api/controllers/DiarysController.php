@@ -8,27 +8,36 @@ class Api_DiarysController extends Zend_Controller_Action
         /* Initialize action controller here */
         $this->_helper->JsonHelper->setNoView();
         
+        $db = Ediary_Db::getInstance();
+        $this->_store = OAuthStore::instance('PDO',
+                                array('conn' => $db->getAdapter()->getConnection()));
+        
         // OAuth
-        /*
-        $server = Ediary_OAuth_Server::getInstance();
-        try {
-            $req = OAuthRequest::from_request();
-            // $token access token, TODO: 利用该token查找user id
-            list($consumer, $token) = $server->verify_request($req);
+        if (OAuthRequestVerifier::requestIsSigned())
+        {
+            try
+            {
+                $req = new OAuthRequestVerifier();
+                $user_id = $req->verify();
 
-            // lsit back the non-OAuth params
-            $total = array();
-            foreach($req->get_parameters() as $k => $v) {
-                if (substr($k, 0, 5) == "oauth") continue;
-                $total[] = urlencode($k) . "=" . urlencode($v);
+                // If we have an user_id, then login as that user (for this request)
+                if ($user_id) {
+                    $this->_user = Ediary_User::find($user_id);
+                } else {
+                    throw new OAuthException2('No such User');
+                }
             }
-            print implode("&", $total);
-        } catch (OAuthException $e) {
-            echo $this->_helper->json(array('error' => $e->getMessage()));
-            //var_dump($req);
-            die();
+            catch (OAuthException $e)
+            {
+                // The request was signed, but failed verification
+                header('HTTP/1.1 401 Unauthorized');
+                header('WWW-Authenticate: OAuth realm=""');
+                header('Content-Type: text/plain; charset=utf8');
+
+                echo $e->getMessage();
+                exit();
+            }
         }
-        */
     }
 
     public function indexAction()
@@ -87,7 +96,7 @@ class Api_DiarysController extends Zend_Controller_Action
         $input = $this->_getFilterInput();
         if ($input->isValid() && !$input->hasMissing()) {
              $data = array(
-                'user_id' => 3, // TODO: user id
+                'user_id' => $this->_user->id,
                 "title" => $input->title,
                 "content" => $input->getUnescaped('content') // it's safe, stripTags instead escape
             );

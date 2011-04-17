@@ -1,0 +1,17 @@
+<div class="content_box">
+<div class="innerBox">
+<h3>当前用户的API KEY:</h3>
+<?php if (null == $this->list): ?>
+	暂无API KEY, 每个开发者可以免费<a href="/oauth/register">申请</a>一个API KEY.
+<?php else: ?>
+<?php foreach ($this->list as $c): ?>
+<div>
+	<h4>API KEY :</h4>
+	<p><?php echo $c['consumer_key']?></p>
+	<h4>Secrect :</h4>
+	<p><?php echo $c['consumer_secret']?></p>
+</div>
+<?php endforeach; ?>
+<?php endif; ?>
+</div>
+</div>

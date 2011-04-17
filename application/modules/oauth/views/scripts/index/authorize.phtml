@@ -1,30 +1,8 @@
-<?php
-$this->loadJquery();
-$this->headScript()->appendFile("/js/jquery.validate.js");
-$this->headScript()->appendFile("/js/ediary/all.js?v=1");
-$this->inlineScript()->appendScript('
-$(document).ready(function(){
-    Ediary.loadModule("Validator");
-    
-    $("#form_login").validate(Ediary.Validator.getLoginForm());
-    $("#email").focus();
-});
-');
-?>
-<div id="login" class="content_box clearfix">
-    <div class="login_main">
-        <h2>登录</h2>
-        
-        <?php if(isset($this->error)): ?>
-        <!-- Error -->
-        <div class="messages"><?php echo $this->error; ?></div>
-    	<?php endif; ?>
-    	
-    	<!-- form_login -->
-        <?php echo $this->form; ?>
-    </div>
-    <div class="login_side">
-        <p><a href="<?php echo $this->baseUrl("register") ?>">还没有帐户，点此注册</a></p>
-    </div>
-    <div class="clearfix"></div>
+<div class="content_box">
+<div class="innerBox">
+<h3>是否授权给该客户端访问的权利?</h3>
+<form action="<?php echo $_SERVER["REQUEST_URI"] ?>" method="post">
+	<input type="submit" name="allow" class="btn" value="确定授权" />
+</form>
+</div>
 </div>
