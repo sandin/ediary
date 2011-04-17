@@ -19,8 +19,10 @@ class User_AccountController extends Zend_Controller_Action
 
     public function loginAction()
     {
-        //TODO: already logined
-		if (false) $this->_redirect('/');
+        // already logined
+		if (null != Ediary_Auth::getUser()) {
+	        return $this->_autoRedirect('diary');
+		}
 		
 		$form = $this->getLoginForm();
 		
@@ -45,7 +47,22 @@ class User_AccountController extends Zend_Controller_Action
 		// Auth Ok.
 		$this->view->form = _t("登录成功");
 	    $form->saveToken(); // in case reSubmit
-        $this->_redirect('/diary');
+	                
+	    $this->_autoRedirect('diary');
+    }
+    
+    /**
+     * 若请求中提供redirect参数, 则重定向到该参数指定的url
+     * 否则转入defaultUrl
+     * 
+     * @param String $defaultUrl default redirect url 
+     */
+    private function _autoRedirect($defaultUrl) {
+	    if (null != $this->_getParam('redirect')) {
+            $this->_redirect(urldecode($this->_getParam('redirect')));
+	    } else {
+            $this->_redirect($defaultUrl);
+	    }       
     }
 
     public function logoutAction()
@@ -143,7 +160,12 @@ class User_AccountController extends Zend_Controller_Action
     					'name' => 'form_login',
     	                'class' => "labelForm sForm"));
     	
-        $form->setAction('/login')
+    	var_dump($this->_getParam('redirect'));
+    	$action = (null != $this->_getParam('redirect'))
+    	        ? '/login?redirect=' . $this->_getParam('redirect')
+    	        : '/login';
+    	        
+        $form->setAction($action)
      		 ->setMethod('post');
      		 
     	$validator = new Zend_Validate_Alnum();
