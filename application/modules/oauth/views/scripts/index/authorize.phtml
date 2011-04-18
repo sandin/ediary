@@ -1,8 +1,25 @@
 <div class="content_box">
 <div class="innerBox">
+<?php if (!$this->isOOB):?>
 <h3>是否授权给该客户端访问的权利?</h3>
 <form action="<?php echo $_SERVER["REQUEST_URI"] ?>" method="post">
-	<input type="submit" name="allow" class="btn" value="确定授权" />
+	<input type="submit" name="allow" class="button" value="确定授权" />
 </form>
+<?php else:?>
+
+<h3>Out Of Band</h3>
+<p>已授权, 客户端未提供回调页面, 您可以自行回到客户端程序, 输入 <em>PinCode</em> :</p>
+<div style="font-size: 30px">
+	<p style="margin: 10px; display: block; padding: 20px; border: 1px solid #DDD;"><?php echo $this->verifier ?></p>
 </div>
+
+<br />
+<h4>oauth_token: </h4>
+<?php echo $this->token; ?>
+<h4>oauth_verifier: </h4>
+<?php echo $this->verifier; ?>
+
+<?php endif; ?>
+
 </div>
+</div><!-- /content_box -->

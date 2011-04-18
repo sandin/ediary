@@ -136,7 +136,7 @@ class Oauth_IndexController extends Zend_Controller_Action
         // Fetch the oauth store and the oauth server.
         $store  = OAuthStore::instance();
         $server = new OAuthServer();
-
+        
         try
         {
             // Check if there is a valid request token in the current request
@@ -153,7 +153,9 @@ class Oauth_IndexController extends Zend_Controller_Action
                 $server->authorizeFinish($authorized, $this->_user->id);
 
                 // No oauth_callback, show the user the result of the authorization
-                // ** your code here **
+                $this->view->isOOB = true;
+                $this->view->token = $rs['token'];
+                $this->view->verifier = self::getAuthVerifier($rs['token']); // 认证一次换一个, 即时是同一个token
             }
         }
         catch (OAuthException $e)
@@ -161,6 +163,11 @@ class Oauth_IndexController extends Zend_Controller_Action
             // No token to be verified in the request, show a page where the user can enter the token to be verified
             echo $e->getMessage();
         }
+    }
+    
+    private static function getAuthVerifier($token_id) {
+        $db = Ediary_Db::getInstance();
+        return $db->fetchOne("SELECT ost_verifier FROM oauth_server_token WHERE ost_token =? ", $token_id);
     }
 
     /**

@@ -24,6 +24,7 @@ class Api_DiarysController extends Zend_Controller_Action
                 if ($user_id) {
                     $this->_user = Ediary_User::find($user_id);
                 } else {
+                    echo "No Such User : " . $user_id;
                     throw new OAuthException2('No such User');
                 }
             }
@@ -37,18 +38,22 @@ class Api_DiarysController extends Zend_Controller_Action
                 echo $e->getMessage();
                 exit();
             }
+        } else {
+            echo "Not a OAuth request.";
         }
     }
 
     public function indexAction()
     {
         // action body
+        // Zend_Rest_Route 在这里BUG, get 不是直接到 getAction, 而是会被indexAction拦截
+        $this->_forward('get');
     }
 
     /**
      * 获取一篇日记
      * 
-     * 请求: POST/GET
+     * 请求: GET
      * 	id: Int, 日记ID, 必须
      *  
      * 返回: JSON
@@ -57,6 +62,7 @@ class Api_DiarysController extends Zend_Controller_Action
      */
     public function getAction()
     {
+        echo "get";
         // action body
         $result = array('diary' => array());
         $input = new Zend_Filter_Input(array('id' => 'Int'),
@@ -79,7 +85,7 @@ class Api_DiarysController extends Zend_Controller_Action
     /**
      * 创建一篇日记
      * 
-     * 请求: POST/GET
+     * 请求: POST
      *  title: String 日记标题
      *  content: String 日记内容
      *  
