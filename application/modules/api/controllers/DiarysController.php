@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * FIXME: 因为OAuth-php库的BUG, 签名不支持使用HMAC_SHA1
+ * @author lds
+ *
+ */
 class Api_DiarysController extends Zend_Controller_Action
 {
 
@@ -7,6 +12,8 @@ class Api_DiarysController extends Zend_Controller_Action
     {
         /* Initialize action controller here */
         $this->_helper->JsonHelper->setNoView();
+        
+        //$this->_user = (Object) array( 'id' => '333' );
         
         $db = Ediary_Db::getInstance();
         $this->_store = OAuthStore::instance('PDO',
@@ -28,13 +35,14 @@ class Api_DiarysController extends Zend_Controller_Action
                     throw new OAuthException2('No such User');
                 }
             }
-            catch (OAuthException $e)
+            catch (OAuthException2 $e)
             {
                 // The request was signed, but failed verification
                 header('HTTP/1.1 401 Unauthorized');
                 header('WWW-Authenticate: OAuth realm=""');
                 header('Content-Type: text/plain; charset=utf8');
 
+                Ediary_Logger::log2($e->getMessage());
                 echo $e->getMessage();
                 exit();
             }
@@ -62,7 +70,6 @@ class Api_DiarysController extends Zend_Controller_Action
      */
     public function getAction()
     {
-        echo "get";
         // action body
         $result = array('diary' => array());
         $input = new Zend_Filter_Input(array('id' => 'Int'),
