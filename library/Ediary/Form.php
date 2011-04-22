@@ -87,7 +87,7 @@ class Ediary_Form extends Zend_Form
                      'Text'));
             } else {
                 // TODO: 处理多按钮情况
-                $elem->setDecorators(array('Text'));
+                //$elem->setDecorators(array('Text'));
             }
         }
         return parent::addElements($elements);

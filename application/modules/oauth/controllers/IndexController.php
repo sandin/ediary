@@ -87,8 +87,8 @@ class Oauth_IndexController extends Zend_Controller_Action
         	'signatureMethod' => "Plaintext"
         );
         
-        $content = 'I\'m posting to Twitter using Zend_Oauth!';
-        $title = 'title I\'m posting to Twitter using Zend_Oauth!';
+        $content = 'content test';
+        $title = 'title I\'m posting to Twitter using Zend_Oauth!' .  "\n afdsadfsa";
 
         $token = unserialize($_SESSION['TWITTER_ACCESS_TOKEN']);
         $client = $token->getHttpClient($config);
@@ -96,14 +96,12 @@ class Oauth_IndexController extends Zend_Controller_Action
         $client->setMethod(Zend_Http_Client::POST);
         $client->setParameterPost('content', $content);
         $client->setParameterPost('title', $title);
+        $client->setParameterPost('email', 'lds2012@gmail.com0055300');
         $response = $client->request();
         
-        $data = Zend_Json::decode($response->getBody());
+        //$data = Zend_Json::decode($response->getBody());
         $result = $response->getBody();
-        if (isset($data->text)) {
-            $result = 'true';
-        }
-        echo $result;
+        var_dump($result);
         
     }
 

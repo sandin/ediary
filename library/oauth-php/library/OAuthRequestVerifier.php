@@ -130,7 +130,6 @@ class OAuthRequestVerifier extends OAuthRequest
 	 */
 	public function verify ( $token_type = 'access' ) 
 	{
-	    return 10000000;
 		$retval = $this->verifyExtended($token_type);
 		return $retval['user_id'];
 	}
@@ -175,7 +174,6 @@ class OAuthRequestVerifier extends OAuthRequest
 			}
 			catch (OAuthException2 $e)
 			{
-			    // FIXME: Signature HMAC_SHA1 BUG
 				throw new OAuthException2('Verification of signature failed (signature base string was "'.$this->signatureBaseString().'").' 
 					. " with  " . print_r(array($secrets['consumer_secret'], $secrets['token_secret'], $token_type), true));
 			}

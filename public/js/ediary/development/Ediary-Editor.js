@@ -141,6 +141,7 @@ var Editor = {
         window.tinyMCE.init({
             mode: 'exact',
             elements: this.bodyElem.attr('id'),
+            auto_focus : this.bodyElem.attr('id'),
             readonly: this.isReadonly() ? 1 : 0,
             width: this.bodyElem.width(),
             height: this.bodyElem.height(),
@@ -148,7 +149,7 @@ var Editor = {
             theme : "advanced",
             skin: 'default',
             content_css : E.baseUrl + "/css/rte.css",
-            theme_advanced_buttons1 : "bold,italic,underline,|,fontselect,forecolor,|,justifyleft,justifycenter,justifyright,|,indent,outdent,|,strikethrough,backcolor,|,bullist,numlist,|,spellchecker,insertdate,link,removeformat",
+            theme_advanced_buttons1 : "bold,italic,underline,forecolor,|,justifyleft,justifycenter,justifyright,|,indent,outdent,|,strikethrough,|,bullist,numlist,|,link,removeformat",
             theme_advanced_buttons2 : "",
             theme_advanced_buttons3 : "",
             theme_advanced_toolbar_location : "docked",
@@ -174,11 +175,11 @@ var Editor = {
                         }
                     });
                 }
-                // 内容为空时显示"默认信息"
+                /* TODO: 内容为空时显示"默认信息"
                 ed.onKeyPress.add(function(ed) {
-                    //TODO: 检查是否有性能问题
                     self.setDefaultContent(ed);
                 });
+                */
             },
             template_replace_values : {
             },
@@ -195,9 +196,12 @@ var Editor = {
     
     /**
      * @param ed TinyMCE.Editor
+     * @deprecated 未使用, 直接返回了
      */
     setDefaultContent: function(ed, force) {
+        return; // do nothing
         ed = ed || this.getRTEditor();
+        ed.focus();
         if (force || ed.getContent().length === 0) {
             $(ed.getBody()).addClass("content_is_empty");
         } else {
@@ -549,7 +553,6 @@ var Editor = {
         $.ajaxSetup(this.settings.ajaxSetup);
     },
     
-    // set/get Cache
     cache: function(key, value) {
         //console.log(this.TAG, 'cache data ' + key + ' :');
         //console.dir(value);
@@ -559,7 +562,6 @@ var Editor = {
         return this.element.data(key);
     },
     
-    // set/get Title
     setTitle: function(title) {
         this.titleElem.val(title);
     },
@@ -567,7 +569,6 @@ var Editor = {
         return this.titleElem.val();
     },
     
-    // set/get Content
     setContent: function(content) {
         if ( this.getRTEditor() ) {
             this.getRTEditor().setContent(content);
@@ -584,7 +585,6 @@ var Editor = {
         }
     },
     
-    // set/get ID
     setId: function(id) {
         $(this.settings.idElem).val(id);
     },

@@ -143,10 +143,10 @@ class User_AccountController extends Zend_Controller_Action
      	           ->setAttrib('class', 'text');
      	           
         $submit = new Zend_Form_Element_Submit('op');
-        $submit->setLabel(_t("立即注册"))
-               ->setAttrib('class', 'nolabel button');
-     	           
-     	$form->addElements2(array($email, $password, $rePassword, $submit));
+        $submit->setValue(_t("立即注册"));
+        
+     	$form->addElements2(array($email, $password, $rePassword))
+     	     ->addButtons(array($submit));
      	
      	return $form;
     }
@@ -183,7 +183,7 @@ class User_AccountController extends Zend_Controller_Action
      	         ->setAttrib('class', 'text');
      	         
      	$submit = new Zend_Form_Element_Submit('op');
-        $submit->setValue(_t("立即注册"));
+        $submit->setValue(_t("登录"));
         
      	$form->addElements2(array($username, $password))
      	     ->addButtons(array($submit));

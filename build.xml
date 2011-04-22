@@ -13,6 +13,25 @@
 	<target name="default" depends="minify">
 	</target>
 
+	<!-- prepare file to upload -->
+    <target name="upload" depends="minify">
+    	<delete dir="${dest.dir}" />
+    	<mkdir dir="${dest.dir}" />
+    	<copy todir="${dest.dir}">
+    	    <fileset dir="./">
+    	 	  <include name="application/**" />
+    	 	  <include name="library/**" />
+    	 	  <include name="public/**" />
+    		</fileset>
+    	</copy>
+    	<copy todir="${dest.dir}/library">
+    		 <fileset dir="${zend.dir}">
+    		  <include name="Zend/**" />
+    		 </fileset>
+    	</copy>
+    	<zip destfile="${dest.dir}/auto-package.zip" basedir="${dest.dir}"></zip>
+    </target>
+
     <property name="concatenated" value="all" />
     <property name="core.files" value="jquery.hotkeys.js, Ediary.js, Ediary-Events.js" />
     <property name="js.dir" value="${public.dir}/js/ediary" />

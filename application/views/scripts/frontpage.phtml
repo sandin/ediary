@@ -1,0 +1,26 @@
+<div class="fp_logo"><div class="inner"><div id="fp_logo_big" class="logo_big">&nbsp;</div></div></div>
+
+<div class="fp_login">
+    <div style="float: right;">没有帐号? <a href="#" class="">注册</a></div>
+    <form id="form_index_login" action="/login" method="post" class="labelForm tinyForm">
+        <div class="form_element">
+            <label for="email">邮箱:</label>
+            <input id="fp_email" type="text" class="text" id="email" name="email" tabindex="1">
+        </div>
+        <div class="form_element">
+            <label for="password">密码 [<a title="忘记密码?" href="#">?</a>] :</label>
+            <input type="password" class="text" id="password" name="password" tabindex="2" >
+        </div>
+        <div class="form_element clearfix" style="margin-bottom:0">
+            <label class="remeberMe">
+                <input type="checkbox" value="1" name="rememberMe" tabindex="3"> 下次自动登录
+            </label>
+            <div class="submit">
+                <input type="submit" class="sBtn index_loginModel_submit" value="登 录" tabindex="4">
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+(function(window){ document.getElementById("fp_email").focus(); })(window);
+</script>

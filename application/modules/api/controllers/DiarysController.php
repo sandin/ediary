@@ -7,7 +7,11 @@
  */
 class Api_DiarysController extends Zend_Controller_Action
 {
-
+    /**
+     * @var OAuthStore
+     */
+    private $_store; 
+    
     public function init()
     {
         /* Initialize action controller here */
@@ -15,9 +19,8 @@ class Api_DiarysController extends Zend_Controller_Action
         
         //$this->_user = (Object) array( 'id' => '333' );
         
-        $db = Ediary_Db::getInstance();
-        $this->_store = OAuthStore::instance('PDO',
-                                array('conn' => $db->getAdapter()->getConnection()));
+        $pdo = Ediary_Db::getInstance()->getAdapter()->getConnection();
+        $this->_store = OAuthStore::instance('PDO', array('conn' => $pdo));
         
         // OAuth
         if (OAuthRequestVerifier::requestIsSigned())
@@ -100,7 +103,6 @@ class Api_DiarysController extends Zend_Controller_Action
      * 	diary: Array 刚创建的日记主体, 含(ID,标题,内容等)
      *  error: String 错误信息(如果存在错误) 
      *  
-     * Enter description here ...
      */
     public function postAction()
     {
@@ -108,17 +110,32 @@ class Api_DiarysController extends Zend_Controller_Action
         $result = array('diary' => array());
         $input = $this->_getFilterInput();
         if ($input->isValid() && !$input->hasMissing()) {
-             $data = array(
+            $data = array(
                 'user_id' => $this->_user->id,
                 "title" => $input->title,
                 "content" => $input->getUnescaped('content') // it's safe, stripTags instead escape
             );
+            // 超级终端有权代理更新任何用户的日记
+            if (null != $input->email && Ediary_Auth::isSuperUser($this->_user)) {
+                $data = $this->superClientHack($data, $input->email);
+            }
             $diary = Ediary_Diary::create($data);
             $result['diary'] = $diary->toArray(true);
         } else {
             $result['error'] = 'Params invalid: title or content.';
         }
         echo $this->view->json($result);
+    }
+    
+    private function superClientHack($data, $email) {
+        $targetUser = Ediary_User::find($email);
+        if (null != $targetUser) {
+            $data['user_id'] = $targetUser->id;
+        } else {
+            echo $this->view->json(array("error" => $email . ' is not exsits.'));
+            exit(); // 指定的Email用户不存在
+        }
+        return $data;
     }
     
     /**
@@ -137,18 +154,25 @@ class Api_DiarysController extends Zend_Controller_Action
         //$_POST['diary']['content'] = html_entity_decode($_POST['diary']['content']);
         
         $stripTagsFilter = new Zend_Filter_StripTags();
-        $stripTagsFilter->setTagsAllowed(array("p"));
+        $stripTagsFilter->setTagsAllowed(array("p", "div"));
         
+        $replaceFilter = new Zend_Filter_PregReplace();
+        $replaceFilter->setMatchPattern(array('/\<div\>/', '/\<\/div\>/'))
+                      ->setReplacement(array('<p>', '</p>'));
+       
         $filter = array(
             'title' => 'StripTags',
-            'content' => $stripTagsFilter
+            'content' => array($stripTagsFilter,$replaceFilter),
+            'email' => 'StringTrim'
         );
         // 创建日记时不需要ID, 更新时才需要
         if (!$isCreate) {
             $filter['id'] = 'Int';
         }
         $validator = array(
-            '*' => array( 'presence' => 'required')
+            'title' => array( 'presence' => 'required'),
+            'content' => array( 'presence' => 'required'),
+            'email' => array( 'presence' => 'optional') // 可选
         );
         return new Zend_Filter_Input($filter, $validator, $this->getRequest()->getParams());
     } 

@@ -6,12 +6,14 @@
 
 /* Change and uncomment this when you need to: */
 
-mysql_connect('localhost', 'lds', '123');
+/*
+mysql_connect('localhost', 'root');
 if (mysql_errno())
 {
 	die(' Error '.mysql_errno().': '.mysql_error());
 }
-mysql_select_db('ediary');
+mysql_select_db('test');
+*/
 
 $sql = file_get_contents(dirname(__FILE__) . '/mysql.sql');
 $ps  = explode('#--SPLIT--', $sql);
