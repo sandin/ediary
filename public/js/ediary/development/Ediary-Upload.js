@@ -12,7 +12,7 @@ E.extend('upload', function(){
             element : '#diary_file_upload', // TODO: 没有此元素
             idElem  : '#diary_id', // <input name="diary_id" value="0000000" />
             targetElem : '#diary_file_list', // 需要将服务器响应结果刷新到的元素
-            deleteElem : '#diary_file_list .delete',
+            deleteElem : '#diary_file_list .icon_del2_16',
             titleElem  : '#diary_file_list>li>p',
             deleteUrl : '/upload/index/delete?id=', // 删除API
             js : ['/js/uploadify/swfobject.js', 

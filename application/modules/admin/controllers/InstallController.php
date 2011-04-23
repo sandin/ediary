@@ -2,21 +2,13 @@
 
 class Admin_InstallController extends Zend_Controller_Action
 {
-	private $mSession;
-
     public function init()
     {
-        Ediary_Auth::checkAccessPermission('admin');
+        //Ediary_Auth::checkAccessPermission('admin');
         $this->_helper->layout->setLayout('admin');
-        
         $this->view->headTitle(_t("安装程序"));
         $this->view->error = '';
-        
-     	$this->mSession = new Zend_Session_Namespace('form-token');
-     	$this->mSession->setExpirationSeconds(10);
      	
-        //$installer = new Ediary_Installer();
-        
     	if (Ediary_Config::isInstalled() && !Ediary_Config::isInstalling()) {
 			Ediary_Core::exitApp('The appliction has already benn installed.');
 		}
@@ -76,9 +68,6 @@ class Admin_InstallController extends Zend_Controller_Action
         }
         
         // OK
-        
-        // 储存表单Token, 避免重复提交
-     	$this->mSession->{$form->getName()} = md5($form->getName());
      	
      	// Save The data into config file
      	Ediary_Config::updateConfig(APPLICATION_ENV, 'username' , $sUsername, 1);
@@ -117,8 +106,7 @@ class Admin_InstallController extends Zend_Controller_Action
     }
     
     private function getFormDb() {
-    	
-    	$validator = new Zend_Validate_Alnum();
+    	$validator = new Zend_Validate_NotEmpty();
     	
     	$form = new Zend_Form(array('name' => 'form_install_db'));
         $form->setAction('/admin/install/step1')
@@ -152,8 +140,6 @@ class Admin_InstallController extends Zend_Controller_Action
      	
      	return $form;
     }
-
-
 }
 
 

@@ -2,7 +2,7 @@
 <?php if (isset($this->files)):?>
 <ul id="diary_file_list" class="photo_list clearfix">
 <?php foreach ($this->files as $file): ?>
-	<?php $preview = Ediary_Image::rename($file['filepath'], Ediary_Image::DEFAULT_PATTERN); ?>
+	<?php $preview = Ediary_Image_Abstract::rename($file['filepath'], Ediary_Image_Abstract::DEFAULT_PATTERN); ?>
 	<li>
 		<a class="lightbox" rel="group1" href="<?php echo $file['filepath'] ?>">
 			<img src="<?php echo $preview ?>" width="160" height="120" />

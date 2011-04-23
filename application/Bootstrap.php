@@ -36,10 +36,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     }
 
     protected function _initInstallChecker() {
-        $isInstalled =  Ediary_Config::isInstalled();
-        //var_dump($isInstalled); //TODO: 有时误报?
-        
-        if ( !$isInstalled ) {
+        ///TODO: 有时误报?
+        if ( !Ediary_Config::isInstalled() ) {
             Ediary_Logger::log2('The application is not installed, installing now.');
             Ediary_Config::setInstalling(true);
             Ediary_Config::setInstalled(true);
@@ -62,6 +60,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     
     protected function _initSession()
     {
+        if ( Ediary_Config::isInstalling() ) {
+            return; // no install yet
+        }
         $db = Ediary_Db::getInstance();
         Zend_Db_Table_Abstract::setDefaultAdapter($db->getConnection());
         

@@ -71,6 +71,10 @@ class Ediary_Logger
             // create a log file in /tmp
             $logfile = tempnam(sys_get_temp_dir(), 'Ediary_log_');
         }
+        if (filesize($logfile) > 5*1073741824) { // > 5M
+            // 文件过大, 清空日志
+            @fclose(fopen($logfile, 'w'));
+        }
 
         $writer = new Zend_Log_Writer_Stream($logfile);
         return $writer;

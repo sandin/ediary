@@ -9,11 +9,12 @@ class IndexController extends Zend_Controller_Action
         /* Initialize action controller here */
         $this->_user = Ediary_Auth::getUser();
         $this->view->pageClass = "indexPage";
-        $this->view->headTitle("首页");
     }
 
     public function indexAction()
     {
+        $this->view->headTitle("宜日记 | 记录生活", 'SET');
+        
         // 已登录用户直接转入日志页
         if (null != $this->_user) {
             $this->_redirect('/diary');

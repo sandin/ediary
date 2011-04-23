@@ -182,20 +182,15 @@ class Ediary_Db
 
     /**
      * Create Tables
-     * NOTE: use create(), must setPrefix() first
+     * NOTE: use create(), must setPrefix() and setCharset() first
      */
     public function create($force = false) {
         if ( $force || $this->isInstalled() ) { 
             return Ediary_Logger::log2('The application has already been installed', Zend_Log::ERR);
         }
 
-        // Setup charset and collation
-        $this->setupTableSet();
-
-        $imdb = $this;
-        include 'schema.php'; //defined $query
-
-        return $this->conn->query($query);
+        $schema = new Ediary_Database_Schema($this);
+        return $schema->createTables();
     }
 
     /**

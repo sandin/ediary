@@ -15,7 +15,12 @@ class Ediary_Exception extends Exception {
      * @param Exception $previous
      */
     public function __construct($message = '', $code = 0, $previous = null) {
-        parent::__construct($message, $code, $previous);
+        //debug_print_backtrace();
+        if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
+            parent::__construct($message, $code, $previous); //PHP 5.3.0 增加previous参数
+        } else {
+            parent::__construct($message, $code);
+        }
     }
 
     /**

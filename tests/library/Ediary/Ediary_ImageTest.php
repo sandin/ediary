@@ -8,7 +8,7 @@ require_once 'PHPUnit/Framework.php';
 class Ediary_ImageTest extends ControllerTestCase
 {
     /**
-     * @var Ediary_Image
+     * @var Ediary_Image_Interface 
      */
     protected $obj;
     
@@ -29,7 +29,18 @@ class Ediary_ImageTest extends ControllerTestCase
         	//array($dir . '/test.gif'),
         	//array($dir . '/test.png'),
         );
-        
+    }
+    
+    public function dataProviderOfGD() {
+        $dir = dirname(__FILE__);
+        return array(
+        	array($dir . '/test.jpg', 120, 120),
+        	array($dir . '/test.jpg', 70, 120),
+        	array($dir . '/test.gif', 200, 120),
+        	array($dir . '/test.png', 250, 250),
+        	//array($dir . '/test.gif'),
+        	//array($dir . '/test.png'),
+        );
     }
 
     /**
@@ -41,15 +52,16 @@ class Ediary_ImageTest extends ControllerTestCase
     }
     
     /** @dataProvider dataProvider */
-    public function testT($file, $width, $height) {
-        $this->obj = new Ediary_Image($file);
+    public function testGmagick($file, $width, $height) {
+        $this->obj = Ediary_Image_Factory::create(Ediary_Image_Factory::GMAGICK);
+        
         $dir = dirname(__FILE__) . '/output/';
-        $output = $dir . basename($file);
+        $output = $dir . time() . basename($file);
         
         // 确保输入目录存在
         $this->assertTrue(Ediary_Utility_File::mkdir($dir));
         
-        $this->obj->thumbnail($width, $height, $output);
+        $this->obj->thumbnail($file, $width, $height, $output);
         $this->assertTrue(file_exists($output));
         
         $size = getimagesize($output);
@@ -58,6 +70,29 @@ class Ediary_ImageTest extends ControllerTestCase
         }
         if ($height != 0) {
             $this->assertEquals($height, $size[1]);
+        }
+    }
+    
+ 	/** @dataProvider dataProviderOfGD */
+    public function testGD($file, $width, $height) {
+        $this->obj = Ediary_Image_Factory::create(Ediary_Image_Factory::GD);
+        
+        $dir = dirname(__FILE__) . '/output/';
+        $output = $dir . time() . basename($file);
+        
+        // 确保输入目录存在
+        $this->assertTrue(Ediary_Utility_File::mkdir($dir));
+        
+        $this->obj->thumbnail($file, $width, $height, $output);
+        $this->assertTrue(file_exists($output));
+        
+        $size = getimagesize($output);
+        // 长或宽总有一个等于目标
+        if ($width != $size[0]) {
+            $this->assertEquals($height, $size[1]);
+        }
+        if ($height != $size[1]) {
+            $this->assertEquals($width, $size[0]);
         }
     }
     
@@ -73,7 +108,7 @@ class Ediary_ImageTest extends ControllerTestCase
     
     /** @dataProvider dataProviderForRename */
     public function testRename($filename, $pattern, $except) {
-        $this->assertEquals($except, Ediary_Image::rename($filename, $pattern) );
+        $this->assertEquals($except, Ediary_Image_Abstract::rename($filename, $pattern) );
     }
 
 }

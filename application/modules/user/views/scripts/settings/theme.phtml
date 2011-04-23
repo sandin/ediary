@@ -1,6 +1,9 @@
 <?php
 $this->loadJquery();
 $this->headScript()->appendFile("/js/ediary/all.js");
+$this->inlineScript()->appendScript('
+	(function() { Ediary.ThemeManager.init(); })();
+');
 ?>
 <div id="settings-tabs" class="content_box">
 	<div class="contentBox_tabNav">
@@ -9,7 +12,6 @@ $this->headScript()->appendFile("/js/ediary/all.js");
 		<?php endforeach; ?>
     </div>
     <div class="innerBox">
-    
    	<div id="toolbar-tabs-theme">
 		<ul class="theme_list clearfix">
 			<li><a class="preview-theme-btns" href="/user/settings/theme" title="t0"><img src="/theme/t0/preview.jpg" width="120" height="120" /></a></li>
@@ -21,8 +23,6 @@ $this->headScript()->appendFile("/js/ediary/all.js");
 		<div class="theme_list_footer">
 			<a href="#" id="change-theme-btn" class="btn">保存</a>
 		</div>
-		<script type="text/javascript"> (function() { Ediary.ThemeManager.init(); })(); </script>
 	</div><!-- /toolbar-tabs-theme -->
-		
     </div>
 </div><!-- /settings-tabs -->

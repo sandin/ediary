@@ -92,8 +92,8 @@ class Upload_IndexController extends Zend_Controller_Action
                 $fileInfo = $upload->store($this->_user->id, $diary->id);
                 if ( $fileInfo != null ) {
                     // Make thumbnail
-                    $image = new Ediary_Image($upload->getFilename());
-                    $thumb = $image->thumbnail(160, 120, '{$1}_thumbnail');
+                    $ps = Ediary_Image_Factory::create(Ediary_Image_Factory::GD);
+                    $thumb = $ps->thumbnail($upload->getFilename(), 160, 120, '{$1}_thumbnail');
                     
                     $response = array(
                         'id' => $fileInfo['id'],
