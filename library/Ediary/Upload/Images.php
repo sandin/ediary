@@ -1,4 +1,11 @@
 <?php
+/**
+ * 上传文件 - 图片类
+ * 
+ * Require extensions:  fileInfo or magicMime
+ * @author lds
+ *
+ */
 class Ediary_Upload_Images extends Ediary_Upload
 {
     private static $allowExtension = array('jpg', 'png', 'gif');
@@ -15,7 +22,13 @@ class Ediary_Upload_Images extends Ediary_Upload
         $upload = $this->_fileTrasfer;
         $upload->addValidator('Size', false, self::$maxSize)
                ->addValidator('FilesSize', false, self::$maxCount * self::$maxSize)
-               ->addValidator('Extension', false, self::$allowExtension)
-               ->addValidator('MimeType', false, self::$allowMimeType);
+               ->addValidator('Extension', false, self::$allowExtension);
+        if (class_exists('finfo', false)) {  // PHP 5.3 以下不是默认支持     
+            $upload->addValidator('MimeType', false, self::$allowMimeType);
+        } else {
+            //use mime_content_type instead, no magicMime
+            $upload->addPrefixPath('Ediary', 'Ediary/');
+            $upload->addValidator('OldMimeType', false, self::$allowMimeType);
+        }
     }
 }

@@ -60,13 +60,7 @@ class Ediary_Upload
         return $this->_path;
     }
     
-    /**
-     * Try to receive post file 
-     * 
-     * @param String $inputName
-     * @return boolean 
-     */
-    public function recevie($inputName = null) {
+    protected function setUpFileTrasfer() {
         $upload = $this->_fileTrasfer;
         $upload->setDestination($this->_Path);
         foreach ($upload->getFileInfo() as $file) {
@@ -75,6 +69,18 @@ class Ediary_Upload
             $upload->addFilter('Rename', array('target' => $filename,
                 			   'overwrite' => true), $file['name'] );
         }
+        return $upload;
+    }
+    
+    /**
+     * Try to receive post file 
+     * 
+     * @param String $inputName
+     * @return boolean 
+     */
+    public function recevie($inputName = null) {
+        $upload = $this->setUpFileTrasfer();
+      
         try {
             return $upload->receive();
         } catch (Zend_File_Transfer_Exception $e) {

@@ -17,7 +17,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       			'basePath'  => APPLICATION_PATH . '/modules/' . strtolower($module),
             ));
         }
-
+        
         // load funtions
         include 'Ediary/Utility/functions.php';
     }
