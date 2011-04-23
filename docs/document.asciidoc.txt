@@ -11,6 +11,14 @@ lds <lds2012[at]gmail.com>
 |   0.1         |       lds         |      2011-03-20   |        
 |====================================================================
 
+== 安装 ==
+
+权限必须为 777:
+    * `/public/uploads/`
+    * `/application/data/cache/`
+    * `/application/data/log/log.txt`
+
+
 == application.ini 配置文件 ==
 
 `/application/configs/application.ini`

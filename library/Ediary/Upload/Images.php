@@ -26,7 +26,7 @@ class Ediary_Upload_Images extends Ediary_Upload
         if (class_exists('finfo', false)) {  // PHP 5.3 以下不是默认支持     
             $upload->addValidator('MimeType', false, self::$allowMimeType);
         } else {
-            //use mime_content_type instead, no magicMime
+            // 使用 imagegetsize 返回的mimetype
             $upload->addPrefixPath('Ediary', 'Ediary/');
             $upload->addValidator('OldMimeType', false, self::$allowMimeType);
         }

@@ -330,7 +330,6 @@ class Ediary_Validate_OldMimeType extends Zend_Validate_Abstract
         }
 
         $mimefile = $this->getMagicFile();
-        /*
         if (class_exists('finfo', false)) {
             $const = defined('FILEINFO_MIME_TYPE') ? FILEINFO_MIME_TYPE : FILEINFO_MIME;
             if (!empty($mimefile) && empty($this->_finfo)) {
@@ -346,15 +345,21 @@ class Ediary_Validate_OldMimeType extends Zend_Validate_Abstract
                 $this->_type = finfo_file($this->_finfo, $value);
             }
         }
-        */
 
         if (empty($this->_type) &&
-            (function_exists('mime_content_type') /* && ini_get('mime_magic.magicfile') */)) {
+            (function_exists('mime_content_type')  && ini_get('mime_magic.magicfile') )) {
                 $this->_type = mime_content_type($value);
         }
 
         if (empty($this->_type) && $this->_headerCheck) {
             $this->_type = $file['type'];
+        }
+        
+        // 只适合图片使用, 如果到这里还为空, 那么PHP版本肯定小于5.3
+        if (empty($this->_type) && (($info = getimagesize($value)) !== false)) {
+            if ($info[0] > 0 && $info[1] > 0) { // is image
+                $this->_type = $info['mime'];
+            }
         }
 
         if (empty($this->_type)) {

@@ -80,10 +80,11 @@ class Upload_IndexController extends Zend_Controller_Action
             
             if ($diary != null && $diary->user_id == $this->_user->id) {
                 // Recevie and Move file to the upload dir
-                $upload = new Ediary_Upload_Images(APPLICATION_PATH . '/../public/uploads');
+                $upload = new Ediary_Upload_Images(PUBLIC_PATH . '/uploads');
                 $upload->useSubDir(true);
-                if (! $upload->recevie('Filedata') ) { // Uploadify默认为$_FILES['FileData']
-                    // File invalid
+                
+                $result = $upload->recevie('Filedata'); // Uploadify默认为$_FILES['FileData']
+                if (! $result ) { // File invalid
                    $this->_helper->json(array('error' => $upload->getError())); 
                    return;
                 }

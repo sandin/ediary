@@ -7,6 +7,11 @@ class Ediary_Upload
     protected $_path;
     
     /**
+     * @var Ediary_Logger
+     */
+    private $logger; 
+    
+    /**
      * @var Zend_File_Transfer_Adapter_Http
      */
     protected $_fileTrasfer;
@@ -15,6 +20,7 @@ class Ediary_Upload
      * @param String $pathname 上传目录
      */
     public function __construct($pathname) {
+        $this->logger = Ediary_Logger::getInstance();
         $this->setPath($pathname);
         $this->_fileTrasfer = new Zend_File_Transfer_Adapter_Http();
     }
@@ -27,9 +33,10 @@ class Ediary_Upload
      */
     public function setPath($pathname) {
         if (! Ediary_Utility_File::mkdir($pathname)) {
+            $this->logger->log("上传目录不可写", Zend_Log::ERR);
             throw new Ediary_Exception("Cann't mkdir : " . $pathname);
         }
-        $this->_Path = realpath($pathname);
+        $this->_path = realpath($pathname);
     }
     
     /**
@@ -62,10 +69,11 @@ class Ediary_Upload
     
     protected function setUpFileTrasfer() {
         $upload = $this->_fileTrasfer;
-        $upload->setDestination($this->_Path);
+        $upload->setDestination($this->_path);
         foreach ($upload->getFileInfo() as $file) {
-            // unique file name
-            $filename = $this->_Path . '/' . time() . $file['name'];
+            // unique file name 
+            // TODO: 文件名处理下, 中文 空格等
+            $filename = $this->_path . '/' . time() . $file['name'];
             $upload->addFilter('Rename', array('target' => $filename,
                 			   'overwrite' => true), $file['name'] );
         }
@@ -80,11 +88,11 @@ class Ediary_Upload
      */
     public function recevie($inputName = null) {
         $upload = $this->setUpFileTrasfer();
-      
         try {
             return $upload->receive();
-        } catch (Zend_File_Transfer_Exception $e) {
+        } catch (Exception $e) {
             Ediary_Logger::log2($e->getMessage());
+            return false;
         }
     }
     
@@ -136,8 +144,8 @@ class Ediary_Upload
      */
     public function useSubDir($useOrNot = true) {
         if ($useOrNot) {
-            $this->_Path = self::getCurrentUploadDir($this->_Path);
-            return Ediary_Utility_File::mkdir($this->_Path);
+            $this->_path = self::getCurrentUploadDir($this->_path);
+            return Ediary_Utility_File::mkdir($this->_path);
         }
     }
     
@@ -157,8 +165,7 @@ class Ediary_Upload
      * @return mixed
      */
     public static function getRelativePath($pathname) {
-        $root = realpath(APPLICATION_PATH . '/../public');
-        return str_replace($root, '', $pathname);
+        return str_replace(realpath(PUBLIC_PATH), '', $pathname);
     }
     
     
