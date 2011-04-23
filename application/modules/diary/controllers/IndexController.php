@@ -25,7 +25,7 @@ class Diary_IndexController extends Zend_Controller_Action
         }
         
         $this->view->diary = $diary->toArray(true);
-        var_dump($this->view->diary);
+        //var_dump($this->view->diary);
     }
     
     private function _openDiary($id) {

@@ -160,7 +160,6 @@ class User_AccountController extends Zend_Controller_Action
     					'name' => 'form_login',
     	                'class' => "labelForm sForm"));
     	
-    	var_dump($this->_getParam('redirect'));
     	$action = (null != $this->_getParam('redirect'))
     	        ? '/login?redirect=' . $this->_getParam('redirect')
     	        : '/login';

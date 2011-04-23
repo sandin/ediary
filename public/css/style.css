@@ -926,6 +926,7 @@ form .text:focus {
 .diary_wrapper textarea {
     line-height: 24px; /* equals 2 */
     height: 815px;
+    overflow: hidden;
 }
 .diary_wrapper .diary_container {
     margin: 0 auto;
@@ -937,7 +938,7 @@ form .text:focus {
     padding-top: 24px; /* equals 2 */
     overflow: hidden;
 }
-#diary_content {
+#diary_content { 
     width: 572px;
 }
 .diary_header {
