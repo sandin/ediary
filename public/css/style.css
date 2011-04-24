@@ -888,6 +888,10 @@ form .text:focus {
 	display: inline;
 	margin-left: 5px;
 }
+.sForm .disabled {
+	background-color: #EEEEEE;
+    cursor: default;
+}
 
 .settingsForm label {
     background: #F5F5F5;
@@ -1196,6 +1200,7 @@ form .text:focus {
 	width: 80px;
 	height: 80px;
 	background: url("../images/bg_calender_80.png") no-repeat center center;
+	_background: url("../images/bg_calender_80.gif") no-repeat center center;
 }
 .diary_item_mete .meta_day,
 .diary_item_mete .meta_year_month {

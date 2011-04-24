@@ -58,6 +58,8 @@ var Editor = {
         titleElem:     '#diary_title',        // diary title selector
         idElem:        '#diary_id',           // diary id selector
         bodyElem:      '#diary_content',      // diary content selector
+        mceElemId:     'diary_content',       // mce textarea selector
+        mceWidth:      '572',                 // mce textarea width (px)
         containerElem: '.diary_container',    // diary content wrapper
         updateElem:    '#diary_last_update',  // diary last update time selector  
         ajaxSetup: {                          // jQuery.Ajax.Options
@@ -90,8 +92,8 @@ var Editor = {
         this.containerElem = $(o.containerElem);
         
         // Settup 
-        this.setupAjax();   // Setup Ajax
         this.setupTinyMCE();
+        this.setupAjax();   // Setup Ajax
         
         this.updateTitleContentLength();
         this.cache('diary', this.getValues());
@@ -140,12 +142,12 @@ var Editor = {
         }
         window.tinyMCE.init({
             mode: 'exact',
-            elements: this.bodyElem.attr('id'),
-            auto_focus : this.bodyElem.attr('id'),
+            elements: this.settings.mceElemId,
+            auto_focus : this.settings.mceElemId,
             readonly: this.isReadonly() ? 1 : 0,
-            width: this.bodyElem.width(),
+            width: this.settings.mceWidth,
             height: this.bodyElem.height(),
-            plugins: "safari,paste,inlinepopups,spellchecker,insertdatetime,nonbreaking",
+            plugins: "inlinepopups",
             theme : "advanced",
             skin: 'default',
             content_css : E.baseUrl + "/css/rte.css",
@@ -180,9 +182,8 @@ var Editor = {
                     self.setDefaultContent(ed);
                 });
                 */
-            },
-            template_replace_values : {
-            },
+            }
+            /* TODO: 快捷键
             setupcontent_callback: function(editor_id, body, doc) {
                 console.log(body, doc);
                 console.log($(body));
@@ -191,6 +192,7 @@ var Editor = {
                     self.doSave(true);
                 });
             }
+            */
         });
     },
     

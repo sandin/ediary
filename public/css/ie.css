@@ -1,3 +1,2 @@
 .diary_item_mete { background: transparent; filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/bg_calender_80.png', sizingMethod='scale'); }
 .fp_logo .inner .logo_big { background: transparent;  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/logo_big.png', sizingMethod='crop'); } /* TODO: IE7 */
-.fp_login { background: transparent url("../images/bg_fp_login.gif") no-repeat center center; }

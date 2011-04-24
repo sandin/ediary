@@ -141,14 +141,14 @@ class User_SettingsController extends Zend_Controller_Action
      	         
         $password = $form->createElement('password', 'password');
      	$password->setLabel(_t("新密码"))
-     	         ->setAttrib('class', 'text')
+     	         ->setAttrib('class', 'text disabled')
      	         ->setAttrib('disabled', 'disabled')
      	         ->setAttrib('readonly', 'readonly')
      	         ->addValidator(Ediary_User::getPasswordValidate());
      	         
      	$rePassword = $form->createElement('password', 'rePassword');
      	$rePassword->setLabel(_t("确认密码"))
-     	         ->setAttrib('class', 'text')
+     	         ->setAttrib('class', 'text disabled')
      	         ->setAttrib('disabled', 'disabled')
      	         ->setAttrib('readonly', 'readonly'); // 只在前端验证两次输入的密码是否相同
      			 

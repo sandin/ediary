@@ -1,14 +1,16 @@
 <?php
 $this->loadJquery();
-$this->headScript()->appendFile("/js/jquery.validate.js");
-$this->headScript()->appendFile("/js/ediary/all.js");
+$this->headScript()->appendFile("/js/jquery.validate.min.js");
+$this->headScript()->appendFile("/js/ediary/all.min.js");
 $this->inlineScript()->appendScript('
 $(document).ready(function(){
 	var E = Ediary; E.loadModule("Validator");
 	
     $("#form_settings").validate(E.Validator.getFormOptions("form_settings"));
     $("#oldPassword").focus(function(){
-    	$("#password, #rePassword").removeAttr("readonly").removeAttr("disabled");
+    	$("#password, #rePassword").removeAttr("readonly")
+    							   .removeAttr("disabled")
+    							   .removeClass("disabled");
  		return false;
     });
 });
