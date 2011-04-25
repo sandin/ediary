@@ -165,12 +165,29 @@ Ediary.extend('Date', function(E){
                      "七月","八月","九月","十月","十一月","十二月"],
         init: function() {
         },
+        
+        /**
+         * Data formator
+         * @param Date 
+         * @return String xxxx年xx月xx日
+         */
         getDateAndWeek: function(date) {
-            var date = new Date();
+            var date = date || new Date();
             return date.getFullYear() + "年"
                    + (date.getMonth()+1) + "月"
                    + date.getDate() + "日 "
                    + this.dayNames[date.getDay()];
+        }, 
+        /**
+         * Data formator for sql date
+         * @param Date
+         * @return String 0000-00-00
+         */
+        sqlDateFormator: function(date) {
+            var date = date || new Date();
+            if (jQuery.datepicker) {
+                return $.datepicker.formatDate('yy-mm-dd', date);
+            }
         }
     };
     

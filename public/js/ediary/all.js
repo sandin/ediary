@@ -263,12 +263,29 @@ Ediary.extend('Date', function(E){
                      "七月","八月","九月","十月","十一月","十二月"],
         init: function() {
         },
+        
+        /**
+         * Data formator
+         * @param Date 
+         * @return String xxxx年xx月xx日
+         */
         getDateAndWeek: function(date) {
-            var date = new Date();
+            var date = date || new Date();
             return date.getFullYear() + "年"
                    + (date.getMonth()+1) + "月"
                    + date.getDate() + "日 "
                    + this.dayNames[date.getDay()];
+        }, 
+        /**
+         * Data formator for sql date
+         * @param Date
+         * @return String 0000-00-00
+         */
+        sqlDateFormator: function(date) {
+            var date = date || new Date();
+            if (jQuery.datepicker) {
+                return $.datepicker.formatDate('yy-mm-dd', date);
+            }
         }
     };
     
@@ -1096,6 +1113,11 @@ var Editor = {
             this.repaint({'saved_at' : data.diary.saved_at});
             this.updateTitleContentLength();
             msg = i18n.SAVE_SUCCESS;
+            
+            // 取消"今天还没有写日记"提示
+            if (data.diary.created_date == E.Date.sqlDateFormator(new Date()) ) {
+                E.Tooltip.unCheck();
+            }
         }
         E.Notice.showMessage(msg, 3000);
     },
@@ -1258,7 +1280,7 @@ E.extend('Editor', Editor); // NAMESPACE
 
 })(jQuery, Ediary, window);
 /** 
- * Class Notice
+ * class Notice
  * 消息通知器, 提示用户相关信息
  * 
  * @author lds
@@ -1317,6 +1339,7 @@ var Notice = {
         if (typeof delay !== 'undefined') {
             this._hide(delay);
         }
+        return this;
     },
     
     getMessage: function() {
@@ -1332,8 +1355,8 @@ var Notice = {
             t.dialog = $(o.dialogElem);
             if (t.dialog.length == 0) {
                 t.dialog = $("<div></div>").attr('id', o.dialogElem.slice(1))
-                                             .attr('title', title)
-                                             .appendTo($('body'));
+                                           .attr('title', title)
+                                           .appendTo($('body'));
             }
             t.dialog.dialog({
                     modal: true,
@@ -1385,6 +1408,48 @@ var Notice = {
 };
 Ediary.extend('Notice', Notice);
 
+/**
+ * class Tooltip extends Notice
+ * 全局提示
+ */
+var Tooltip = $.extend({}, Notice, {
+    OK: 'ok',
+    ERR: 'error',
+    
+    options : {
+        element: '#gTips'
+    },
+    _setMessage : function(message) {
+        if (!!this.timer) clearTimeout(this.timer);
+        this.element.show();
+        this.getTextElement().html(message);
+    },
+    setType: function(className) {
+        this.element.removeClass().addClass(className);
+    },
+    getType: function() {
+        this.element.attr('class');
+    },
+    getTextElement: function() {
+        return this.element.children('span');
+    },
+    // 页面载入后检查是否含有PHP设置的提示信息
+    check: function() {
+        if (this.getTextElement().text() != '') {
+            this.element.show().data("today", false); 
+        }
+    },
+    // 取消显示PHP设置的提示信息
+    unCheck: function() {
+        if (false === this.element.data('today')) {
+            this.showMessage("", 0); //hide 
+        }
+    }
+});
+Ediary.extend('Tooltip', Tooltip);
+
+
+
 })(jQuery, Ediary, window);
 /**
  * class Pad
@@ -1402,6 +1467,7 @@ var Pad = {
     },
     
     init: function(options) {
+        E.Tooltip.init().check();
         this.initEditor(options);
         return this;
     },

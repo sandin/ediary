@@ -55,3 +55,20 @@ body {
     _line-height: 28px;
     padding: 0;
 }
+.fp_copyright {
+	position: absolute;
+	left: 6px;
+	bottom: 6px;
+}
+.fp_copyright a:link,
+.fp_copyright a:visited {
+	color: #666;
+	border-bottom: 1px solid #666;
+}
+.fp_copyright a:hover,
+.fp_copyright a:active {
+	color: #0063DC;
+	border-color: #0063DC;
+}
+	
+	

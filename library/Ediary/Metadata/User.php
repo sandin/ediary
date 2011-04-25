@@ -1,6 +1,7 @@
 <?php
 class Ediary_Metadata_User extends Ediary_Metadata
 {
+    const NOTICE = 'noticeMeAt';
     /**
      * @param String $user_id
      */

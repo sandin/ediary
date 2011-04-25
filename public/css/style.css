@@ -6,7 +6,7 @@ body,h1,h2,h3,h4,h5,h6,hr,p,blockquote,dl,dt,dd,ul,ol,li,pre,form,fieldset,legen
 ------------------*/
 body {
     background: #E0E1E3;
-    color: #666;
+    color: #333;
 }
 
 a:link { color: #0063DC; text-decoration: none; }
@@ -269,7 +269,7 @@ em {color:red;}
 #footer .copyright {
     font-size: 12px;
     float: left;
-    width: 300px;
+    width: 48%;
 }
 #footer a:link,
 #footer a:visited {
@@ -283,7 +283,7 @@ em {color:red;}
     margin-left: 10px;
     float: right;
     text-align: right;
-    width: 200px;
+    width: 48%;
 }
 #footer .links a {
     margin: 0 5px;
@@ -1278,6 +1278,29 @@ form .text:focus {
 	margin-top: 10px;
 }
 
+#gTips {
+    display: none; /* show by js */
+    position: absolute;
+    right: 0px; 
+    top: 40px;
+    width: 200px;
+    color: #333;
+    text-align: right;
+}
+#gTips span {
+	display: inline-block;
+    background: #FFC;
+    border: 1px solid #EEB;
+    padding: 2px 4px; 
+     -moz-border-radius: 0 0 0 5px;
+    -webkit-border-radius: 0 0 0 5px;
+    border-radius: 0 0 0 5px;
+}
+#gTips .ok span {
+    background: #59A051;
+    color: #FFF;
+    border-color: #447C3D;
+}
 	
 
 /* Debug {{{ 

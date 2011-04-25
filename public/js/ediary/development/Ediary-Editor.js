@@ -454,6 +454,11 @@ var Editor = {
             this.repaint({'saved_at' : data.diary.saved_at});
             this.updateTitleContentLength();
             msg = i18n.SAVE_SUCCESS;
+            
+            // 取消"今天还没有写日记"提示
+            if (data.diary.created_date == E.Date.sqlDateFormator(new Date()) ) {
+                E.Tooltip.unCheck();
+            }
         }
         E.Notice.showMessage(msg, 3000);
     },

@@ -1,0 +1,46 @@
+<?php
+$this->loadJquery();
+$this->headScript()->appendFile("/js/jquery.validate.min.js");
+$this->headScript()->appendFile("/js/ediary/all.min.js");
+$this->inlineScript()->appendScript('
+$(document).ready(function(){
+	var E = Ediary; E.loadModule("Validator");
+	
+    $("#form_settings").validate(E.Validator.getFormOptions("form_settings"));
+    $("#oldPassword").focus(function(){
+    	$("#password, #rePassword").removeAttr("readonly")
+    							   .removeAttr("disabled")
+    							   .removeClass("disabled");
+ 		return false;
+    });
+});
+');
+?>
+<div id="settings-tabs" class="content_box">
+	<div class="contentBox_tabNav">
+		<?php foreach($this->tabs as $i => $tab): ?>
+		<a class="contentBox_tabNav_tab<?php if ($i == 0) {echo ' first';} if (isset($tab['current'])) {echo ' current'; }?>" href="<?php echo $tab['url'] ?>"><?php echo $tab['title'] ?></a>
+		<?php endforeach; ?>
+    </div>
+    <div class="innerBox">
+    	<?php if(isset($this->messages)): ?>
+    	<div class="messages">
+    	    <?php foreach($this->messages as $msg) { echo $msg . '<br />'; } ?>
+    	</div>
+    	<?php endif; ?>
+    	
+    	<!-- form_settings -->
+    	<div class="">
+    		<p>为了您的数据迁移方便, 我们将提供多种格式的 <i>导入/导出</i> 功能, 让你的日记永不丢失<p>
+    		<br />
+    		
+    		<h3>XML格式</h3>
+    		<p><!-- a class="btn" href="#">导入</a--> <a class="btn" href="/feed/diarys/?user=<?php echo $this->user->id?>">导出</a></p>
+    		<br />
+    		<br />
+    		
+    		<p>PS. 正在开发更多格式的导出/导入功能, 敬请期待.</p>
+    		
+    	</div>
+    </div>
+</div><!-- /settings-tabs -->

@@ -36,12 +36,16 @@ class Ediary_Metadata
      * Get a metadata value
      * 
      * @param String $key
-     * @return String value, false when it's not exists
+     * @return String value, NULL when it's not exists
      */
     public function find($key) {
         return $this->_selectOrCount($key, false);
     }
     
+    /**
+     * @param String $key
+     * @return boolean
+     */
     public function isExists($key) {
         return $this->_selectOrCount($key, true);
     }
@@ -52,13 +56,14 @@ class Ediary_Metadata
         $select->where('meta_key = ?', $key)
                ->where($this->_objectField . ' = ?', $this->_objectId)
                ->limit(1);
-        if ($justCount) {
+        if ($justCount) { // only count
             $select->from($this->_table, 'COUNT(*)');
             $result = $db->fetchOne($select->__toString());
             return ($result > 0) ? true : false;
         } else {
             $select->from($this->_table, 'meta_value');
-            return $db->fetchOne($select->__toString());
+            $result = $db->fetchOne($select->__toString());
+            return ($result != false) ? $result : null;
         }
     }
     

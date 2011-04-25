@@ -20,6 +20,21 @@ test('testShowMessage', function() {
     equals(message, obj.element.html());
 });
 
+module("Module Tooltip", {
+    setup: function() {
+        this.obj = Ediary.Tooltip.init();
+    },
+    teardown: function() {
+        //this.obj.destroy();
+        this.obj = null;
+    }
+});
+
+test('testShowTip', function() {
+    this.obj.showMessage("message").setClass(Ediary.Tooltip.OK);
+    
+});
+
 
 module("Module Ediary", {
     setup: function() {

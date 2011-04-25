@@ -41,6 +41,7 @@
 		<delete dir="${build.dir}" />
 	</target>
 
+	<!-- -->
     <target name="concatenate">
         <echo message="正在合并js文件" />
         <!-- 删除上次生成的文件-->
@@ -96,8 +97,6 @@
 			<arg value="--js" />
             <mapper type="glob" from="*.tmp.js" to="${js.dir}/*.min.js" />
 		</apply>
-
-       
 
         <!-- minify css files -->
         <apply executable="java" parallel="false">

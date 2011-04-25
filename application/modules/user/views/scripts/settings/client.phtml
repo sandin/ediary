@@ -1,0 +1,59 @@
+<?php
+$this->loadJquery();
+$this->headScript()->appendFile("/js/jquery.validate.min.js");
+$this->headScript()->appendFile("/js/ediary/all.min.js");
+$this->inlineScript()->appendScript('
+$(document).ready(function(){
+	var E = Ediary; E.loadModule("Validator");
+	
+    $("#form_settings").validate(E.Validator.getFormOptions("form_settings"));
+    $("#oldPassword").focus(function(){
+    	$("#password, #rePassword").removeAttr("readonly")
+    							   .removeAttr("disabled")
+    							   .removeClass("disabled");
+ 		return false;
+    });
+});
+');
+?>
+<div id="settings-tabs" class="content_box">
+	<div class="contentBox_tabNav">
+		<?php foreach($this->tabs as $i => $tab): ?>
+		<a class="contentBox_tabNav_tab<?php if ($i == 0) {echo ' first';} if (isset($tab['current'])) {echo ' current'; }?>" href="<?php echo $tab['url'] ?>"><?php echo $tab['title'] ?></a>
+		<?php endforeach; ?>
+    </div>
+    <div class="innerBox">
+    	<?php if(isset($this->messages)): ?>
+    	<div class="messages">
+    	    <?php foreach($this->messages as $msg) { echo $msg . '<br />'; } ?>
+    	</div>
+    	<?php endif; ?>
+    	
+    	<!-- form_settings -->
+    	<div class="">
+    		<p>我们将提供多种途径来使得 <i>写日记</i> 更为便捷, 让你随时随地记录生活点滴.<p>
+    		<br />
+    	
+    		<h3>邮件更新</h3>
+    		<p>你可以使用<strong>注册邮箱</strong>给我们发送一封邮件的形式来更新你的日记.<p>
+    		<p>我们的邮箱地址: <a href="mailto:eirji01@163.com">eriji01@163.com</a> (临时) </p>
+    		<br />
+    		
+    		<!-- TODO: 尚在开发
+    		<h3>回复更新</h3>
+    		<p>你也可以使用<strong>定时提醒</strong>, 在收到通知时直接回复该邮件即可发布日记.<p>
+    		<p>马上去设置 <a href="/settings/notice">定时提醒</a></p>
+    		<br />
+    		-->
+    		
+    		<h3>MSN更新</h3>
+    		<p>你也可以使用<strong>MSN机器人</strong>, 每天任何时候只需发送一条消息给它, 即可更新日记</p>
+    		<p>我们的机器人帐号: <a href="msnim:chat?contact=eirji01@163.com">eriji@live.com</a> </p>
+    		<br />
+    		<br />
+    		
+    		<p>PS. 目前以上功能尚在测试阶段, 如遇错误敬请谅解.</p>
+    	</div>
+    	
+    </div>
+</div><!-- /settings-tabs -->

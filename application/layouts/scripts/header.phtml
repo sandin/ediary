@@ -4,6 +4,7 @@
         <?php if (isset($this->user)): //登录用户 ?>
         
         <a class="" href="/logout">退出</a><span class="vr"></span>
+        <a href="/user/settings/client">工具</a><span class="vr"></span>
         <a href="/diary/list">我的日记</a><span class="vr"></span>
         <a href="/diary">写日记</a><span class="vr"></span>
         <a href="/user/settings"><?php echo $this->user->email?></a>
@@ -17,3 +18,4 @@
     </div>
     <div id="notice" class="active"></div>
 </div>
+<div id="gTips"><span><?php echo $this->placeholder('message'); ?></span></div>

@@ -1,5 +1,5 @@
 /** 
- * Class Notice
+ * class Notice
  * 消息通知器, 提示用户相关信息
  * 
  * @author lds
@@ -58,6 +58,7 @@ var Notice = {
         if (typeof delay !== 'undefined') {
             this._hide(delay);
         }
+        return this;
     },
     
     getMessage: function() {
@@ -73,8 +74,8 @@ var Notice = {
             t.dialog = $(o.dialogElem);
             if (t.dialog.length == 0) {
                 t.dialog = $("<div></div>").attr('id', o.dialogElem.slice(1))
-                                             .attr('title', title)
-                                             .appendTo($('body'));
+                                           .attr('title', title)
+                                           .appendTo($('body'));
             }
             t.dialog.dialog({
                     modal: true,
@@ -125,5 +126,47 @@ var Notice = {
     }
 };
 Ediary.extend('Notice', Notice);
+
+/**
+ * class Tooltip extends Notice
+ * 全局提示
+ */
+var Tooltip = $.extend({}, Notice, {
+    OK: 'ok',
+    ERR: 'error',
+    
+    options : {
+        element: '#gTips'
+    },
+    _setMessage : function(message) {
+        if (!!this.timer) clearTimeout(this.timer);
+        this.element.show();
+        this.getTextElement().html(message);
+    },
+    setType: function(className) {
+        this.element.removeClass().addClass(className);
+    },
+    getType: function() {
+        this.element.attr('class');
+    },
+    getTextElement: function() {
+        return this.element.children('span');
+    },
+    // 页面载入后检查/显示是否含有PHP设置的提示信息
+    check: function() {
+        if (this.getTextElement().text() != '') {
+            this.element.show().data("today", false); 
+        }
+    },
+    // 取消显示PHP设置的提示信息
+    unCheck: function() {
+        if (false === this.element.data('today')) {
+            this.showMessage("", 0); //hide 
+        }
+    }
+});
+Ediary.extend('Tooltip', Tooltip);
+
+
 
 })(jQuery, Ediary, window);

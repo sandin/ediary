@@ -236,6 +236,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 			)
 		);
 		
+		// API
         $restRoute = new Zend_Rest_Route($front, array(), array(
     		'api' => array('diarys')
         ));

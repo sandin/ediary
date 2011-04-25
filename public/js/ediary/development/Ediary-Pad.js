@@ -14,6 +14,7 @@ var Pad = {
     },
     
     init: function(options) {
+        E.Tooltip.init().check();
         this.initEditor(options);
         return this;
     },
