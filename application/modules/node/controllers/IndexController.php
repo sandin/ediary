@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 class Node_IndexController extends Zend_Controller_Action
 {
     private $cache;
@@ -11,7 +10,19 @@ class Node_IndexController extends Zend_Controller_Action
     
     public function indexAction()
     {
-        echo "no no a cache";
+    }
+    
+    public function nodeBlock() {
+        $view = $this->view; // innerView
+        $view->inner_sidebar = "sidebar";
+        $view->inner_content = file_get_contents(PUBLIC_PATH . '/static/help.html');
+        
+        $this->view->sidebar = $view->render("/templates/sidebar.phtml");
+        $this->view->content = $view->render("/templates/node.phtml");
+        $this->view->sidebarTitle = "宜日记帮助";
+        $this->view->contentTitle = "常见问题解答(FAQ)";
+        
+        echo $this->renderScript("templates/page.phtml");
     }
     
 }

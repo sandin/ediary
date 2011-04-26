@@ -1301,6 +1301,68 @@ form .text:focus {
     color: #FFF;
     border-color: #447C3D;
 }
+
+.grid_9 {
+}
+.grid_aside,
+.grid_content {
+	float: left;
+	display: inline;
+	/*border: 1px red solid;*/
+}
+.grid_9 .grid_aside {
+	width: 220px;
+	margin-right: 20px;
+}
+.grid_9 .grid_content {
+	width: 660px;
+}
+
+.title_unl,
+.node_title {
+    border-bottom: 1px solid #CCC;
+    color: #444;
+    font-size: 12px;
+    padding: 15px 10px 5px;
+}
+h3 .more {
+	position: absolute;
+	right: 10px;
+	top: 16px;
+	font-size: 12px;
+    font-weight: normal;
+}
+
+.sideNav {
+	margin: 10px 0;
+	padding: 0 10px;
+	list-style: inside;
+	font-size: 13px;
+}
+.sideNav li {
+	margin-bottom: 5px;
+}
+
+.help ol {
+	list-style: decimal;
+	padding-left: 2.5em;
+}
+.help h3 {
+    position: relative;
+}
+.help ol h3 {
+	background: #EEE;
+    font-size: 12px;
+    margin: 0.5em 0;
+    padding: 0.2em;
+}
+.help p {
+	 margin: 0.8em 0;
+}
+
+.node_content {
+	padding: 5px;
+}
 	
 
 /* Debug {{{ 

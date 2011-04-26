@@ -1,0 +1,13 @@
+<?php 
+    if (isset($this->node)) {
+        $node = $this->node; 
+    } else {
+        return _t("无内容");
+    }
+?>
+<div class="node">
+	<h3 class="node_title"><?php echo $node->title; ?></h3>
+	<div class="node_content">
+	    <?php echo $node->content ?>
+	</div><!-- /node_content -->
+</div><!-- /node -->

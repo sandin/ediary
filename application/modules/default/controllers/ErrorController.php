@@ -6,10 +6,14 @@ class ErrorController extends Zend_Controller_Action
     public function errorAction()
     {
         $errors = $this->_getParam('error_handler');
+        $code = $this->_getParam('code');
         
         if (!$errors) {
             $this->view->message = urldecode($this->_getParam('message'));
             return;
+        }
+        if (404 === code) {
+            $errors->type = Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_ROUTE;
         }
         
         switch ($errors->type) {

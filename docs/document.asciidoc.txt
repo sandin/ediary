@@ -103,6 +103,166 @@ Ediary_Db::addMagicQuotes($array);
 如果使用缓存系统, 缓存目录必须可读可写:
 `/application/data/cache`
 
+=== 生成HTML ===
+
+只需要在controller的init中只用cache helper声明哪几个action是需要被缓存的即可, 在无缓存的情况下, 正常访问该action页面, 则会自动在 `public/static` (可配置) 目录下生成 HTML文件, 而在下一次请求的时候, apache rewrite将直接将请求重写到HTML文件. 
+
+.例如
+
+[source]
+----------------------------------------------
+class Help_IndexController extends Zend_Controller_Action }
+
+  $this->_helper->cache(array('index'), array('allentries'));
+
+  public function indexAction() {
+  }
+
+}
+----------------------------------------------
+
+首次访问: `/help` , 会生成HTML文件于 `/public/static/help.html` , 下此同样使用 `/help` 访问时, 则会定向到该静态文件.
+
+== Module 多模块系统 ==
+
+本模块系统完全使用 Zend Framework 的MVC, 并在此基础上扩展了部分内容, 以统一模块风格.
+
+.目录结构:
+    * controllers , 控制器目录
+    * models , 模型目录
+    * views , 视图目录
+    * Bootstrap.php , 模块bootstrap文件.
+
+MVC三个目录与Zend Framework完全统一, 包括命名约定即子目录结构.
+
+需要主要的是每个目录可有一个独立的模块bootstrap文件, 该文件会在整个application boot的时候, 也就是在调用全局的Bootstrap文件之后, 调用每个模块的子bootstrap文件, 因此需要注意几点:
+
+    * 该bootstrap类的命名约定为 `模板名_Bootstrap` , 例如 `Help` 模块的bootstrap为 `class Help_Bootstrap extends Zend_Application_Module_Bootstrap` .
+    * 因为在bootstrap文件中的 `_initXXX()` 类型方法, 会在每次应用启动时(每次请求)都会被调用, 因此只应该把与 `bootstrap` 相关的逻辑内容(比如注册block等)放置在该文件中, 而其他无关的逻辑应该放置到独立的类中(models文件夹下). 而最好的约定是所有子模块的 bootstrap 只存在一个init类型方法, 即 `_initModule` .
+    
+=== 新建模块 ===
+
+暂无。
+
+
+== Block 区块系统 ==
+
+本系统支持一个全局性的block系统, 每个模块都可以在其中注册自己的block, 而全局行的所有其他模块和位置都可以调用注册了的block.
+
+=== 注册区块 ===
+
+例如目前有一个 `Node` 模块, 其想要注册一个 *文章区块* , 该区块用于显示某一篇文章内容. 可以在 `Node` 模块下的 `Bootstrap` 中注册一个区块(可以在独立的文件中定义区块的回调函数, 也可以直接在 `bootstrap` 中定义):
+
+例如:
+[source]
+--------------------------------------------------------
+<?php
+
+class Node_Bootstrap extends Zend_Application_Module_Bootstrap
+{
+    protected function _initModule() { 
+        $block = Ediary_Block::getInstance();
+
+        // 注册区块
+        $block->addBlock('Node', 'node', array($this, 'nodeBlock'));
+    }
+
+
+    // ...
+}
+
+--------------------------------------------------------
+ 
+其中注册区块需要提供三个参数:
+    * `$namespace` , 一般为模块名
+    * `$blockname` , 注册的区块名
+    * `$callback` , 区块回调函数, 可以为某个函数名, 也可以是某个类的方法名, 例如 `array("myClass", "myFunc")`
+
+=== 新建区块 ===
+
+区块其实就是一个回调函数, 该函数返回一个字符串, 该字符串即为区块的内容, 所以一般情况下, 该函数应该是返回一个 HTML 代码片段, 可以结合模板系统协作使用, 区块的主体用于准备响应数据, 而使用模板系统去格式化HTML代码, 以返回输出内容.
+   
+[source]
+--------------------------------------------------------
+class Node_Bootstrap extends Zend_Application_Module_Bootstrap
+{
+    // ...
+
+    public function nodeBlock() {
+        $view = new Zend_View();
+        $node = $db->fecthAll('SELECT * FROM {node} where node_id =?', $node_id);
+        $view->node = new Node($node);
+        return $view->render("templates/node.phtml");
+    }
+}
+--------------------------------------------------------
+
+== 使用区块 ==
+
+[source]
+------------------------------------------------------------------
+$content = Ediary_Block::getBlock('Node', "node", array('help'));
+------------------------------------------------------------------
+
+该方法返回的内容就是回调函数返回的内容，也就是该区块的HTML代码。
+
+== Theme 模板系统 ==
+
+本程序提供了一个包装了 `Zend_View` 功能的模板系统，该模板用于固定格式的HTML代码生成，比如生成一个列表的HTML代码，或者生成一个导航菜单等。
+
+=== 使用模板 ===
+
+[source]
+------------------------------------------------------------
+$items = array(
+    array(
+     	'title' => '常见问题解答',
+        'link'  => '/help',
+        'current' => true
+    ),
+    array(
+        'title' => 'API 文档',
+        'link'  => '/help/api',
+    )
+);
+
+$html = Ediary_Theme::theme("Core", 'list', array(
+       		'items' => $items, 
+            'attrs' => array('class' => 'sideNav')));
+------------------------------------------------------------
+
+这里调用的是系统内置的列表模板，该模板用于生成一个 `<ul><li><a></a></li></ul>` 格式的链接表单.
+
+=== 自定义模板 ===
+
+该模板系统的底层是 `Zend_View` ,　因为一般情况下自定义模板就是提供一个 `.phtml` 的视图脚本，脚本中的变量依然是使用 `Zend_View` 风格的 `$this->foo` 来进行访问，例如：
+
+
+[source,html]
+------------------------------------------------------
+<ul class="sideNav">
+	<?php echo $this->content ?>
+	<li class="current"><a href="/help/faq">常见问题解答</a></li>
+	<li><a href="/help/api">API接口</a></li>
+</ul>
+------------------------------------------------------
+
+在调用该模板的时候只需要将content作为参数提供进去就行了，例如：
+`Ediary_Theme::theme("Node", "sidebar", array("content" => "foo"))`
+
+
+== 注册模板 ==
+
+模板注册的时候提供视图脚本的绝对路径即可, 例如
+
+[source]
+---------------------------------------------------------------
+ $listTemplate = $this->_path . "/views/templates/list.phtml";
+ Ediary_Theme::register("Core", "list", $listTemplate);
+----------------------------------------------------------------
+
+
+
 
 == Logger 日志系统 ==
 
@@ -304,7 +464,10 @@ array(
 
 因为 `session` 存储在数据表中, 所以其生命期不再由 `session.gc_maxlifetime`  或 服务器系统(比如清空session缓存目录) 来决定, 其持久化的层度只由本应用程序决定, 独立于运行在同一台服务器上的其他所有程序.
 
-== Theme 样式布局 ==
+
+
+
+== Style 样式布局 ==
 
 样式应以简洁为主. 还原日记的本质, 靠近纸质书写的体验.
 
@@ -318,7 +481,8 @@ array(
 .首页模板
 `/application/modules/default/views/script/index/index.phtml`
 
-=== 主题 ===
+
+=== User theme 用户主题 ===
 
 每个用户默认都拥有一个主题设置.
 

@@ -11,6 +11,10 @@ class Ediary_Core
     public static function exitApp($msg = '') {
         self::gotoUrl('/error/' . urlencode($msg));
     }
+    
+    public static function notFound() {
+        self::gotoUrl('/error/notfound/?code=404');
+    }
 
     public static function gotoUrl($url) {
         //TODO: add application base url
@@ -29,6 +33,20 @@ class Ediary_Core
         if (null != $view) {
             return $view->baseUrl($url);
         }
+    }
+    
+    /**
+     * Get module absolute path, not end with '/'
+     * 
+     * @param String $module module name, 空为当前模块
+     * @return String path
+     */
+    public static function getModulePath($module = null) {
+        $front = Zend_Controller_Front::getInstance(); 
+        if (null == $module) {
+            $module = $front->getRequest()->getModuleName();
+        }
+        return $front->getModuleDirectory($module);
     }
 
 }

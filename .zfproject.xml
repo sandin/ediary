@@ -285,6 +285,40 @@
             <viewFiltersDirectory/>
           </viewsDirectory>
         </moduleDirectory>
+        <moduleDirectory moduleName="help">
+          <apisDirectory enabled="false"/>
+          <configsDirectory enabled="false"/>
+          <controllersDirectory>
+            <controllerFile controllerName="Index">
+              <actionMethod actionName="index"/>
+            </controllerFile>
+          </controllersDirectory>
+          <formsDirectory enabled="false"/>
+          <layoutsDirectory enabled="false"/>
+          <modelsDirectory/>
+          <viewsDirectory>
+            <viewScriptsDirectory>
+              <viewControllerScriptsDirectory forControllerName="Index">
+                <viewScriptFile forActionName="index"/>
+              </viewControllerScriptsDirectory>
+            </viewScriptsDirectory>
+            <viewHelpersDirectory/>
+            <viewFiltersDirectory/>
+          </viewsDirectory>
+        </moduleDirectory>
+        <moduleDirectory moduleName="core">
+          <apisDirectory enabled="false"/>
+          <configsDirectory enabled="false"/>
+          <controllersDirectory/>
+          <formsDirectory enabled="false"/>
+          <layoutsDirectory enabled="false"/>
+          <modelsDirectory/>
+          <viewsDirectory>
+            <viewScriptsDirectory/>
+            <viewHelpersDirectory/>
+            <viewFiltersDirectory/>
+          </viewsDirectory>
+        </moduleDirectory>
       </modulesDirectory>
       <viewsDirectory>
         <viewScriptsDirectory>
@@ -328,24 +362,33 @@
       <testApplicationDirectory>
         <testApplicationBootstrapFile filesystemName="bootstrap.php"/>
         <testApplicationControllerDirectory>
-          <testApplicationControllerFile filesystemName="IndexControllerTest.php"/>
-          <testApplicationControllerFile filesystemName="IndexControllerTest.php"/>
-          <testApplicationControllerFile filesystemName="InstallControllerTest.php"/>
-          <testApplicationControllerFile filesystemName="AccountControllerTest.php"/>
-          <testApplicationControllerFile filesystemName="LoginControllerTest.php"/>
-          <testApplicationControllerFile filesystemName="IndexControllerTest.php"/>
-          <testApplicationControllerFile filesystemName="DoControllerTest.php"/>
-          <testApplicationControllerFile filesystemName="ListControllerTest.php"/>
-          <testApplicationControllerFile filesystemName="SettingsControllerTest.php"/>
-          <testApplicationControllerFile filesystemName="ThemeControllerTest.php"/>
-          <testApplicationControllerFile filesystemName="IndexControllerTest.php"/>
-          <testApplicationControllerFile filesystemName="IndexControllerTest.php"/>
-          <testApplicationControllerFile filesystemName="DiarysControllerTest.php"/>
-          <testApplicationControllerFile filesystemName="DiarysControllerTest.php"/>
-          <testApplicationControllerFile filesystemName="IndexControllerTest.php"/>
-          <testApplicationControllerFile filesystemName="RegisterControllerTest.php"/>
-          <testApplicationControllerFile filesystemName="IndexControllerTest.php"/>
+          <testApplicationControllerFile/>
+          <testApplicationControllerFile/>
+          <testApplicationControllerFile/>
+          <testApplicationControllerFile/>
+          <testApplicationControllerFile/>
+          <testApplicationControllerFile/>
+          <testApplicationControllerFile/>
+          <testApplicationControllerFile/>
+          <testApplicationControllerFile/>
+          <testApplicationControllerFile/>
+          <testApplicationControllerFile/>
+          <testApplicationControllerFile/>
+          <testApplicationControllerFile/>
+          <testApplicationControllerFile/>
+          <testApplicationControllerFile/>
+          <testApplicationControllerFile/>
+          <testApplicationControllerFile/>
         </testApplicationControllerDirectory>
+        <testApplicationModulesDirectory>
+          <testApplicationModuleDirectory forModuleName="help">
+            <testApplicationControllerDirectory>
+              <testApplicationControllerFile forControllerName="Index">
+                <testApplicationActionMethod forActionName="index"/>
+              </testApplicationControllerFile>
+            </testApplicationControllerDirectory>
+          </testApplicationModuleDirectory>
+        </testApplicationModulesDirectory>
       </testApplicationDirectory>
       <testLibraryDirectory>
         <testLibraryBootstrapFile filesystemName="bootstrap.php"/>
