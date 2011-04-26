@@ -264,6 +264,27 @@
             <viewFiltersDirectory/>
           </viewsDirectory>
         </moduleDirectory>
+        <moduleDirectory moduleName="node">
+          <apisDirectory enabled="false"/>
+          <configsDirectory enabled="false"/>
+          <controllersDirectory>
+            <controllerFile controllerName="Index">
+              <actionMethod actionName="index"/>
+            </controllerFile>
+          </controllersDirectory>
+          <formsDirectory enabled="false"/>
+          <layoutsDirectory enabled="false"/>
+          <modelsDirectory/>
+          <viewsDirectory>
+            <viewScriptsDirectory>
+              <viewControllerScriptsDirectory forControllerName="Index">
+                <viewScriptFile forActionName="index"/>
+              </viewControllerScriptsDirectory>
+            </viewScriptsDirectory>
+            <viewHelpersDirectory/>
+            <viewFiltersDirectory/>
+          </viewsDirectory>
+        </moduleDirectory>
       </modulesDirectory>
       <viewsDirectory>
         <viewScriptsDirectory>
@@ -323,6 +344,7 @@
           <testApplicationControllerFile filesystemName="DiarysControllerTest.php"/>
           <testApplicationControllerFile filesystemName="IndexControllerTest.php"/>
           <testApplicationControllerFile filesystemName="RegisterControllerTest.php"/>
+          <testApplicationControllerFile filesystemName="IndexControllerTest.php"/>
         </testApplicationControllerDirectory>
       </testApplicationDirectory>
       <testLibraryDirectory>

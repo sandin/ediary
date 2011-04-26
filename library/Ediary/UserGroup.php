@@ -107,6 +107,7 @@ class Ediary_UserGroup extends Ediary_Query_Adapter
     /**
      * Get user's groups (support cache)
      * 
+     * TODO: 取消cache特性
      * @param String $user_id
      * @param boolean $useCache use cache or not
      * @return Array a list of Groups' name
@@ -116,7 +117,7 @@ class Ediary_UserGroup extends Ediary_Query_Adapter
         
         if ( $useCache ) {
             $cacheKey = $user_id . '_userGroups'; 
-            $cache = Ediary_Cache::getCache();
+            $cache = Ediary_Cache::getCache('database');
             if ( ($result = $cache->load($cacheKey)) === false ) {
                 $result = self::_getUserGroups($user_id);
                 $cache->save($result, $cacheKey);

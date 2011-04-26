@@ -1,20 +1,49 @@
 SetEnv APPLICATION_ENV development
 #SetEnv APPLICATION_ENV production
 
+#RewriteEngine On
+#RewriteCond %{REQUEST_FILENAME} -s [OR]
+#RewriteCond %{REQUEST_FILENAME} -l [OR]
+#RewriteCond %{REQUEST_FILENAME} -d
+#RewriteRule ^.*$ - [NC,L]
+#RewriteRule ^.*$ index.php [NC,L]
+
+# Expire header image/css/javascript 1 month
+#ExpiresActive On
+#ExpiresDefault A0
+#ExpiresByType image/gif A2592000
+#ExpiresByType image/png A2592000
+#ExpiresByType image/jpg A2592000
+#ExpiresByType image/jpeg A2592000
+#ExpiresByType image/ico A2592000
+#ExpiresByType text/css A2592000
+#ExpiresByType text/javascript A2592000
+
+# static
+AddType application/rss+xml .xml
+AddType application/atom+xml .xml
+
 RewriteEngine On
+
+RewriteCond %{REQUEST_URI} feed/rss$
+RewriteCond %{DOCUMENT_ROOT}/cached/%{REQUEST_URI}.xml -f
+RewriteRule .* cached/%{REQUEST_URI}.xml [L,T=application/rss+xml]
+
+RewriteCond %{REQUEST_URI} feed/atom$
+RewriteCond %{DOCUMENT_ROOT}/cached/%{REQUEST_URI}.xml -f
+RewriteRule .* cached/%{REQUEST_URI}.xml [L,T=application/atom+xml]
+
+RewriteCond %{DOCUMENT_ROOT}/cached/index.html -f
+RewriteRule ^/*$ cached/index.html [L]
+
+RewriteCond %{DOCUMENT_ROOT}/cached%{REQUEST_URI}.html -f
+#RewriteCond %{DOCUMENT_ROOT}/cached/%{REQUEST_URI}.html -f
+RewriteRule .* cached%{REQUEST_URI}.html [L]
+#RewriteRule .* cached/%{REQUEST_URI}.html [L]
+
 RewriteCond %{REQUEST_FILENAME} -s [OR]
 RewriteCond %{REQUEST_FILENAME} -l [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^.*$ - [NC,L]
-RewriteRule ^.*$ index.php [NC,L]
 
-# Expire header image/css/javascript 1 month
-ExpiresActive On
-ExpiresDefault A0
-ExpiresByType image/gif A2592000
-ExpiresByType image/png A2592000
-ExpiresByType image/jpg A2592000
-ExpiresByType image/jpeg A2592000
-ExpiresByType image/ico A2592000
-ExpiresByType text/css A2592000
-ExpiresByType text/javascript A2592000
+RewriteRule ^.*$ index.php [NC,L]

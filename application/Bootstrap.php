@@ -146,8 +146,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         $error_plugin = new Zend_Controller_Plugin_ErrorHandler();
         $error_plugin->setErrorHandlerModule('default')
-        ->setErrorHandlerController('error')
-        ->setErrorHandlerAction('error');
+                     ->setErrorHandlerController('error')
+                     ->setErrorHandlerAction('error');
         	
         $front->throwExceptions(true); // 人工捕捉异常
         // ->registerPlugin($error_plugin);

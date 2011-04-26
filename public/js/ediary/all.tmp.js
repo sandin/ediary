@@ -1408,7 +1408,7 @@ var Tooltip = $.extend({}, Notice, {
     getTextElement: function() {
         return this.element.children('span');
     },
-    // 页面载入后检查是否含有PHP设置的提示信息
+    // 页面载入后检查/显示是否含有PHP设置的提示信息
     check: function() {
         if (this.getTextElement().text() != '') {
             this.element.show().data("today", false); 

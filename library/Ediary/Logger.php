@@ -19,6 +19,11 @@ class Ediary_Logger
         
     }
     
+    public static function getLogger() {
+         self::initLogger();
+         return self::$logger;
+    }
+    
     /**
      * @return Ediary_Looger
      */
