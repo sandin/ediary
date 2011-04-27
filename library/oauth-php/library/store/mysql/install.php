@@ -14,6 +14,7 @@ if (mysql_errno())
 }
 mysql_select_db('test');
 */
+$db = Ediary_Db::getInstance();
 
 $sql = file_get_contents(dirname(__FILE__) . '/mysql.sql');
 $ps  = explode('#--SPLIT--', $sql);
@@ -22,11 +23,13 @@ foreach ($ps as $p)
 {
 	$p = preg_replace('/^\s*#.*$/m', '', $p);
 	
-	mysql_query($p);
+	//mysql_query($p);
+	$db->query($p);
 	if (mysql_errno())
 	{
 		die(' Error '.mysql_errno().': '.mysql_error());
 	}
 }
+echo true;
 
 ?>
