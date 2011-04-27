@@ -20,10 +20,13 @@ SetEnv APPLICATION_ENV development
 #ExpiresByType text/javascript A2592000
 #ExpiresByType text/html M604800
 
+# Expirese
 <FilesMatch "\.(ico|pdf|flv|jpe?g|png|gif|js|css|swf)$">
     ExpiresActive On
     ExpiresDefault "access plus 1 year"
 </FilesMatch>
+
+# GZip
 
 # static
 RewriteEngine On
