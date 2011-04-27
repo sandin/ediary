@@ -84,7 +84,8 @@ class Ediary_Form extends Zend_Form
             if ($i === 0) {
                 $elem->setDecorators(array(
                      array('HtmlTag', array('tag' => 'label')),
-                     'Text'));
+                     'Text',
+                ));
             } else {
                 // TODO: 处理多按钮情况
                 //$elem->setDecorators(array('Text'));

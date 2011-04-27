@@ -126,9 +126,9 @@ class User_AccountController extends Zend_Controller_Action
      		 
      	$email = new Zend_Form_Element_Text('email');
      	$email->setLabel(_t("邮箱"))
-     			 ->setRequired(true)
-     			 ->addValidator(new Zend_Validate_EmailAddress(array('mx' => false)))
-     	         ->setAttrib('class', 'text');
+     		  ->setRequired(true)
+     		  ->addValidator(new Zend_Validate_EmailAddress(array('mx' => false)))
+     	      ->setAttrib('class', 'text');
      	
      	$password = new Zend_Form_Element_Password('password');
      	$password->setLabel(_t("密码"))
@@ -143,7 +143,7 @@ class User_AccountController extends Zend_Controller_Action
      	           ->setAttrib('class', 'text');
      	           
         $submit = new Zend_Form_Element_Submit('op');
-        $submit->setValue(_t("立即注册"));
+        $submit->setLabel("立即注册");
         
      	$form->addElements2(array($email, $password, $rePassword))
      	     ->addButtons(array($submit));
@@ -182,7 +182,7 @@ class User_AccountController extends Zend_Controller_Action
      	         ->setAttrib('class', 'text');
      	         
      	$submit = new Zend_Form_Element_Submit('op');
-        $submit->setValue(_t("登录"));
+        $submit->setLabel("登录");
         
      	$form->addElements2(array($username, $password))
      	     ->addButtons(array($submit));

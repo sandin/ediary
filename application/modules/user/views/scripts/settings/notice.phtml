@@ -25,10 +25,11 @@ $(document).ready(function(){
     <div class="innerBox">
     	<?php if(isset($this->messages)): ?>
     	<div class="messages">
-    	    <?php foreach($this->messages as $msg) { echo $msg . '<br />'; } ?>
+    	    <?php foreach($this->messages as $msg) { echo $msg; } ?>
     	</div>
     	<?php endif; ?>
     	
+    	<h3>每天固定一个时间, 我们将提醒你该写日记了</h3><br />
     	<!-- form_settings -->
     	<?php echo $this->form; ?>
     </div>

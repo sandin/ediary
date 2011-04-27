@@ -17,6 +17,10 @@ class Ediary_Form_Decorator_Text extends Zend_Form_Decorator_Abstract
     public function buildInput()
     {
         $element = $this->getElement();
+        // Submit 使用label当value
+        if ($element->getType() == 'Zend_Form_Element_Submit') {
+            $element->setValue($element->getLabel());
+        }
         $helper  = $element->helper;
         return $element->getView()->$helper(
             $element->getName(),

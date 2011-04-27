@@ -14,12 +14,16 @@ class Node_PageController extends Zend_Controller_Action
     }
     
     public function aboutAction() {
+        $this->view->headTitle("关于我们");
+        
         $this->view->sidebar =  self::getSidebar();
         $this->view->content = Ediary_Block::getBlock('Node', "node", array('about'));
         $this->render("contact-us");
     }
     
     public function contactUsAction() {
+        $this->view->headTitle("联系我们");
+        
         $this->view->sidebar =  self::getSidebar();
         $this->view->content = Ediary_Block::getBlock('Node', "node", array('contactus'));
     }

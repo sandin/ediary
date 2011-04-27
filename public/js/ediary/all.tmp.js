@@ -678,7 +678,7 @@ var Editor = {
     
     TAG : 'Editor -> ',
     
-    AUTO_SAVE_INTERVAL : 5*60*1000, // 5 min 
+    AUTO_SAVE_INTERVAL : 30*1000, // 30s 
     
     isReady : false, 
     

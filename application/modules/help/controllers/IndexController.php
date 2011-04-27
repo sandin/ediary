@@ -11,6 +11,8 @@ class Help_IndexController extends Zend_Controller_Action
 
     public function indexAction()
     {
+        $this->view->headTitle("帮助中心");
+        
         $this->view->sidebar =  self::getSidebar();
         $this->view->sidebarTitle = _t("关于我们");
 

@@ -7,6 +7,7 @@ class Help_ApiController extends Zend_Controller_Action
     {
         /* Initialize action controller here */
         $this->_helper->cache(array('index', 'oauth', 'sdk'), array('allentries'));
+        $this->view->headTitle("API 文档");
     }
 
     public function indexAction()

@@ -102,7 +102,9 @@ em {color:red;}
 
 .messages {
     border: 1px solid #FAF3CA;
-    padding: 10px;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 10px;
     background: #FFFADC;
     margin: 2px 5px 20px;
 }
@@ -265,7 +267,7 @@ em {color:red;}
 }
 #footer .inner {
     border-top: 1px solid #CCC;
-    padding-top: 10px;
+    padding: 10px 0 20px;
     color: #666;
 }
 #footer .copyright {
@@ -745,7 +747,7 @@ form.profile .nolabel {
 .login_main {
     float: left;
     color: #6F6F6F;
-    width: 530px;
+    width: 536px;
     border-right: 1px dotted #D4D4D4;
     padding-right: 20px;
     margin: 25px 0 25px 35px;
@@ -941,7 +943,7 @@ form .text:focus {
 	background: #FFF url("../images/bg_diary_line_24.gif") repeat-y;
     font-size: 14px;/* equals 1 */
     line-height: 24px; /* equals 2 */
-    padding-top: 24px; /* equals 2 */
+    /*padding-top: 24px;  equals 2 */
     overflow: hidden;
 }
 #diary_content { 
@@ -953,9 +955,9 @@ form .text:focus {
 	height: 80px;
 }
 .diary_header .title {
-	background: #FFF url("../images/bg_diary_line_24.gif") no-repeat 0 bottom;
+	/*background: #FFF url("../images/bg_diary_line_24.gif") no-repeat 0 bottom;*/
 	margin: 0 64px;
-	padding-top: 55px;
+	padding-top: 50px;
 }
 .diary_header .lastupdate {
 	position: absolute;
@@ -1166,7 +1168,7 @@ form .text:focus {
 	border: 1px solid #EEEEEE;
 }
 .theme_list_footer {
-	text-align: right;
+	margin: 20px 0 0 10px;
 }
 
 .photo_list li {
@@ -1340,10 +1342,13 @@ h3 .more {
 }
 
 .sideNav {
-	margin: 10px 0;
+	margin: 18px 0;
 	padding: 0 10px;
-	list-style: inside;
 	font-size: 13px;
+	list-style: disc inside none;
+}
+.sideNav,
+.sideNav li {
 }
 .sideNav li {
 	margin-bottom: 5px;

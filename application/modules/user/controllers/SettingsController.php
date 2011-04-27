@@ -229,9 +229,12 @@ class User_SettingsController extends Zend_Controller_Action
      	         ->setAttrib('class', 'text disabled')
      	         ->setAttrib('disabled', 'disabled')
      	         ->setAttrib('readonly', 'readonly'); // 只在前端验证两次输入的密码是否相同
+     	         
+     	$submit = new Zend_Form_Element_Submit('op');
+        $submit->setLabel("保存");
      			 
-        $form->addElements2(array($username, $oldPassword, $password, $rePassword));
-      	$form->addElement('submit', 'op', array('label' => _t('保存'), 'class' => 'nolabel button'));
+        $form->addElements2(array($username, $oldPassword, $password, $rePassword))
+             ->addButtons(array($submit));
       	
         return $form;
     }
@@ -261,12 +264,15 @@ class User_SettingsController extends Zend_Controller_Action
      	         ->setAttrib('autocomplete', 'off')
      	         ->setOptions(array('multiOptions' => $options))
      	         ->setValue($value)
-     	         ->setDescription("<small><i>每天这个点, 我们将发一封邮件提醒你该写日记了.</i></small>")
+     	         ->setDescription("<i>发一封邮件提醒你.</i>")
      	         ->addValidator('Int')
      			 ->addFilter('Int');
      			 
-        $form->addElements2(array($hour));
-      	$form->addElement('submit', 'op', array('label' => _t('保存'), 'class' => 'nolabel button'));
+        $submit = new Zend_Form_Element_Submit('op');
+        $submit->setLabel("保存");
+     			 
+        $form->addElements2(array($hour))
+             ->addButtons(array($submit));
       	
         return $form;
     }
