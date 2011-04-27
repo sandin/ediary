@@ -422,6 +422,7 @@ var DiarysManager = {
 
         this.element = $(o.element);
         this.bindEvent();
+        
         this.flash();
         
         // debug 
@@ -577,6 +578,8 @@ var DiarysManager = {
         var self = this, 
             o = this.options,
             post = data ||  {count: 10, page: 1};
+            
+        $(o.tableElem).data('last', {}); // default value
         $.ajax({
             url: o.getUserDiaryUrl,
             type: 'post',

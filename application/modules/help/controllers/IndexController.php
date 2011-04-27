@@ -5,17 +5,14 @@ class Help_IndexController extends Zend_Controller_Action
 
     public function init()
     {
-        /* Initialize action controller here */
+        // HTML Cache
         $this->_helper->cache(array('index'), array('allentries'));
     }
 
     public function indexAction()
     {
         $this->view->headTitle("帮助中心");
-        
         $this->view->sidebar =  self::getSidebar();
-        $this->view->sidebarTitle = _t("关于我们");
-
         $this->view->content = Ediary_Block::getBlock('Node', "node", array('help'));
     }
 

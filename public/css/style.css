@@ -975,6 +975,13 @@ form .text:focus {
     font-weight: bold;
     font-size: 16px;
 }
+#diary_title:focus {
+	/* override */
+	-moz-box-shadow: 0;
+	-webkit-box-shadow: 0;
+	box-shadow: 0;
+	border: 0 none;
+}
 .diary_weather {
 	float: right;
 	width: 88px;

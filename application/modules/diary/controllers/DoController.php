@@ -10,9 +10,10 @@ class Diary_DoController extends Zend_Controller_Action
         $this->_helper->viewRenderer->setNoRender();
         $this->_helper->layout->disableLayout();
         
-        $this->_user = Zend_Registry::get('user');
-        if (isset($this->_user)) {
-            //TODO: 没有登录
+        $this->_user = Ediary_Auth::getUser();
+        if (null == $this->_user) {
+            //TODO: 没有登录, HTTP 403
+            exit();
         }
     }
 
@@ -156,7 +157,7 @@ class Diary_DoController extends Zend_Controller_Action
         $dataValidator = Ediary_Formator::getDateValidate();
         if ( (isset($input->since) && !$dataValidator->isValid($input->since))
           || (isset($input->max) && !$dataValidator->isValid($input->max)) ) {
-            return;
+            return; // TODO: 返回格式错误信息
         }
         
         if ($input->isValid()) {

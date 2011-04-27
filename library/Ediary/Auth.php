@@ -20,7 +20,7 @@ class Ediary_Auth
     /** 
      * Get user data in the session
      * 
-     * @return stdClass
+     * @return stdClass or NULL
      */
     public static function getUser() {
         if (Zend_Registry::isRegistered(self::KEY)) {
