@@ -9,6 +9,8 @@ class IndexController extends Zend_Controller_Action
         /* Initialize action controller here */
         $this->_user = Ediary_Auth::getUser();
         $this->view->pageClass = "indexPage";
+        
+        $this->_helper->cache(array('index'), array('allentries'));
     }
 
     public function indexAction()

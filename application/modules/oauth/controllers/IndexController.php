@@ -18,6 +18,8 @@ class Oauth_IndexController extends Zend_Controller_Action
      */
     public function indexAction()
     {
+        Ediary_Auth::adminRedirect(); // 此页面为测试专用
+        
         // action body
         $config = array(
     		'callbackUrl' => 'http://yiriji.com/oauth/index/callback',
@@ -46,6 +48,8 @@ class Oauth_IndexController extends Zend_Controller_Action
      * Mock client callback page
      */
     public function callbackAction() {
+        Ediary_Auth::adminRedirect(); // 此页面为测试专用
+        
         $this->_helper->JsonHelper->setNoView();
         
          // action body
@@ -77,6 +81,8 @@ class Oauth_IndexController extends Zend_Controller_Action
      * Mock client call API page
      */
     public function clientAction() {
+        Ediary_Auth::adminRedirect(); // 此页面为测试专用
+        
         $this->_helper->JsonHelper->setNoView();
         
         $config = array(

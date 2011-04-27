@@ -236,6 +236,30 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 			)
 		);
 		
+		// About list
+		$router->addRoute('about',
+			new Zend_Controller_Router_Route(
+				'about',
+				array(
+				    'module' => 'node',
+				    'controller' => 'page',
+				    'action' => 'about',
+				)
+			)
+		);
+		
+		// About list
+		$router->addRoute('contactUs',
+			new Zend_Controller_Router_Route(
+				'contact.us',
+				array(
+				    'module' => 'node',
+				    'controller' => 'page',
+				    'action' => 'contact.us',
+				)
+			)
+		);
+		
 		// API
         $restRoute = new Zend_Rest_Route($front, array(), array(
     		'api' => array('diarys')

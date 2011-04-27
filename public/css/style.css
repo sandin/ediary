@@ -54,6 +54,8 @@ em {color:red;}
 .getMore { float: right; padding-right: 5px; }
 
 .hide { display: none; }
+
+.small { font-size: 12px; }
 /*}}}*/
 
 /* Share style {{{ 
@@ -1309,6 +1311,10 @@ form .text:focus {
 	float: left;
 	display: inline;
 	/*border: 1px red solid;*/
+}
+.grid_content {
+	min-height: 500px;
+	_height: 500px;
 }
 .grid_9 .grid_aside {
 	width: 220px;

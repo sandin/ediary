@@ -9,7 +9,15 @@ lds <lds2012[at]gmail.com>
 |====================================================================
 |   Version     |       author      |       date        |       note
 |   0.1         |       lds         |      2011-03-20   |        
+|   0.2         |       lds         |      2011-04-26   |        
 |====================================================================
+
+== 系统要求 ==
+
+ZendFramework 1.11.5
+PHP >= 5.2, PDO, GD/Gmagick
+MySQL >= 5
+Apache, rewrite_mod
 
 == 安装 ==
 
@@ -613,7 +621,10 @@ NOTE: 为复用考虑, 建议使用写好的独立模板来显示分页列表.
 
 === API 应用接口 ===
 
-目前尚未开发外部应用接口,但部分controller提供的服务类似与API接口, 只是auth方式是通过session进行的, 所以在开发外部接口时可以参考这些内部接口的实现方法.
+本网站提供一款 REST (http://zh.wikipedia.org/zh/REST[wiki]) 风格的API应用接口，意在提供更多的写日记途径，例如手机客户端等。
+
+为了用户资源的安全，所有API请求都毕竟提供OAuth认证信息。关于OAuth认证信息可参考 http://www.eriji.com/help/api/oauth[OAuth认证文档] 。
+
 
 ==== 日记 ====
 
