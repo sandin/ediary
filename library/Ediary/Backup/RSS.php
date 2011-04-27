@@ -1,7 +1,6 @@
 <?php
 class Ediary_Backup_RSS implements Ediary_Backup_Interface
 {
-    const MAX_ITEM = 200; // 目前只允许导出最近200篇
     private $_templete;
 
     public function __constracut() {
@@ -20,12 +19,16 @@ class Ediary_Backup_RSS implements Ediary_Backup_Interface
      * @param array $args
      * @return string
      */
-    public static function export($args = array()) {
-        $userId = (isset($args['user'])) ? $args['user'] : -1;
+    public function export($args = array()) {
+        $default = array(
+            'user' => -1,     // user id
+            'max'  => 200     // max num of item
+        );
+        $args = array_merge($default, $args);
         
-        $user = Ediary_User::find($userId);
+        $user = Ediary_User::find($args['user']);
         if (null != $user) {
-            return self::createXML($user);
+            return self::createXML($user, $args['max']);
         }
     }
     
@@ -35,7 +38,7 @@ class Ediary_Backup_RSS implements Ediary_Backup_Interface
      * @param Ediary_User $user
      * @return string xml output
      */
-    private static function createXML($user) {
+    private static function createXML($user, $max) {
         // 用户名可能为空值
         $user->username = ("" != $user->username) ? $user->username : $user->email;
         
@@ -52,7 +55,7 @@ class Ediary_Backup_RSS implements Ediary_Backup_Interface
         $feed->setDateModified(time());
         $feed->addHub('http://pubsubhubbub.appspot.com/');
         
-        $diarys = Ediary_Diary::getDiarys($user->id, self::MAX_ITEM);
+        $diarys = Ediary_Diary::getDiarys($user->id, $max);
         if (null != $diarys && count($diarys) > 0) {
             foreach ($diarys as $diary) {
                 $feed->addEntry(self::createItem($feed, $diary, $user));

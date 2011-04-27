@@ -289,8 +289,18 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         // vars in view
         $view->user = Zend_Registry::get('user');
-        $theme = (isset($view->user->theme)) ? $view->user->theme : 't0';
-        $view->theme = $view->baseUrl("/theme/") . $theme . "/style.css";
+        
+        // user theme
+        $themeId = (isset($view->user->theme)) ? $view->user->theme : 't0';
+        $themeFile = PUBLIC_PATH . "/theme/" . $themeId . "/style.css";
+        $theme = '';
+        if ( file_exists($themeFile) ) {
+            $css = file_get_contents($themeFile);
+            if (false !== $css) {
+                $theme = '<style type="text/css">' . $css . '</style>';
+            }
+        }
+        $view->themeStyle = $theme;
         
         return $view;
     }
