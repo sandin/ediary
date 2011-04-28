@@ -68,6 +68,7 @@ class Ediary_Auth_Database
             if ($rememberMe) {
                 setcookie('ue', $loginedUser->email, time() + 2592000, '/', false);
                 Zend_Session::rememberMe(2592000);
+                Zend_Session::getSaveHandler()->setLifetime(2592000);
             }
             
             $result->result = true;
@@ -83,7 +84,7 @@ class Ediary_Auth_Database
     public static function logout() {
         $user = Zend_Auth::getInstance()->getIdentity();
         if (isset($user) && isset($user->email)) {
-            setcookie('ue', $user->email, -1, '/', false);
+            setcookie('ue', "", time()-3600, '/', false);
             Zend_Auth::getInstance()->clearIdentity();
             Zend_Session::forgetMe();
         }

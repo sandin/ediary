@@ -76,8 +76,12 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	  		'lifetimeColumn' => 'lifetime'
 	    );
 	    // must before setSaveHandler
-	    Zend_Session::setOptions(array('gc_maxlifetime' => strval(60*60*24*30))); // a month
+	    //Zend_Session::setOptions(array('gc_maxlifetime' => strval(60*60*24*30))); // a month
 	    Zend_Session::setSaveHandler(new Zend_Session_SaveHandler_DbTable($config));
+	    
+	    //if (! Zend_Session::isStarted() ) {
+            //Zend_Session::start();
+	    //}
     }
     
     protected function _initAuth() {
