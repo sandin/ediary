@@ -138,7 +138,7 @@ var Editor = {
     setupTinyMCE: function() {
         var self = this;
         if (typeof window.tinyMCE == 'undefined') {
-            E.include(E.baseUrl + "/js/tiny_mce/tinymce_hammer.js");
+            //E.include(E.baseUrl + "/js/tiny_mce/tinymce_hammer.js");
         }
         window.tinyMCE.init({
             mode: 'exact',

@@ -60,9 +60,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     
     protected function _initSession()
     {
+        /* TODO: 安装之前不存在seesions表, 所以会报错
         if ( Ediary_Config::isInstalling() ) {
-            return; // no install yet
-        }
+            //return; // no install yet
+        } */
         $db = Ediary_Db::getInstance();
         Zend_Db_Table_Abstract::setDefaultAdapter($db->getConnection());
         

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ediary-tinymce" default="default">
+    <description></description>
+
+    <property file="../../build.properties" />
+
+    <property name="concatenated" value="tinymce_all" />
+    <property name="theme" value="advanced" />
+    <property name="tinymce.dir" value="/js/tiny_mce" />
+    <property name="core.files" value="tiny_mce.js, langs/en.js" />
+
+    <target name="default">
+        <echo message="正在合并js文件" />
+    	<!-- 删除上次生成的文件-->
+    	<delete file="${concatenated}.js" />
+
+        <concat destfile="${concatenated}.js">
+        	<header trimleading="yes">
+        		window.tinyMCEPreInit = {
+        		  base : '${tinymce.dir}',
+        		  suffix : '',  
+        		  query : ''
+        		};  
+        	</header>
+            <filelist dir="" files="${core.files}" />
+
+            <!-- theme -->
+            <fileset dir="./themes/${theme}">
+                <include name="editor_template.js" />
+                <include name="langs/en.js" />
+            </fileset>
+
+            <!-- plugins -->
+            <fileset dir="./plugins">
+                <include name="inlinepopups/editor_plugin.js" />
+            </fileset>
+
+            <footer trimleading="yes">
+                tinymce.ScriptLoader.markDone(tinyMCE.baseURI.toAbsolute('${tinymce.dir}/langs/en.js'));
+                tinymce.ScriptLoader.markDone(tinyMCE.baseURI.toAbsolute('${tinymce.dir}/themes/advanced/editor_template.js'));
+                tinymce.ScriptLoader.markDone(tinyMCE.baseURI.toAbsolute('${tinymce.dir}/themes/advanced/langs/en.js'));
+                tinymce.ScriptLoader.markDone(tinyMCE.baseURI.toAbsolute('${tinymce.dir}/plugins/paste/editor_plugin.js'));
+                tinymce.ScriptLoader.markDone(tinyMCE.baseURI.toAbsolute('${tinymce.dir}/plugins/inlinepopups/editor_plugin.js'));
+            </footer>
+        </concat>
+    </target>
+
+</project>
