@@ -169,108 +169,16 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $front = $this->frontController;
         $router = $front->getRouter();
         
-        // Error
-        $router->addRoute('error',
-            new Zend_Controller_Router_Route(
-				'error/:message',
-                 array(
-				    'module' => 'default',
-				    'controller' => 'error',
-				    'action' => 'error')
-            )
-        );
+        $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/routes.ini', APPLICATION_ENV);
+        $router->addConfig($config, 'routes');
         
-        // Login
-		$router->addRoute('login',
-			new Zend_Controller_Router_Route(
-				'login/*',
-				array(
-				    'module' => 'user',
-				    'controller' => 'account',
-				    'action' => 'login',
-				)
-			)
-		);
-
-		// Logout
-		$router->addRoute('logout',
-			new Zend_Controller_Router_Route(
-				'logout/*',
-				array(
-				    'module' => 'user',
-				    'controller' => 'account',
-				    'action' => 'logout',
-				)
-			)
-		);
-
-		// Register
-		$router->addRoute('register',
-			new Zend_Controller_Router_Route(
-				'register/*',
-				array(
-				    'module' => 'user',
-				    'controller' => 'account',
-				    'action' => 'register',
-				)
-			)
-		);
-		
-		// Diarys list
-		$router->addRoute('diarys',
-			new Zend_Controller_Router_Route(
-				'diarys/*',
-				array(
-				    'module' => 'diary',
-				    'controller' => 'list',
-				    'action' => 'index',
-				)
-			)
-		);
-		
-		// Single diary
-		$router->addRoute('diary',
-			new Zend_Controller_Router_Route(
-				'diary/:id/*',
-				array(
-				    'module' => 'diary',
-				    'controller' => 'index',
-				    'action' => 'index'
-				),
-				array('id' => '\d+')
-			)
-		);
-		
-		// About list
-		$router->addRoute('about',
-			new Zend_Controller_Router_Route(
-				'about',
-				array(
-				    'module' => 'node',
-				    'controller' => 'page',
-				    'action' => 'about',
-				)
-			)
-		);
-		
-		// About list
-		$router->addRoute('contactUs',
-			new Zend_Controller_Router_Route(
-				'contact.us',
-				array(
-				    'module' => 'node',
-				    'controller' => 'page',
-				    'action' => 'contact.us',
-				)
-			)
-		);
-		
-		// API
+		// REST-API
         $restRoute = new Zend_Rest_Route($front, array(), array(
     		'api' => array('diarys')
         ));
-        $front->getRouter()->addRoute('rest', $restRoute);
-		
+        $router->addRoute('rest', $restRoute);
+        
+        return $router;
     }
 
     protected function _initExceptionHandler() {
