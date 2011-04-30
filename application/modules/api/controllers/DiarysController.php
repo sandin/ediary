@@ -7,51 +7,15 @@
  */
 class Api_DiarysController extends Zend_Controller_Action
 {
-    /**
-     * @var OAuthStore
-     */
-    private $_store; 
+    private $logger;
     
     public function init()
     {
         /* Initialize action controller here */
+        $this->logger = Ediary_Logger::getLogger();
         $this->_helper->JsonHelper->setNoView();
-        
-        //$this->_user = (Object) array( 'id' => '333' );
-        
-        $pdo = Ediary_Db::getInstance()->getAdapter()->getConnection();
-        $this->_store = OAuthStore::instance('PDO', array('conn' => $pdo));
-        
-        // OAuth
-        if (OAuthRequestVerifier::requestIsSigned())
-        {
-            try
-            {
-                $req = new OAuthRequestVerifier();
-                $user_id = $req->verify();
-
-                // If we have an user_id, then login as that user (for this request)
-                if ($user_id) {
-                    $this->_user = Ediary_User::find($user_id);
-                } else {
-                    echo "No Such User : " . $user_id;
-                    throw new OAuthException2('No such User');
-                }
-            }
-            catch (OAuthException2 $e)
-            {
-                // The request was signed, but failed verification
-                header('HTTP/1.1 401 Unauthorized');
-                header('WWW-Authenticate: OAuth realm=""');
-                header('Content-Type: text/plain; charset=utf8');
-
-                Ediary_Logger::log2($e->getMessage());
-                echo $e->getMessage();
-                exit();
-            }
-        } else {
-            echo "Not a OAuth request.";
-        }
+        $this->_user = Ediary_OAuth::authOrExit();
+        $ip = $this-> getRequest()-> getServer('REMOTE_ADDR'); 
     }
 
     public function indexAction()
@@ -83,7 +47,7 @@ class Api_DiarysController extends Zend_Controller_Action
             if ($diary != null && $diary->user_id == $this->_user->id) {
                 $result['diary'] = $diary->toArray(true);
             } else {
-                $result['error'] = '无此日记,或无权访问.';
+                $result['error'] = 'No such diary, or you cann\'t access it.';
             }
         } else {
             $result['error'] = 'Params invalid: id.';

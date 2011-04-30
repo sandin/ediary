@@ -252,11 +252,12 @@ class User_SettingsController extends Zend_Controller_Action
              ->setAction('/user/settings/notice')
              ->setMethod('post');
          
-        $range = array(6, 24); // min, max
+        $range = array(6, 23); // min, max
         $options = array('99' => '不提醒');
         for ($i = $range[0], $l = $range[1]; $i <= $l; $i++) {
-            $options[$i] = $i . '点'; 
+            $options[strval($i)] = $i . '点'; 
         }
+        $options['0'] = '24点';
         
      	$hour = $form->createElement('select', 'hour');
      	$hour->setRequired(true)

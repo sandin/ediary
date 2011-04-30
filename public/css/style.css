@@ -937,6 +937,7 @@ form .text:focus {
     overflow: hidden;
 }
 .diary_wrapper .diary_container {
+	position: relative;
     margin: 0 auto;
     width: 572px;
     height: 815px;
@@ -971,15 +972,15 @@ form .text:focus {
 	width: 200px;
 }
 #diary_title {
-	width: 200px;
+	width: 400px;
     font-weight: bold;
     font-size: 16px;
 }
 #diary_title:focus {
 	/* override */
-	-moz-box-shadow: 0;
-	-webkit-box-shadow: 0;
-	box-shadow: 0;
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
 	border: 0 none;
 }
 .diary_weather {
@@ -993,6 +994,15 @@ form .text:focus {
 
 .diary_footer {
 	height: 20px;
+}
+.diary_lock_overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: #eee;
+	width: 572px;
+    height: 815px;
+    opcity: 0.5;
 }
 
 .toolbar {
@@ -1036,14 +1046,14 @@ form .text:focus {
 #menu a#menu_share:hover{background-position:-168px -36px}
 #menu a#menu_share:active{background-position:-168px -72px}
 #menu a#menu_share.open{background-position:-168px -108px}
-#menu a#menu_lock{background-position:-210px 0}
-#menu a#menu_lock:hover{background-position:-210px -36px}
-#menu a#menu_lock:active{background-position:-210px -72px}
-#menu a#menu_lock.open{background-position:-210px -108px}
-#menu a#menu_lock{background-position:-210px 0}
-#menu a#menu_lock:hover{background-position:-210px -36px}
-#menu a#menu_lock:active{background-position:-210px -72px}
-#menu a#menu_lock.open{background-position:-210px -108px}
+#menu a#editor-btn-lock{background-position:-210px 0}
+#menu a#editor-btn-lock:hover{background-position:-210px -36px}
+#menu a#editor-btn-lock:active{background-position:-210px -72px}
+#menu a#editor-btn-lock.open{background-position:-210px -108px}
+#menu a#editor-btn-lock{background-position:-210px 0}
+#menu a#editor-btn-lock:hover{background-position:-210px -36px}
+#menu a#editor-btn-lock:active{background-position:-210px -72px}
+#menu a#editor-btn-lock.open{background-position:-210px -108px}
 #menu a#editor-btn-format{background-position:-252px 0}
 #menu a#editor-btn-format:hover{background-position:-252px -36px}
 #menu a#editor-btn-format:active{background-position:-252px -72px}

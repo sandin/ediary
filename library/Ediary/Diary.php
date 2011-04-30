@@ -22,7 +22,8 @@ class Ediary_Diary extends Ediary_Query_Record
         'mood' => 'normal',
     	'status' => self::STATUS_PRIVATE,
         'user_id' => '',
-        'journal_id' => ''
+        'journal_id' => '',
+        'encrypted' => '0'
     );
     
     /**
@@ -246,8 +247,15 @@ class Ediary_Diary extends Ediary_Query_Record
      * @return boolean is belong or not
      */
     public function isBelongTo($who) {
-        $userId = $who; // TODO: mixed, username, email, userId
-        return ( ($this->id === $userId) ? true : false );
+        $userId = -1;
+        if (is_numeric($who)) {
+            $userId = $who;
+        } else if ($who instanceof stdClass && isset($who->id)) {
+            $userId = $who->id;
+        } else if ($who instanceof Ediary_User ) {
+            $userId = $who->id;
+        } 
+        return ($this->user_id === $userId);
     }
     
     /**
@@ -288,6 +296,49 @@ class Ediary_Diary extends Ediary_Query_Record
         					  		'%' . $keywords . '%',
         					        '%' . $keywords . '%'));
     } 
+    
+    /**
+     * 该文章内容是否被加密
+     * 加密算法可能各自不同, 详见 Ediary_Encryption#TYPE_XXX
+     * 
+     * @return boolean
+     */
+    public function isEncrypted() {
+        return ($this->encrypted !== '0');
+    }
+    
+    /**
+     * 加密日记正文, 将加密后的内容储存在 enContent 字段
+     * 并删除未加密正文 content 字段内容
+     * 
+     * @param String $key
+     * @return Ediary_Diary
+     */
+    public function encrypt($key) {
+        $this->enContent = Ediary_Encryption::encrypt($key, $this->content);
+        $this->content = '';
+        $this->encrypted = strval(Ediary_Encryption::TYPE_MCRYPT);
+        $this->update();
+        return $this;
+    }
+    
+    /**
+     * 解密加密日记, 将加密内容解密后存入content字段内容
+     * 
+     * @param String $key
+     * $param boolean $forGood 是否修改持久层数据
+     * @return Ediary_Diary
+     */
+    public function decrypt($key, $forGood = false) {
+        //var_dump(Ediary_Encryption::decrypt($key, $this->enContent));
+        $this->content = Ediary_Encryption::decrypt($key, $this->enContent);
+        if ($forGood) {
+            $this->enContent = '';
+            $this->encrypted = '0';
+            $this->update();
+        }
+        return $this;
+    }
     
     /**
      * Convert this Object to an Array

@@ -25,6 +25,15 @@ class Ediary_Database_Schema {
      * @var Array<String tableName : String createSql>
      */
     private $tables = array(
+     	'options' => "CREATE TABLE {options} (
+            umeta_id    bigint(20)   unsigned NOT NULL auto_increment,
+            app_id      bigint(20)   unsigned NOT NULL default '0',
+            meta_key    varchar(255) default NULL,
+            meta_value  longtext,
+      
+            PRIMARY KEY  (umeta_id),
+            KEY meta_key (meta_key)
+        ) %s;",
         'users' => "CREATE TABLE {users} (
             id              bigint(20)     unsigned NOT NULL auto_increment,
             email           varchar(100)   NOT NULL default '', 
@@ -77,6 +86,8 @@ class Ediary_Database_Schema {
             saved_at        datetime       NOT NULL default '0000-00-00 00:00:00',
             user_id         bigint(20)     unsigned NOT NULL default '0',
             journal_id      bigint(20)     unsigned NOT NULL default '0',
+            encrypted		tinyint(1)     NOT NULL default '0',
+            enContent		longblob	   NOT NULL default '',
 
             PRIMARY KEY (id),
             KEY diary_author (user_id),
@@ -127,9 +138,9 @@ class Ediary_Database_Schema {
      * Enter description here ...
      * @param Ediary_Db $db
      */
-    public function __construct($db) {
-        $this->db = $db;
-        $this->dbh = $db->getConnection()->getConnection();
+    public function __construct($db = null) {
+        $this->db = isset($db) ? $db : Ediary_Db::getInstance();
+        $this->dbh = $this->db->getConnection()->getConnection();
         $this->logger = Ediary_Logger::getInstance();
     }
     
@@ -144,6 +155,11 @@ class Ediary_Database_Schema {
             $this->_createTable($tableName, $sql);
         }
         return $this->dbh->commit();
+    }
+    
+    // only for debug
+    public function addTable($tableKey) {
+        return $this->_createTable($tableKey, $this->tables[$tableKey]);
     }
     
     // for createTables

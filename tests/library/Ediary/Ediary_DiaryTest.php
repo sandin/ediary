@@ -21,6 +21,8 @@ class Ediary_DiaryTest extends ControllerTestCase
     protected function setUp()
     {
         parent::setUp();
+        //$s = new Ediary_Database_Schema();
+        //$s->createTables();
         
         $this->data1 = array(
         'title' => 'title',
@@ -175,6 +177,28 @@ class Ediary_DiaryTest extends ControllerTestCase
         $result = Ediary_Diary::search($data['user_id'], $keywords[0]);
         $this->assertNotNull($result);
         $this->assertTrue(count($result) > 0);
+    }
+    
+     /** @dataProvider dataProvider */
+    public function testEncrypt($data, $keywords) {
+        $key = "private user key";
+        $originContent = $data['content'];
+        
+        $diary = Ediary_Diary::create($data);
+        $diary->encrypt($key);
+        $this->assertEquals( $originContent,
+                             Ediary_Encryption::decrypt($key, $diary->enContent));
+                             
+        $diary->decrypt($key);
+        $this->assertEquals( $originContent, $diary->content);
+        
+        var_dump($diary->content);
+        $a= strlen($originContent);
+        $b = strlen($diary->content);
+        var_dump($a);
+        var_dump($b);
+        
+    
     }
 }
 ?>

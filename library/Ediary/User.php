@@ -51,7 +51,7 @@ class Ediary_User extends Ediary_Query_Adapter
      * Create a User
      * 使用前应该对$data进行数据格式等验证
      *
-     * @param Array $params diary data
+     * @param Array $data diary data, 详见$defaultFields, 必须提供 email, password
      * @return Ediary_Diary
      */
     public static function create($data = array()) {
@@ -415,6 +415,12 @@ class Ediary_User extends Ediary_Query_Adapter
         unset($arr['password']);
         unset($arr['security_code']);
         return $arr;
+    }
+    
+    public function __toString() {
+        return "[User, id = " . $this->id
+              ." email = " . $this->email
+              ." ]";
     }
     
 }

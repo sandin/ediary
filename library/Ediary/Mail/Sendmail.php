@@ -17,8 +17,6 @@ class Ediary_Mail_Sendmail
         $mail->Body = $body;
         
         return $mail->Send();
-        
-        
     }
 
 }

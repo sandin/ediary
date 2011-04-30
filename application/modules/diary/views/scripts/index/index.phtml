@@ -24,10 +24,29 @@ Ediary.Pad.init();
         <li><a id="editor-btn-upload" href="/upload" rev="#diary_id" class="menu" title="附件">&nbsp;</a></li>
         <li><a id="editor-btn-format" href="#toolbar-tabs-format" class="menu" title="格式">&nbsp;</a></li>
         <li><a id="editor-btn-theme" href="/user/settings/theme_ajax" class="menu" title="主题">&nbsp;</a></li>
+        <li><a id="editor-btn-lock" href="#toolbar-tabs-lock" class="menu" title="加密">&nbsp;</a></li>
     </ul>
 
     <div id="toolbar-tabs-format" class="innerBox">
         <div id="diary_editor_toolbar_docked"></div>
+        <a class="toolbar-close-btn" href="#">&nbsp;close</a>
+    </div>
+    
+    <div id="toolbar-tabs-lock" class="innerBox">
+    	<p>使用独立密码对日记内容进行算法加密, 除非输入正确密码, 否则任何人都不能解密其内容. <p><br />
+    	<form method="get" action="/diary/do/encrypt" class="labelForm sForm">
+    		<div class="form_element">
+	    		<label for="encrypt_password">密码:</label>
+	    		<input name="encrypt_password" type="text" class="text" value="" />
+    		</div>
+    		<div class="form_lement">
+	    		<label for="">&nbsp;</label>
+	    		<a href="#" class="btn">加密</a> &nbsp;
+	    		<a href="#" class="btn">解密</a>
+	    		<input type="hidden" value="<?php echo $this->diary['id']; ?>" />
+    		</div>
+    	</form>
+    	<br /><p style="text-align:right;">注: 此功能仅限高级用户可用, <a href="#" class="btn">升级账户</a></p>
         <a class="toolbar-close-btn" href="#">&nbsp;close</a>
     </div>
 
@@ -85,7 +104,7 @@ Ediary.Pad.init();
 
             <div class="diary_body">
                 <div class="diary_container">
-                    <textarea id="diary_content" class="" rows="40" cols="60" name="diary[content]"><?php echo $this->diary['content']; ?></textarea>
+                    <textarea id="diary_content" class=""<?php echo $this->diaryAttrs ?> rows="40" cols="60" name="diary[content]"><?php echo $this->diary['content']; ?></textarea>
                 </div>
             </div><!-- /body -->
 

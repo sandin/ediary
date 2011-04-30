@@ -3,6 +3,7 @@ error_reporting( E_ALL | E_STRICT );
 
 define('BASE_PATH', realpath(dirname(__FILE__) . '/../'));
 define('APPLICATION_PATH', BASE_PATH . '/application');
+define('PUBLIC_PATH', BASE_PATH . '/public');
 
 
 // Include path

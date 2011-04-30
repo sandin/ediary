@@ -123,6 +123,42 @@ class Diary_DoController extends Zend_Controller_Action
         }
     }
     
+ 	/**
+     *  diary by ID
+     * 
+     * REQUEST:
+     *  id int diary id [required]
+     *  key String encrypt key(user private key)
+     *  
+     * RESPONSE:
+     * {
+     *  diary : diary object
+     * }
+     * or NULL
+     */
+    public function encryptAction() {
+        return $this->_encrypt($_GET, true);
+    }
+    
+    private function _encrypt($request, $encryptOrDe) {
+        $filter = array('id' => 'Int', 'key' => 'StringTrim');
+        $validater = array('id' => array( 'presence' => 'required'),
+                    	   'key'=> array( 'presence' => 'required'));
+        $input = new Zend_Filter_Input($filter, $validater, $request);
+        
+        if ($input->isValid() && !$input->hasMissing()) {
+            $diary = Ediary_Diary::find($input->id);
+            if ($diary != null && $diary->isBelongTo($this->_user)) {
+                if (! $diary->isEncrypted()) {
+                    $diary->encrypt($input->key); 
+                } else {
+                    $diary->decrypt($input->key);
+                }
+                echo $this->view->json( array('diary' => $diary->toArray(true)) );
+            }
+        }
+    }
+    
     /**
      * Get current user's diarys
      * 

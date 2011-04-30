@@ -85,17 +85,21 @@ class Ediary_Metadata
         return $db->fetchPairs($select->__toString());
     }
     
-    /**
-     * Alias of self::getAll()
+     /**
+     * Get a metadata value
+     * Alias of find
      * 
-     * @return Array , like array( array('key' => 'value'), array('key' => 'value') )
+     * @param String $key
+     * @param mixed $default default value
+     * @return String value, NULL when it's not exists
      */
-    public function get() {
-        return self::getAll($this->_table, $this->_objectField, $this->_objectId);
+    public function get($key, $default = null) {
+        $value = self::find($key);
+        return ( ($value !== null) ? $value : $default );
     }
     
     /**
-     * set a metadata value, it will create a new one if the key is not exists
+     * set a metadata value, 不存在时insert, 存在则update
      * 
      * @param unknown_type $key
      * @param unknown_type $value

@@ -27,6 +27,11 @@ class Diary_IndexController extends Zend_Controller_Action
             }  
         }
         
+        if ($diary->isEncrypted()) {
+            $diary->content = bin2hex($diary->enContent);
+            $this->view->diaryAttrs = ' readonly="readonly"';
+        }
+        
         $this->view->diary = $diary->toArray(true);
         //var_dump($this->view->diary);
     }

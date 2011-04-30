@@ -394,6 +394,10 @@ class Ediary_Db
         return $this->conn->fetchOne($this->prefixTables($sql), $bind);
     }
     
+    public function fetchCol($sql, $bind = array()) {
+        return $this->conn->fetchCol($this->prefixTables($sql), $bind);
+    }
+    
     // TODO: other fetch methods
     
     /**

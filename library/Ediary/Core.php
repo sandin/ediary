@@ -2,6 +2,7 @@
 
 class Ediary_Core
 {
+    const UNAUTHORIZED = 401;
 
     /**
      * 非正常原因退出程序
@@ -14,6 +15,20 @@ class Ediary_Core
     
     public static function notFound() {
         self::gotoUrl('/error/notfound/?code=404');
+    }
+    
+    public static function exitWithCode($code = 404) {
+        switch ($code) {
+            case self::UNAUTHORIZED:
+                header('HTTP/1.1 401 Unauthorized');
+                header('Content-Type: text/plain; charset=utf8');
+                exit("Unauthorized");
+                break;
+            case 404:
+            default: 
+                break;
+        }
+        exit();
     }
 
     public static function gotoUrl($url) {

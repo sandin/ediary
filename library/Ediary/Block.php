@@ -14,7 +14,7 @@ class Ediary_Block
     /**
      * @return Ediary_Block
      */
-    public function getInstance() {
+    public static function getInstance() {
         if (null === self::$_instance) {
             self::$_instance = new self();
         }

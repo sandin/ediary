@@ -19,6 +19,9 @@ class Ediary_Logger
         
     }
     
+    /**
+     * @return Zend_Log
+     */
     public static function getLogger() {
          self::initLogger();
          return self::$logger;
