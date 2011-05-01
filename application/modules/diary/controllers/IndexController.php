@@ -20,7 +20,7 @@ class Diary_IndexController extends Zend_Controller_Action
             $diary = $this->_openDiary($diary_id);
         } else {
             // 打开今天的日记, 今天无日记则新建一篇
-            $diary = Ediary_Diary::findByDate(Ediary_Db::today(), $this->_user->id);
+            $diary = Ediary_Diary::findByDate(Ediary_Formator::today(), $this->_user->id);
             if (null == $diary) {
                 $diary = Ediary_Diary::newDiary();
                 $this->view->placeholder('message')->set("今日还没写日记");

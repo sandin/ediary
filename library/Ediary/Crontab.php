@@ -19,31 +19,42 @@ class Ediary_Crontab
     }
     
     /**
-     * Trigger
+     * Trigger, 外部触发
      * 
-     * @return 此时触发运行的任务数(实际运行)
+     * @param String $id 触发客户端ID(一般为ip地址)
+     * @return int 此时触发运行的任务数(实际运行)
      */
-    public function trigger($ip) {
+    public function trigger($id = 'Unknown') {
         //$this->resetTasks();
         $count = $this->start();
-        self::$logger->info("Crantab tringer from " . $ip . ", run tasks: " .$count);
+        self::$logger->info("Crantab tringer from " . $id . ", run tasks: " .$count);
         return $count;
     }
     
     /**
      * Start all tasks
-     * @return 运行任务数
+     * 只会运行当前需要被运行的计划任务, 即:
+     * 距该任务最后一次运行, 现已超过了指定的间隔时间
+     * 
+     * @return int 运行任务数
      */
     public function start() {
-        self::$_running = true;
-        
-        $count = 0;
-        foreach (self::$_tasks as $task => $options) {
-            $once = $this->runTask($task);
-            if ($once) $count++;
+        try
+        {
+            self::$_running = true;
+            $count = 0;
+            foreach (self::$_tasks as $task => $options) {
+                $once = $this->runTask($task);
+                if ($once) $count++;
+            }
+            self::$_running = false;
+            return $count;
         }
-        self::$_running = false;
-        return $count;
+        catch (Exception $e)
+        {
+            self::$logger->error($e->getMessage());
+        } 
+        return -1; 
     }
     
   
@@ -106,6 +117,7 @@ class Ediary_Crontab
     
     /**
      * Run a task
+     * 当前时间 - 最后运行时间 >= 间隔时间, 才会执行该任务
      * 
      * @param String $name task name
      * @return bool run once or not
@@ -122,7 +134,7 @@ class Ediary_Crontab
         
         $runOnce = false;
         if ($cronJob instanceof Ediary_CronJob 
-          && (time()- $lastRun > $period) ) 
+          && (time()- $lastRun >= $period) ) 
         {
             $cronJob->run();
             self::$_tasks[$name]['lastRunTime'] = time();

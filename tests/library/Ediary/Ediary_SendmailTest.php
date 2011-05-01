@@ -46,7 +46,7 @@ class Ediary_FileTest extends ControllerTestCase
     {
     }
     
-    /** @dataProvider dataProvider */
+    /** @dataProvider dataProvider 
     public function testSend($data) {
         $mail = new Ediary_Mail_Sendmail();
         
@@ -56,6 +56,33 @@ class Ediary_FileTest extends ControllerTestCase
                     "lds2012@gmail.com",
                     "SendMail localhost");
         var_dump($r);
+    }*/
+    
+    /*
+    public function testZendMail() {
+        $email = '172339248@qq.com';
+        $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/mail.ini', APPLICATION_ENV);
+        $transport = new Zend_Mail_Transport_Smtp($config->smtp->host, $config->smtp->config->toArray());
+        Zend_Mail::setDefaultFrom("eriji01@163.com", "PHPUNIT WITH CONFIG");
         
+        $mail = new Zend_Mail("utf-8");
+        $mail->setBodyText('今天该写日记了.')
+             ->addTo($email, $email)
+             ->setSubject(Ediary_Formator::getDateAndWeek());
+        $mail->send($transport);
+
+        echo Ediary_Notification_Mail::mailToString($mail);
+    }*/
+    
+    public function testNotifyTemp() {
+        $e = new Ediary_Notification_Mail();
+        $e->notify();
+    }
+    
+    public function testA() {
+        var_dump(Ediary_Formator::lastWeek());
+        var_dump(Ediary_Formator::lastWeek("RPC"));
+        
+        var_dump(Ediary_Notification_Mail::createMailBody(10000000));
     }
 }

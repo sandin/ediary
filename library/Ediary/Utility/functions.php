@@ -16,3 +16,20 @@ if (! function_exists('_t')) {
         return $str;
     }
 }
+
+if (! function_exists('ediary_substr')) {
+    /**
+     * wrapper substr()
+     * @param String $string
+     * @param Int $start
+     * @param Int $length
+     * @return string
+     */
+    function ediary_substr($string, $start, $length = null) {
+        if (function_exists('mb_substr')) {
+            return mb_substr($string, $start, $length, "UTF-8");
+        }
+        return substr($string, $start, $length);
+    }
+
+}

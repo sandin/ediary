@@ -7,6 +7,11 @@ abstract class Ediary_Notification_Abstract
         self::$db = Ediary_Db::getInstance();
     }
 
+    /**
+     * 获得需要提供的用户列表(订阅了当前小时提醒, 并且今天又还没写日记的用户)
+     * 
+     * @return Array<Array> inner array, (user_id, email)
+     */
     protected function getSendList() {
         $orderList = self::getNoticeList(); // at this hour
         //$orderList = array_keys($orderList);
@@ -16,6 +21,12 @@ abstract class Ediary_Notification_Abstract
         return $needToNotice;
     }
 
+    /**
+     * 获取所有今天已写日记的用户列表
+     * 
+     * @param String $date 0000-00-00
+     * @return Array<String> a list of user id
+     */
     public static function getWhoHasWrittenDiary( $date = null ) {
         $date = isset($date) ? $date : Ediary_Db::today();
         
@@ -25,7 +36,7 @@ abstract class Ediary_Notification_Abstract
     }
     
  /**
-     * 获得某一个整点需要通知的用户列表
+     * 获得订阅了某一整点通知的用户列表
      * 
      * @param int $hour 0~23, like date('G', time()), 空值表示当前时刻
      * @return Array, array( 'uid' => 'email', ...);

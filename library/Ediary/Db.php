@@ -318,6 +318,8 @@ class Ediary_Db
     
     /**
      * Get today data like '0000-00-00'
+     * 
+     * @deprecated use Ediary_Formater::today()
      * @return string
      */
     public static function today() {
