@@ -185,12 +185,12 @@ class Diary_DoController extends Zend_Controller_Action
             'since' => 'StringTrim',
             'max'   => 'StringTrim'
         );
-        $dateValidate = Ediary_Formator::getDateValidate();
+        $dateValidate = Ediary_Date::getDateValidate();
         $validatorRules = array();
         $input = new Zend_Filter_Input($filterRules, $validatorRules, $this->_request->getParams());
         
         // since和max为可选, 但如果提供就必须符合 0000-00-00 格式
-        $dataValidator = Ediary_Formator::getDateValidate();
+        $dataValidator = Ediary_Date::getDateValidate();
         if ( (isset($input->since) && !$dataValidator->isValid($input->since))
           || (isset($input->max) && !$dataValidator->isValid($input->max)) ) {
             return; // TODO: 返回格式错误信息
@@ -199,8 +199,8 @@ class Diary_DoController extends Zend_Controller_Action
         if ($input->isValid()) {
             $page  = (isset($input->page)) ? $input->page : 1;
             $count = (isset($input->count)) ? $input->count : 10;
-            $since = (isset($input->since)) ? Ediary_Formator::addTime($input->since) : null;
-            $max   = (isset($input->max))  ? Ediary_Formator::addTime($input->max, true) : null;
+            $since = (isset($input->since)) ? Ediary_Date::addTime($input->since) : null;
+            $max   = (isset($input->max))  ? Ediary_Date::addTime($input->max, true) : null;
             $paginator = Ediary_Diary::getDiarysPaginator($this->_user->id, $page, $count, $since, $max);
             
             // escape output

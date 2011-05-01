@@ -68,20 +68,22 @@ class Ediary_FileTest extends ControllerTestCase
         $mail = new Zend_Mail("utf-8");
         $mail->setBodyText('今天该写日记了.')
              ->addTo($email, $email)
-             ->setSubject(Ediary_Formator::getDateAndWeek());
+             ->setSubject(Ediary_Date::getDateAndWeek());
         $mail->send($transport);
 
-        echo Ediary_Notification_Mail::mailToString($mail);
+        echo Ediary_Mail::asString($mail);
     }*/
     
+    /*
     public function testNotifyTemp() {
         $e = new Ediary_Notification_Mail();
         $e->notify();
     }
+    */
     
     public function testA() {
-        var_dump(Ediary_Formator::lastWeek());
-        var_dump(Ediary_Formator::lastWeek("RPC"));
+        var_dump(Ediary_Date::lastWeek());
+        var_dump(Ediary_Date::lastWeek("RPC"));
         
         var_dump(Ediary_Notification_Mail::createMailBody(10000000));
     }

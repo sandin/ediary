@@ -7,8 +7,8 @@ class Ediary_Mail
     /**
      * 获取邮件配置
      * 
-     * @param String $section stmp/sendmail
-     * @return Zend_Config_Ini or NULL
+     * @param String $section like "stmp", "sendmail"
+     * @return mixed(Zend_Config_Ini|NULL)
      */
     public static function getConfig($section = null) {
         $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/mail.ini',
@@ -16,12 +16,19 @@ class Ediary_Mail
         if ($section != null) {
             return $config->get($section, null);
         }
+        return $config;
     }
     
-    public static function getTranspont($type) {
+    /**
+     * Get Zend Mail Transport
+     * 
+     * @param int $type see Ediary_Mail::XXXX
+     * @return Zend_Mail_Transport_Abstract
+     */
+    public static function getTransport($type) {
         $config = self::getConfig();
         
-        $transport = null;
+        $transport;
         switch ($type) {
             case self::SMTP:
                 $config = $config->get("smtp");
@@ -36,5 +43,18 @@ class Ediary_Mail
         }
         
         return $transport;
+    }
+    
+   /**
+     * Convert Zend_Mail to String
+     * 
+     * @param Zend_Mail $mail
+     * @return String 
+     */
+    public static function asString($mail) {
+        $to = $mail->getRecipients();
+        return 'Mail [ From :'  . $mail->getFrom() 
+                . ', To :'  . $to[0] 
+                . ']';
     }
 }

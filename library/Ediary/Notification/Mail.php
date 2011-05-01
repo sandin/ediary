@@ -14,7 +14,7 @@ class Ediary_Notification_Mail extends Ediary_Notification_Abstract
                                implements Ediary_Notification_Interface,
                                           Ediary_CronJob
 {
-    const FROM = '宜日记';
+    const FROM_NAME = '宜日记';
     const LAST_RUN_TIME_KEY = 'Notification_Mail#lastRunTime';
     
     private static $logger;
@@ -46,12 +46,10 @@ class Ediary_Notification_Mail extends Ediary_Notification_Abstract
         $result = array();
         $list = $this->getSendList();
         //var_dump($list);
-        //$list = array('10000000' => 'lds2012@gmail.com'); // mock
-        //$list = array('10000000' => '172339248@qq.com'); // mock
 
-        $transport = Ediary_Mail::getTranspont(Ediary_Mail::SENDMAIL);
-        $from = Ediary_Mail::getConfig("sendmail")->config->username;
-        Zend_Mail::setDefaultFrom($from, self::FROM);
+        $transport = Ediary_Mail::getTransport(Ediary_Mail::SMTP);
+        Zend_Mail::setDefaultFrom(Ediary_Mail::getConfig("smtp")->config->username,
+                                  self::FROM_NAME);
         
         foreach ($list as $uid => $email) {
             if (! Zend_Validate::is($email, "EmailAddress") )
@@ -61,9 +59,9 @@ class Ediary_Notification_Mail extends Ediary_Notification_Abstract
             $mail->addTo($email, $email)
                  ->setBodyText(self::createMailBody($uid))
                  //->setBodyHtml(self::createMailBody($uid))
-                 ->setSubject(Ediary_Formator::dayAndWeek() . " - 今天过的怎么样?")
+                 ->setSubject(Ediary_Date::dayAndWeek() . " - 今天过的怎么样?")
                  ->send($transport);
-            self::$logger->info('Sending ' . self::mailToString($mail));
+            self::$logger->info('Sending ' . Ediary_Mail::asString($mail));
         }
         
         self::$logger->info("Sent " . count($list) . " notice email");
@@ -88,7 +86,7 @@ http://www.eriji.com/user/settings/notice
 MAIL;
 
     	// get last week's diary if any
-    	$diary = Ediary_Diary::findByDate(Ediary_Formator::lastWeek(), $user_id);
+    	$diary = Ediary_Diary::findByDate(Ediary_Date::lastWeek(), $user_id);
     	if (null != $diary) {
     	    $diary->content = strip_tags($diary->content);
     	    $replace = "\n还记得 7 天前你写了些什么吗?\n\n"
@@ -101,21 +99,9 @@ MAIL;
     	}
     	
     	$msg = str_replace("{{diary}}", $replace, $msg);
-    	
     	if ($isHtml) {
             return nl2br($$msg);
         }
         return $msg;
-    }
-    
-    /**
-     * Convert Zend_Mail to String
-     * @param Zend_Mail $mail
-     */
-    public static function mailToString($mail) {
-        $to = $mail->getRecipients();
-        return 'Mail [ From :'  . $mail->getFrom() 
-                . ', To :'  . $to[0] 
-                . ']';
     }
 }

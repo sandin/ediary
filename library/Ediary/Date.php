@@ -1,5 +1,5 @@
 <?php
-class Ediary_Formator
+class Ediary_Date
 {
     const PHP_SQL_DATE_FORMAT = 'Y-m-d';
     const PHP_ZH_DATE_FORMAT = 'Y年n月j日';
