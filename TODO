@@ -1,0 +1,31 @@
+.INBOX:
+    * 取消user group cache
+    * 测试rememberMe
+    * 上传后图片的文件名带中文/空格...
+    * IE6 编辑器上方按钮focus状态有BUG
+    * 提供默认为非富文本编辑器模式,已提高速度, 用户可通过点击[格式]按钮打开富文本编辑器.
+    * 优化写日记页面, 速度有待提高, 可能是因为JS算法, JS文件, 或者是IE6的透明问题.
+        - update: 在初步优化后, IE6下速度只比现代浏览器慢几秒
+    * 日记列表侧栏个人信息
+    * 实现全局网站设置(不使用config.ini, 使用database, 并长期cache数据)
+
+.NEXT:
+    * IE6下存在打开链接后空白一片，必须刷新才能看到内容的BUG。[UPDATE] 注册页面多人报此BUG
+    * 上传附件有BUG. $this->_user 为空.
+    * 更换主题css为inline后, 更换主题功能失效.
+
+.DONE:
+    * Zend_Rest_Route API
+    * Cookie登录, 在清空cookie后, session依然存在,BUG.
+    * 测试switchTheme算法在多浏览器下是否功能正常.
+    * FALSH upload session写成文章.
+    * jQuery UI简化
+    * 检测AlphaImageLoader和DD_belatedPNG那个性能更好,目前IE6的速度比较明显被这两个拖下去了. 尽量减少使用半透明图片.
+        - update: DD_belatedPNG可能比滤镜要快.(有人测试出10倍的差别, 速度和内存), filter: alpha滤镜也会拖速度.
+        - update: 目前基本取消了IE6下半透明效果
+    * last_logined没有更新
+    * 底部 首页/关于我们 页面.
+    * validate.min 有问题
+
+.MAYBY:
+    * 考虑是否和点点网一样, tinymce内容使用js去写, 可以避免一开始显示出来的内容带有标签. blogbus大巴的编辑器和目前我们的一样,直接写到textarea里面. 各有各的好处.
