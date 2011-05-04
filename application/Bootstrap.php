@@ -147,8 +147,12 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $this->bootstrap('FrontController');
         $front = $this->frontController;
 
+        // Response header
+        $response = new Zend_Controller_Response_Http;
+        $response->setHeader('Content-Type', 'text/html; charset=UTF-8', true);
+        $front->setResponse($response);
+        
         // Plugins
-
         $error_plugin = new Zend_Controller_Plugin_ErrorHandler();
         $error_plugin->setErrorHandlerModule('default')
                      ->setErrorHandlerController('error')
@@ -193,6 +197,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $view->headTitle(_t("宜日记"))
              ->setSeparator(' - ')
              ->setDefaultAttachOrder('PREPEND');
+        
+        $view->setEncoding('UTF-8');
         
         // 公共模板在 'views/script' 目录下
         $view->addBasePath(APPLICATION_PATH . '/views');

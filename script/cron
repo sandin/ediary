@@ -1,6 +1,0 @@
-#!/bin/sh
-# eriji.com cron script
-
-url="http://yiriji.com/admin/cron";
-curl $url;
-echo " task(s)";
