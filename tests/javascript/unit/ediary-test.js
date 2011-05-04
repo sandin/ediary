@@ -31,7 +31,7 @@ module("Module Tooltip", {
 });
 
 test('testShowTip', function() {
-    this.obj.showMessage("message").setClass(Ediary.Tooltip.OK);
+    this.obj.showMessage("message").setType(Ediary.Tooltip.OK);
     
 });
 

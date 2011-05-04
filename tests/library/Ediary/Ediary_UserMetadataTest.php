@@ -21,9 +21,9 @@ class Ediary_UserMetadataTest extends ControllerTestCase
         $r = substr(microtime(), 3, 7); // random string
         return array(
             array('email10@gmail.com'.$r, self::$key, $hour),
-            //array('email20@gmail.com'.$r, self::$key, $hour),
-            //array('email30@gmail.com'.$r, self::$key, $hour),
-            //array('email40@gmail.com'.$r, self::$key, $hour),
+            array('email20@gmail.com'.$r, self::$key, $hour),
+            array('email30@gmail.com'.$r, self::$key, $hour),
+            array('email40@gmail.com'.$r, self::$key, $hour),
         );
     }
 

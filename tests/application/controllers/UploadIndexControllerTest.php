@@ -28,10 +28,11 @@ class UploadIndexControllerTest extends ControllerTestCase
         // mock request 
         $this->request->setMethod("GET");
         $this->dispatch("/upload/?id=" . $diary->id);
+        $this->assertResponseCode('200');
         //var_dump($this->getResponse()->getBody());
         
-        // 至少存在一张图片
-        $this->assertQueryCountMin('ul>li img', 1);
+        // 响应的HTML代码中至少存在一张图片
+        $this->assertQueryCountMin('img', 1);
     }
     
     public function dataProvider() {

@@ -17,6 +17,13 @@ abstract class ControllerTestCase extends Zend_Test_PHPUnit_ControllerTestCase
         );
         */
         parent::setUp();
+        
+        $hack = new stdClass();
+        $hack->username = 'admin';
+        $hack->id = 3;
+        $hack->email = "admin@lds.com";
+        $hack->theme = 't0';
+        Zend_Registry::set('user', $hack);
     }
 
     public function appBootstrap()

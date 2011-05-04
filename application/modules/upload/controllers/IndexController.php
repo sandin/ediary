@@ -7,7 +7,7 @@ class Upload_IndexController extends Zend_Controller_Action
     public function init()
     {
         /* Initialize action controller here */
-		//Ediary_Auth::authRedirect();
+		Ediary_Auth::authRedirect();
         $this->_user = Zend_Registry::get(Ediary_Auth::KEY);
     }
 

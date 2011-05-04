@@ -1114,3 +1114,36 @@
 2011-05-04T16:55:44+08:00 INFO (6): Sent 1 notice email
 2011-05-04T16:59:16+08:00 INFO (6): Ediary_Notification_Mail run once
 2011-05-04T16:59:16+08:00 INFO (6): Sent 0 notice email
+2011-05-04T17:06:37+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T17:06:37+08:00 INFO (6): Sent 0 notice email
+2011-05-04T17:06:46+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T17:06:46+08:00 INFO (6): Sent 0 notice email
+2011-05-04T17:06:53+08:00 INFO (6): Sent 1 notice email
+2011-05-04T17:10:39+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T17:10:39+08:00 INFO (6): Sent 0 notice email
+2011-05-04T17:14:01+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T17:14:01+08:00 INFO (6): Sent 0 notice email
+2011-05-04T17:14:10+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T17:14:10+08:00 INFO (6): Sent 0 notice email
+2011-05-04T17:14:18+08:00 INFO (6): Sent 1 notice email
+2011-05-04T17:15:51+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T17:15:51+08:00 INFO (6): Sent 0 notice email
+2011-05-04T17:16:00+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T17:16:00+08:00 INFO (6): Sent 0 notice email
+2011-05-04T17:16:07+08:00 INFO (6): Sent 1 notice email
+2011-05-04T17:17:11+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T17:17:11+08:00 INFO (6): Sent 0 notice email
+2011-05-04T17:17:20+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T17:17:20+08:00 INFO (6): Sent 0 notice email
+2011-05-04T17:17:28+08:00 INFO (6): Sent 1 notice email
+2011-05-04T17:17:28+08:00 INFO (6): Sent 1 notice email
+2011-05-04T17:17:28+08:00 INFO (6): Sent 1 notice email
+2011-05-04T17:17:28+08:00 INFO (6): Sent 1 notice email
+2011-05-04T17:20:11+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T17:20:11+08:00 INFO (6): Sent 0 notice email
+2011-05-04T17:20:20+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T17:20:20+08:00 INFO (6): Sent 0 notice email
+2011-05-04T17:20:27+08:00 INFO (6): Sent 1 notice email
+2011-05-04T17:20:27+08:00 INFO (6): Sent 1 notice email
+2011-05-04T17:20:27+08:00 INFO (6): Sent 1 notice email
+2011-05-04T17:20:27+08:00 INFO (6): Sent 1 notice email

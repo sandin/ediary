@@ -64,8 +64,8 @@ class Ediary_MetadataTest extends ControllerTestCase
         
         // test delete
         $metadata->delete($key);
-        $this->assertFalse($metadata->find($key));
         $this->assertFalse($metadata->isExists($key));
+        $this->assertNull($metadata->find($key));
     }
     
     public function dataProviderForGetAll() {
