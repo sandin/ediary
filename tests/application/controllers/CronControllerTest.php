@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework/TestCase.php';
 
-class DoControllerTest extends ControllerTestCase
+class CronControllerTest extends ControllerTestCase
 {
 
     public function setUp()
@@ -26,19 +26,19 @@ class DoControllerTest extends ControllerTestCase
         //var_dump($crontab->getTasks());
         
         $response = $this->_trigger(); // 初始检查
-        var_dump($response);
+        //var_dump($response);
         $this->assertEquals(0, $response); // 时间未到
         $this->resetRequest()->resetResponse();
         
         sleep($delay/2); // 中程检查
         $response = $this->_trigger(); 
-        var_dump($response);
+        //var_dump($response);
         $this->assertEquals(0, $response); // 时间未到
         $this->resetRequest()->resetResponse();
         
         sleep($delay); // 末了检查
         $response = $this->_trigger();
-        var_dump($response);
+        //var_dump($response);
         $this->assertEquals(1, $response); // 时间已到, 任务被触发
         $this->resetRequest()->resetResponse();
         $this->assertTrue(true);

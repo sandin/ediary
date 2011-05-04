@@ -9,11 +9,31 @@ class DoControllerTest extends ControllerTestCase
     {
         /* Setup Routine */
          parent::setUp();
+         
+        $hack = new stdClass();
+        $hack->username = 'admin';
+        $hack->id = 3;
+        $hack->email = "admin@lds.com";
+        $hack->theme = 't0';
+        Zend_Registry::set('user', $hack);
     }
 
     public function tearDown()
     {
         /* Tear Down Routine */
+    }
+    
+    private function _createDiary() {
+         $data = array(
+        	'title' => 'title',
+        	'content' => 'content',
+        	'weather' => 'sunshine',
+        	'mood' => 'normal',
+    		'status' => Ediary_Diary::STATUS_PRIVATE,
+        	'user_id' => '3',
+        	'journal_id' => '1'
+        );
+        return Ediary_Diary::create($data);
     }
 
     // ****************************************************
@@ -76,18 +96,7 @@ class DoControllerTest extends ControllerTestCase
         $this->assertEquals(count($response['diarys']), 1); // count 1
     }
     
-    private function _createDiary() {
-         $data = array(
-        	'title' => 'title',
-        	'content' => 'content',
-        	'weather' => 'sunshine',
-        	'mood' => 'normal',
-    		'status' => Ediary_Diary::STATUS_PRIVATE,
-        	'user_id' => '3',
-        	'journal_id' => '1'
-        );
-        return Ediary_Diary::create($data);
-    }
+  
     
     public function testDeleteAction() {
         $diary = $this->_createDiary();
@@ -100,7 +109,7 @@ class DoControllerTest extends ControllerTestCase
         $this->dispatch("/diary/do/delete");
         $this->assertResponseCode('200');
         
-        var_dump($this->getResponse()->getBody());
+        //var_dump($this->getResponse()->getBody());
         $response = Zend_Json::decode($this->getResponse()->getBody());
         $this->assertTrue($response['result']);
         
@@ -116,7 +125,6 @@ class DoControllerTest extends ControllerTestCase
         $response = Zend_Json::decode($this->getResponse()->getBody());
         $this->assertNull($response['result']);  // cann't delete 
     }
-
 
 }
 

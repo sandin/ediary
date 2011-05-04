@@ -12,7 +12,7 @@ class ErrorController extends Zend_Controller_Action
             $this->view->message = urldecode($this->_getParam('message'));
             return;
         }
-        if (404 === code) {
+        if (404 === $code) {
             $errors->type = Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_ROUTE;
         }
         

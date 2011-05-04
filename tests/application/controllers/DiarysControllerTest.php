@@ -14,6 +14,12 @@ class DiarysControllerTest extends PHPUnit_Framework_TestCase
     {
         /* Tear Down Routine */
     }
+    
+    public function testA() {
+        $this->markTestIncomplete(
+        	'This test has not been implemented yet.'
+        );
+    }
 
 
 }

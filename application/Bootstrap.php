@@ -75,8 +75,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	  		'dataColumn'     => 'data',
 	  		'lifetimeColumn' => 'lifetime'
 	    );
-	    // must before setSaveHandler
-	    //Zend_Session::setOptions(array('gc_maxlifetime' => strval(60*60*24*30))); // a month
 	    Zend_Session::setSaveHandler(new Zend_Session_SaveHandler_DbTable($config));
 	    
 	    //if (! Zend_Session::isStarted() ) {
@@ -88,17 +86,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $user = Ediary_Auth::getIndentity();
         //var_dump($user);
         Zend_Registry::set(Ediary_Auth::KEY, $user);
-        
-        /*
-        //TODO: DELETE ME ****** HACK **************************
-        $hack = new stdClass();
-        $hack->username = 'admin';
-        $hack->id = 3;
-        $hack->email = "admin@lds.com";
-        $hack->theme = 't0';
-        Zend_Registry::set('user', $hack);
-        // DELETE ME ****** HACK **************************
-         */
     }
     
     protected function _initCache() {

@@ -145,7 +145,9 @@ class Ediary_UserTest extends ControllerTestCase
         $this->assertTrue($result_ok->result);
         
         // check last_logined
-        $loginedUser = $result_ok->user;
+        $loginedUser = Ediary_User::find($result_ok->user->id);
+        $this->assertNotNull($loginedUser->created_at);
+        $this->assertNotNull($loginedUser->last_logined);
         $this->assertTrue($loginedUser->created_at !== $loginedUser->last_logined);
     }
 

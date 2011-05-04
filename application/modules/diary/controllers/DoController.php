@@ -12,8 +12,8 @@ class Diary_DoController extends Zend_Controller_Action
         
         $this->_user = Ediary_Auth::getUser();
         if (null == $this->_user) {
-            //TODO: 没有登录, HTTP 403
-            exit();
+            $this->getResponse()->setHttpResponseCode(403);
+            exit("No Access.");
         }
     }
 
@@ -162,7 +162,7 @@ class Diary_DoController extends Zend_Controller_Action
     /**
      * Get current user's diarys
      * 
-     * REQUEST:
+     * REQUEST: (POST)
      * 	count int diarys number
      *  page  int page number
      *  since Date 'yyyy-mm-dd' 
@@ -187,7 +187,7 @@ class Diary_DoController extends Zend_Controller_Action
         );
         $dateValidate = Ediary_Date::getDateValidate();
         $validatorRules = array();
-        $input = new Zend_Filter_Input($filterRules, $validatorRules, $this->_request->getParams());
+        $input = new Zend_Filter_Input($filterRules, $validatorRules, $_POST);
         
         // since和max为可选, 但如果提供就必须符合 0000-00-00 格式
         $dataValidator = Ediary_Date::getDateValidate();

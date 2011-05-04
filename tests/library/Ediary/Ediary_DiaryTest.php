@@ -192,11 +192,11 @@ class Ediary_DiaryTest extends ControllerTestCase
         $diary->decrypt($key);
         $this->assertEquals( $originContent, $diary->content);
         
-        var_dump($diary->content);
+        $this->assertNotNull($diary->content);
         $a= strlen($originContent);
         $b = strlen($diary->content);
-        var_dump($a);
-        var_dump($b);
+        //var_dump($a);
+        //var_dump($b);
         
     
     }

@@ -321,8 +321,8 @@ class Ediary_User extends Ediary_Query_Adapter
         $result = Ediary_Auth_Database::authenticate($email, $encodedPassword, $rememberMe);
         
         // udate last_logined
-        if ($result->result && isset($result->id)) {
-            $user = Ediary_User::find($resutl->id);
+        if ($result->result && isset($result->user->id)) {
+            $user = Ediary_User::find($result->user->id);
             // touch user last logined time
             if (null != $user) {
                 $user->last_logined = Ediary_Db::datetime();

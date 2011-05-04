@@ -1079,3 +1079,38 @@
 2011-05-02T10:18:02+08:00 INFO (6): Sent 0 notice email
 2011-05-02T11:18:13+08:00 INFO (6): Ediary_Notification_Mail run once
 2011-05-02T11:18:13+08:00 INFO (6): Sent 0 notice email
+2011-05-04T16:35:53+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T16:35:53+08:00 INFO (6): Sent 0 notice email
+2011-05-04T16:36:02+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T16:36:02+08:00 INFO (6): Sent 0 notice email
+2011-05-04T16:37:21+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T16:37:21+08:00 INFO (6): Sent 0 notice email
+2011-05-04T16:37:30+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T16:37:30+08:00 INFO (6): Sent 0 notice email
+2011-05-04T16:49:17+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T16:49:17+08:00 INFO (6): Sent 0 notice email
+2011-05-04T16:49:26+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T16:49:26+08:00 INFO (6): Sent 0 notice email
+2011-05-04T16:49:34+08:00 INFO (6): Sent 1 notice email
+2011-05-04T16:50:31+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T16:50:31+08:00 INFO (6): Sent 0 notice email
+2011-05-04T16:50:40+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T16:50:40+08:00 INFO (6): Sent 0 notice email
+2011-05-04T16:50:48+08:00 INFO (6): Sent 1 notice email
+2011-05-04T16:51:35+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T16:51:35+08:00 INFO (6): Sent 0 notice email
+2011-05-04T16:51:44+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T16:51:44+08:00 INFO (6): Sent 0 notice email
+2011-05-04T16:51:52+08:00 INFO (6): Sent 1 notice email
+2011-05-04T16:52:46+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T16:52:46+08:00 INFO (6): Sent 0 notice email
+2011-05-04T16:52:55+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T16:52:55+08:00 INFO (6): Sent 0 notice email
+2011-05-04T16:53:02+08:00 INFO (6): Sent 1 notice email
+2011-05-04T16:55:27+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T16:55:27+08:00 INFO (6): Sent 0 notice email
+2011-05-04T16:55:36+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T16:55:36+08:00 INFO (6): Sent 0 notice email
+2011-05-04T16:55:44+08:00 INFO (6): Sent 1 notice email
+2011-05-04T16:59:16+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-04T16:59:16+08:00 INFO (6): Sent 0 notice email
