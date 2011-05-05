@@ -132,5 +132,13 @@
 			<targetfile/>
         </apply>
 	</target>
+	
+	<!-- Replace Version -->
+	<target name="replace-version">
+		<replaceregexp match="@VERSION" replace="${release.version}" flags="g" byline="true">
+		    <fileset dir="${dist.dir}/" includes="*.js"/>
+		</replaceregexp>
+		<echo message="Replaced all @VERSION to ${release.version}." />
+	</target>
 
 </project>

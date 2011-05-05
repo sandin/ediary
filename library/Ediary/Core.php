@@ -34,6 +34,7 @@ class Ediary_Core
     public static function gotoUrl($url) {
         //TODO: add application base url
         header("location: " . $url);
+        exit();
     }
     
     public static function redirect($message, $title, $url) {
