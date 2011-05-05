@@ -30,6 +30,15 @@ body {
     top: -38%;
     /*border: 1px solid yellow;*/
 }
+.fp_guest {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 200px;
+	height: 100px;
+	text-align: right;
+}
+
 .fp_login {
     background: #fff;
     #background: transparent url("../images/bg_fp_login.gif") no-repeat center center;

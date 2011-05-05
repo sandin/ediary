@@ -14,7 +14,7 @@ class Ediary_Theme
     /**
      * @return Ediary_Theme
      */
-    public function getInstance() {
+    public static function getInstance() {
         if (null === self::$_instance) {
             self::$_instance = new self();
         }
@@ -28,7 +28,7 @@ class Ediary_Theme
      * 
      * @param String $namespace module name
      * @param String $name block name
-     * @param Array $params callback params
+     * @param array $params callback params
      * @return String response content 
      */
     public static function theme($namespace, $name, $params = array()) {

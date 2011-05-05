@@ -37,6 +37,9 @@
             <controllerFile controllerName="Settings">
               <actionMethod actionName="index"/>
             </controllerFile>
+            <controllerFile controllerName="Guest">
+              <actionMethod actionName="index"/>
+            </controllerFile>
           </controllersDirectory>
           <formsDirectory enabled="false"/>
           <layoutsDirectory enabled="false"/>
@@ -69,6 +72,9 @@
               <viewControllerScriptsDirectory forControllerName="Settings">
                 <viewScriptFile forActionName="index"/>
               </viewControllerScriptsDirectory>
+              <viewControllerScriptsDirectory forControllerName="Guest">
+                <viewScriptFile forActionName="index"/>
+              </viewControllerScriptsDirectory>
             </viewScriptsDirectory>
             <viewHelpersDirectory/>
             <viewFiltersDirectory/>
@@ -94,6 +100,9 @@
               <actionMethod actionName="index"/>
             </controllerFile>
             <controllerFile controllerName="Cron">
+              <actionMethod actionName="index"/>
+            </controllerFile>
+            <controllerFile controllerName="Plugins">
               <actionMethod actionName="index"/>
             </controllerFile>
           </controllersDirectory>
@@ -124,6 +133,9 @@
                 <viewScriptFile forActionName="index"/>
               </viewControllerScriptsDirectory>
               <viewControllerScriptsDirectory forControllerName="Cron">
+                <viewScriptFile forActionName="index"/>
+              </viewControllerScriptsDirectory>
+              <viewControllerScriptsDirectory forControllerName="Plugins">
                 <viewScriptFile forActionName="index"/>
               </viewControllerScriptsDirectory>
             </viewScriptsDirectory>
@@ -406,6 +418,16 @@
                 <testApplicationActionMethod forActionName="index"/>
               </testApplicationControllerFile>
               <testApplicationControllerFile forControllerName="Cron">
+                <testApplicationActionMethod forActionName="index"/>
+              </testApplicationControllerFile>
+              <testApplicationControllerFile forControllerName="Plugins">
+                <testApplicationActionMethod forActionName="index"/>
+              </testApplicationControllerFile>
+            </testApplicationControllerDirectory>
+          </testApplicationModuleDirectory>
+          <testApplicationModuleDirectory forModuleName="user">
+            <testApplicationControllerDirectory>
+              <testApplicationControllerFile forControllerName="Guest">
                 <testApplicationActionMethod forActionName="index"/>
               </testApplicationControllerFile>
             </testApplicationControllerDirectory>

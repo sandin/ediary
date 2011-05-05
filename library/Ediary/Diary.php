@@ -209,7 +209,18 @@ class Ediary_Diary extends Ediary_Query_Record
     public static function deleteById($id) {
         $db = self::getDb();
         return $db->delete($db->diarys,
-            $db->quoteInto('id= ?', $this->fields['id']));
+            $db->quoteInto('id= ?', $id));
+    }
+    
+    /**
+     * Delete all diarys of a particular user
+     * 
+     * @param unknown_type $user_id
+     */
+    public static function deleteAllByUserId($user_id) {
+        $db = self::getDb();
+        return $db->delete($db->diarys,
+            $db->quoteInto('user_id= ?', $user_id));
     }
     
     /**

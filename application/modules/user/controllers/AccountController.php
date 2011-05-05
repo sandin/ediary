@@ -47,6 +47,9 @@ class User_AccountController extends Zend_Controller_Action
 		// Auth Ok.
 		$this->view->form = _t("登录成功");
 	    $form->saveToken(); // in case reSubmit
+	    
+	    // Hook
+	    Ediary_Hooks::notify("onUserLogin", array($auth_result->user));
 	                
 	    $this->_autoRedirect('diary');
     }
@@ -69,6 +72,8 @@ class User_AccountController extends Zend_Controller_Action
     {
         // action body
         $this->_helper->viewRenderer->setNoRender();
+        $user = Ediary_Auth::getUser();
+        Ediary_Hooks::notify("onUserLogout", $user);
         Ediary_User::logout();
 		$this->_redirect('/');
     }
@@ -190,8 +195,6 @@ class User_AccountController extends Zend_Controller_Action
      	$form->getErrorMessages();
      	return $form;
     }
-    
-   
     
     /**
      * The User is exists or not

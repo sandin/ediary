@@ -1,6 +1,7 @@
 <?php
 class Ediary_Logger
 {
+    const LOGGER_TYPE_NULL 		= 'null';
     const LOGGER_TYPE_FILE 		= 'file';
     const LOGGER_TYPE_DATABASE	= 'database';
     const LOGGER_TYPE_FIREBUG	= 'firebug'; // Only Use this in your model, view and controller files
@@ -51,8 +52,11 @@ class Ediary_Logger
                 $writer = new Zend_Log_Writer_Firebug();
                 break;
             case self::LOGGER_TYPE_FILE :
-            default:
                 $writer = self::getStreamWriter();
+                break;
+            case self::LOGGER_TYPE_NULL:
+            default:
+                $writer = new Zend_Log_Writer_Null();
                 break;
         }
 

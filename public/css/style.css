@@ -25,6 +25,8 @@ em {color:red;}
 *html .clearfix { height: 1% }
 *+html .clearfix { height: 1% }
 .clearfix { display: block }
+
+.clear { clear: both; height: 0; overflow: hidden; }
 /*}}}*/
 
 /* Helper {{{ 
@@ -41,6 +43,7 @@ em {color:red;}
 .mb10 { margin-bottom: 10px; }
 .mt10 { margin-top: 10px; }
 .p10 { padding: 10px; }
+.p20 { padding: 20px; }
 
 .fright { float: right; }
 .fleft { float: left; }
@@ -116,6 +119,25 @@ em {color:red;}
 .newBtns:active { color: #000; } 
 .newBtns span { display: block; _display: inline-block; height: 20px; _height: 18px; line-height: 20px; overflow: hidden; border: 1px solid #fff; padding: 0 5px; _padding-top: 2px; }
 .newBtns img { vertical-align: middle; margin-right: 2px; }
+
+.blueBtn:link,
+.blueBtn:visited {
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    background: url("../images/blue-button.png") repeat-x scroll 0 0 transparent;
+    border: 1px solid #006DAB;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    height: 36px;
+    line-height: 36px;
+    padding: 0 20px;
+}
+.blueBtn:hover,
+.blueBtn:active {
+	background-position: 0 -36px;
+}
 
 /* title */
 .formTitle {
@@ -752,6 +774,7 @@ form.profile .nolabel {
     padding-right: 20px;
     margin: 25px 0 25px 35px;
 }
+.content_box h2,
 .login_main h2 {
     color: #6F6F6F;
     font-size: 25px;
@@ -1391,7 +1414,68 @@ h3 .more {
 .node_content {
 	padding: 5px;
 }
+
+.grid_9_3 .column {
+	float: left;
+	margin: 0 40px 0 0;
+    width: 260px;
+}
+
+.toolsBox {
+	padding: 20px 0 40px 40px;
+}
+.toolsBox h3 {
 	
+}
+	
+.toolsBox { }
+.toolsBox h4 {
+    color: #2C4762;
+    font-size: 19px;
+    font-weight: bold;
+    margin: 5px 0;
+    padding: 0;
+}
+.toolsBox h4 a {
+    color: #2C4762;
+}
+.toolsBox h4 span {
+	font-size: 12px;
+	color: red;
+	vertical-align: top;
+}
+.toolsBox p {
+	margin-bottom: 5px;
+}
+.toolsBox .thumbnail {
+	background: url("/images/goodies_thumbnail.gif") no-repeat center center;
+    height: 198px;
+    position: relative;
+    width: 260px;
+}
+.toolsBox .thumbnail img {
+	margin: 8px 0 0 8px;
+}
+
+#content .insert_text {
+	-moz-border-radius: 8px;
+	border-radius: 8px 8px 8px 8px;
+    background: none repeat scroll 0 0 #E2E6EB;
+    color: #525456;
+    margin: 15px 0;
+    padding: 5px 8px;
+    text-align: center;
+}
+
+#content .insert_text input {
+    background: none transparent;
+    border: medium none;
+    color: #525456;
+    text-align: center;
+    width: 100%;
+    font-weight: bold;
+    font-size: 18px;
+}
 
 /* Debug {{{ 
 -----------------*/

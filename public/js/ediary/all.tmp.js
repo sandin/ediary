@@ -983,8 +983,8 @@ var Editor = {
     
     // title or body is empty
     isEmpty: function() {
-       return ( 0 == this.titleElem.val().length 
-             || 0 == this.bodyElem.val().length );
+       return ( 0 === this.titleElem.val().length 
+             || 0 === this.bodyElem.val().length );
     },
     
     // title or body has been changed
@@ -1066,7 +1066,8 @@ var Editor = {
 
             this.rteSave();
             // 标题和内容都不能为空
-            if ( !force && (this.isEmpty() || this.isSaving) ) {
+            if ( (this.isEmpty() || this.isSaving) ) {
+                E.Notice.showMessage("日记为空, 写点东西先吧.", 1000);
                 return; // do nothing
             }
             if ( force || this.isChanged() ) {

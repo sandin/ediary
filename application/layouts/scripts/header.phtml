@@ -4,14 +4,14 @@
         <?php if (isset($this->user)): //登录用户 ?>
         
         <a class="" href="/logout">退出</a><span class="vr"></span>
-        <a href="/user/settings/client">工具</a><span class="vr"></span>
+        <a href="/node/page/tools">工具</a><span class="vr"></span>
         <a href="/diary/list">我的日记</a><span class="vr"></span>
         <a href="/diary">写日记</a><span class="vr"></span>
         <a href="/user/settings"><?php echo $this->user->email?></a>
         
         <?php else:  //游客 ?>
         
-        <a class="" href="register">注册</a><span class="vr"></span>
+        <a class="" href="/register">注册</a><span class="vr"></span>
         <a href="/login">登录</a>
         
         <?php endif;?>

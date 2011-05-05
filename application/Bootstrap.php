@@ -94,6 +94,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $dbCache = $manager->getCache('database');
         //var_dump($dbCache);
     }
+    
+    protected function _initPlugins() {
+        new Plugins_Guest_Plugin();
+    }
 
     protected function _initTranslate() {
 

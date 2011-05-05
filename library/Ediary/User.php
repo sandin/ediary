@@ -84,7 +84,7 @@ class Ediary_User extends Ediary_Query_Adapter
     public static function find( $who )  {
         if ( self::isAId($who) ) {
             $user = self::findById( $who );
-        } elseif ( self::isAEmail($who) ) {
+        } else if ( self::isAEmail($who) ) {
             $user = self::findByEmail( $who );
         } else {
             //TODO: other case
@@ -249,9 +249,11 @@ class Ediary_User extends Ediary_Query_Adapter
         if ( is_numeric( $who ) ) {
             // Got a User ID
             return self::isExistsId($who);
-        } elseif ( strpos( $who, '@' ) !== FALSE ) {
+        } else if ( strpos( $who, '@' ) !== FALSE ) {
             // Got an email address
             return self::isExistsEmail($who );
+        } else if ( is_string($who) ) {
+            return self::isExistsEmail($who ); // in case email invaild
         } else {
             return false;
         }

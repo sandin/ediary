@@ -28,12 +28,20 @@ class Node_PageController extends Zend_Controller_Action
         $this->view->content = Ediary_Block::getBlock('Node', "node", array('contactus'));
     }
     
+    public function toolsAction() {
+        $this->view->headTitle("发布工具");
+    }
+    
      public static function getSidebar() {
          $items = array(
             array(
                 'title' => '关于宜日记',
                 'link'  => '/about',
                 'current' => true
+            ),
+            array(
+                'title' => '功能介绍',
+                'link'  => '/node/page/tools'
             ),
             array(
                 'title' => '加入我们',

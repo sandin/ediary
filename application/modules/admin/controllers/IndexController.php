@@ -14,9 +14,9 @@ class Admin_IndexController extends Zend_Controller_Action
     public function indexAction()
     {
         // action body
-        $mail = new Ediary_Mail_Sendmail();
-        $r = $mail->send("172339248@qq.com", "test", "test", "post@eriji.com", "Name");
-        var_dump($r);
+        //$mail = new Ediary_Mail_Sendmail();
+        //$r = $mail->send("172339248@qq.com", "test", "test", "post@eriji.com", "Name");
+        //var_dump($r);
     }
     
     public function debugAction() {

@@ -279,6 +279,94 @@ $html = Ediary_Theme::theme("Core", 'list', array(
 日志文件默认存储在:
 `/application/log/log.txt`
 
+.使用实例
+[source]
+--------------------------------------
+<?php
+
+// 取得Logger实例
+/** @var Zend_Log */
+$logger = Ediary_Log::getLogger();
+
+// 记录一条日志
+$logger->info("logger message");
+
+--------------------------------------
+
+更多使用方法参见 http://framework.zend.com/manual/zh/manual.html[Zend Framework官方手册]
+
+== Hooks 钩子系统 ==
+
+本程序包括一系列内置钩子, 并支持自行注册钩子事件, 模块和插件都可以使用钩子函数.
+
+.注册钩子事件处理函数
+[source]
+----------------------------------------------
+<?php
+
+class Your_Plugin {
+    function your_hook_callback() {
+        return true;
+    }
+
+    public function registerHooks() {
+        Ediary_Hooks::register("onUserLogin", array($this, "your_hook_callback"));
+    }
+}
+----------------------------------------------
+
+当系统触发 `onUserLogin` 钩子事件时, 你注册的这个钩子函数就会被触发.
+
+
+.创建自己的钩子事件
+
+[source]
+----------------------------------------------
+<?php
+
+Ediary_Hooks::notify("onUserLogin", array($result->user));
+----------------------------------------------
+
+当调用 `Ediary_Hooks::notify` 方法的时候, 所有注册在该事件上的回调函数都会被触发.
+
+
+== 插件系统 ==
+
+插件系统与模块系统有些相似, 相当于一个轻量版的模块系统, 基本概念类似, 同样也可以使用钩子系统/模板系统, 只是独立于应用程序(不存放在 application 目录下), 而是统一放置在外部( /library/plugins ) 下.
+
+例如新建名为 `Tags` 的插件
+
+.目录结构
+/library/plugins/
+/library/plugins/Tags/
+/library/plugins/Tags/Plugins.php
+
+.插件要求
+`Plugins.php` , 此文件为插件的主文件, 该文件必须实现 `Ediary_Plugin` 接口, 该接口定义了几个每个插件都必须实现的方法, 具体参考 `Ediary_Plugin` 文件.
+
+.命名方式
+因为 `library` 文件夹为 include path, 所以其名字方式统一为 `Plugins_YourPlugin_XXX`, 例如 `/library/plugins/Tags/Plugins.php` 中的class名为 `Plugins_Tags_Plugins` .
+
+NOTE: 因为linux环境下对文件夹名和文件名的大小写敏感, 所以插件目录和插件的class文件名一律要求首字大写. 如本例中的文件夹名为 `Tags` , 插件主文件为 `Plugins.php`
+
+
+=== 主要方法 ===
+
+._initPlugin()
+    开启该插件时被调用. 
+
+._initPages()
+    开启该插件时注册的链接/页面, 主要用来定义插件的管理页面.
+
+.getInfo()
+    返回该插件的基本系统
+     * "name" => "Guest Plugin"      // 插件名称
+     * "author" => "lds",		     // 插件作者
+     * "version" => "1.0.0",         // 插件版本
+     * "minVersion" => "1.0.0",      // 所需系统最低版本
+     * "requirePlugins" => array(),  // 依赖的其他plugins
+     * "requireModules" => array(),  // 依赖的其他modules
+
 
 == i18n 多国语言 ==
 

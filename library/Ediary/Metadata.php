@@ -147,10 +147,12 @@ class Ediary_Metadata
     /**
      * Alias of $this->delete(null);
      * 
+     * @deprecated 已废除
      * @return The number of affected rows
      */
     public static function deleteAll() {
-        return $this->delete();
+        return null;
+        //return $this->delete();
     }
     
     /**
