@@ -1179,3 +1179,19 @@
 2011-05-06T20:12:53+08:00 INFO (6): Sent 1 notice email
 2011-05-06T20:12:53+08:00 INFO (6): Sent 1 notice email
 2011-05-06T20:12:53+08:00 INFO (6): Sent 1 notice email
+2011-05-06T20:42:39+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-06T20:42:39+08:00 INFO (6): Sent 0 notice email
+2011-05-06T20:42:48+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-06T20:42:48+08:00 INFO (6): Sent 0 notice email
+2011-05-06T20:42:56+08:00 INFO (6): Sent 1 notice email
+2011-05-06T20:42:56+08:00 INFO (6): Sent 1 notice email
+2011-05-06T20:42:56+08:00 INFO (6): Sent 1 notice email
+2011-05-06T20:42:56+08:00 INFO (6): Sent 1 notice email
+2011-05-06T20:50:53+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-06T20:50:53+08:00 INFO (6): Sent 0 notice email
+2011-05-06T20:51:02+08:00 INFO (6): Ediary_Notification_Mail run once
+2011-05-06T20:51:02+08:00 INFO (6): Sent 0 notice email
+2011-05-06T20:51:10+08:00 INFO (6): Sent 1 notice email
+2011-05-06T20:51:10+08:00 INFO (6): Sent 1 notice email
+2011-05-06T20:51:10+08:00 INFO (6): Sent 1 notice email
+2011-05-06T20:51:10+08:00 INFO (6): Sent 1 notice email

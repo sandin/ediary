@@ -29,7 +29,8 @@ class Ediary_PluginsTest extends ControllerTestCase
     
     public function testA() {
         $manager = Ediary_Plugin_Manager::getInstance();
-        $plugins = $manager->getPlugins(); // for admin
+        $plugins = $manager->getPlugins(true); // for admin
+        var_dump($plugins);
         
         //manager->activatePlugins($plugins);
         

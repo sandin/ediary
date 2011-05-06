@@ -1,12 +1,17 @@
 <?php
 /**
- * Guest试用插件
+ * 游客试用 插件
  * TODO: 目前部分内容还遗留在 user/GuestController
  * 
  * @author lds
  */
 class Plugins_Guest_Plugin extends Ediary_Plugin_Abstract
 {
+    const NAME = "Guest Plugin";
+    const AUTHOR = "lds";
+    const VERSION = "v1.0";
+    const MIN_VERSION = "Ediary 1.0";
+    
     /** @var Zend_Log */
     private static $logger;
     
@@ -15,23 +20,11 @@ class Plugins_Guest_Plugin extends Ediary_Plugin_Abstract
             	"password" => "guest",
             	"username" => "guest");
     
-    public function getInfo() {
-        return array(
-        	"name" => "Guest Plugin",
-            "author" => "lds",
-            "version" => "1.0.0",         // plugin version
-            "minVersion" => "1.0.0",      // ediary version
-            "requirePlugins" => array(),
-            "requireModules" => array(),
-        );
-    }
-    
     public function __construct() {
         self::$logger = Ediary_Logger::getLogger();
-        $this->initPlugin(); // TODO: delete me
     }
     
-    public function initPlugin() {
+    public function bootPlugin() {
         $this->initHooks();
         $this->initThemes();
     }

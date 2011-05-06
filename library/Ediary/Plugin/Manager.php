@@ -137,9 +137,10 @@ class Ediary_Plugin_Manager
      * Get All plugins under the PLUGIN_DIR
      * For Admin plugins
      * 
+     * @param boolean $detail get plugin's info data or not
      * @return array a list of plugins' class name
      */
-    public function getPlugins() {
+    public function getPlugins($detail = false) {
         $plugins = array();
         foreach (get_declared_classes() as $class){
             $reflection = new ReflectionClass($class);
@@ -149,8 +150,12 @@ class Ediary_Plugin_Manager
                 
             //$filename = $reflection->getFileName();
             //$filename = str_replace($this->_path, "", $filename);
-            
-            $plugins[] = $class;
+            if ($detail) {
+                $info = self::getPluginData($reflection);
+                $plugins[$class] = $info;
+            } else {
+                $plugins[] = $class;
+            }
         }
         return $plugins;
     }
@@ -222,11 +227,22 @@ class Ediary_Plugin_Manager
         if (class_exists($plugin, false)) {
             $pluginObj = new $plugin();
             if ($pluginObj instanceof Ediary_Plugin_Abstract) {
-                $pluginObj->bootPlugin();
+                @$pluginObj->bootPlugin(); // 抑制所有插件导致的错误或异常
                 return true;
             }
         }
         return false;
     }
     
+    public static function getPluginData(ReflectionClass $reflection) {
+        $info = Ediary_Plugin_Abstract::$defaultInfo;
+	    
+	    foreach ($info as $constant => &$value) {
+	        if ($reflection->hasConstant($constant)) {
+	            $info[$constant] = $reflection->getConstant($constant);
+	        }
+	    }
+        
+        return $info;
+    }
 }
