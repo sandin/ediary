@@ -1,8 +1,11 @@
 <?php
 abstract class Ediary_Plugin_Abstract implements Ediary_Plugin_Interface
 {
-    public function __construct() {
-    }
+    /**
+     * Construct
+     * 必须是无参构造器
+     */
+    public function __construct() {}
     
     /**
      * Get Plugin information
@@ -25,6 +28,8 @@ abstract class Ediary_Plugin_Abstract implements Ediary_Plugin_Interface
             'requireModules' => array()
         );
     }
+    
+    public function bootPlugin() {}
     
     public function initPlugin() {}
     

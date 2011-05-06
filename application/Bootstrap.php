@@ -100,6 +100,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     }
     
     protected function _initPlugins() {
+        //TODO : 注册插件只在后台管理插件时进行(一次)
+        // 后台管理页面: 从文件系统从一一读取插件目录下的所有插件信息
+        // 确认开启莫插件后进行注册(开启插件列表入库)
+        // 平时插件列表使用cache数据, 不读库
         new Plugins_Guest_Plugin();
     }
 
@@ -260,6 +264,4 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $frontController = $this->getResource('frontController');
         $frontController->registerPlugin($debug);
     }
-
 }
-
