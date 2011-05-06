@@ -411,6 +411,9 @@ var Editor = {
     
     // save diary
     doSave: function(force) {
+        if (this.isSaving) {
+            return; // is Saveing now
+        }
         try {
             var self = this,
                 force = force || false,
@@ -418,7 +421,7 @@ var Editor = {
 
             this.rteSave();
             // 标题和内容都不能为空
-            if ( (this.isEmpty() || this.isSaving) ) {
+            if ( this.isEmpty() ) {
                 console.log(this.TAG, 'Content/Title is empty, Cann\'t Save');
                 E.Notice.showMessage("日记为空, 写点东西先吧.", 1000);
                 return; // do nothing

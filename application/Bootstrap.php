@@ -207,7 +207,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         if ( file_exists($themeFile) ) {
             $css = file_get_contents($themeFile);
             if (false !== $css) {
-                $theme = '<style type="text/css">' . $css . '</style>';
+                $theme = '<style id="theme-css" type="text/css">' . $css . '</style>';
             }
         }
         $view->themeStyle = $theme;

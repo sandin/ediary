@@ -339,15 +339,15 @@ Ediary_Hooks::notify("onUserLogin", array($result->user));
 .目录结构
 /library/plugins/
 /library/plugins/Tags/
-/library/plugins/Tags/Plugins.php
+/library/plugins/Tags/Plugin.php
 
 .插件要求
-`Plugins.php` , 此文件为插件的主文件, 该文件必须实现 `Ediary_Plugin` 接口, 该接口定义了几个每个插件都必须实现的方法, 具体参考 `Ediary_Plugin` 文件.
+`Plugin.php` , 此文件为插件的主文件, 该文件必须实现 `Ediary_Plugin` 接口, 该接口定义了几个每个插件都必须实现的方法, 具体参考 `Ediary_Plugin` 文件.
 
 .命名方式
-因为 `library` 文件夹为 include path, 所以其名字方式统一为 `Plugins_YourPlugin_XXX`, 例如 `/library/plugins/Tags/Plugins.php` 中的class名为 `Plugins_Tags_Plugins` .
+因为 `library` 文件夹为 include path, 所以其名字方式统一为 `Plugins_YourPlugin_XXX`, 例如 `/library/plugins/Tags/Plugin.php` 中的class名为 `Plugins_Tags_Plugins` .
 
-NOTE: 因为linux环境下对文件夹名和文件名的大小写敏感, 所以插件目录和插件的class文件名一律要求首字大写. 如本例中的文件夹名为 `Tags` , 插件主文件为 `Plugins.php`
+NOTE: 因为linux环境下对文件夹名和文件名的大小写敏感, 所以插件目录和插件的class文件名一律要求首字大写. 如本例中的文件夹名为 `Tags` , 插件主文件为 `Plugin.php`
 
 
 === 主要方法 ===

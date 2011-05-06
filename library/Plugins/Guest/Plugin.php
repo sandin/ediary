@@ -5,7 +5,7 @@
  * 
  * @author lds
  */
-class Plugins_Guest_Plugin implements Ediary_Plugin
+class Plugins_Guest_Plugin extends Ediary_Plugin_Abstract
 {
     /** @var Zend_Log */
     private static $logger;
@@ -28,15 +28,15 @@ class Plugins_Guest_Plugin implements Ediary_Plugin
     
     public function __construct() {
         self::$logger = Ediary_Logger::getLogger();
-        $this->_initPlugin(); // TODO: delete me
+        $this->initPlugin(); // TODO: delete me
     }
     
-    public function _initPlugin() {
-        $this->registerHooks();
-        $this->registerThemes();
+    public function initPlugin() {
+        $this->initHooks();
+        $this->initThemes();
     }
     
-    public function _initPages() {
+    public function initPages() {
         $pages = array(
             array(
             	'title' => 'admin',
@@ -47,30 +47,30 @@ class Plugins_Guest_Plugin implements Ediary_Plugin
     }
     
     public function adminPage() {
-        $content = Ediary_theme::theme(__CLASS__, "admin");
-        $this->createGuest();
-        $this->dumpGuest();
+        //DEBUG
+        //$this->createGuest();
+        //$this->dumpGuest();
         
+        $content = Ediary_theme::theme(__CLASS__, "admin");
         return $content;
     }
     
-    private function registerThemes() {
+    public function initThemes() {
         $template =  realpath(dirname(__FILE__)) . "/views/admin/index.phtml";
         Ediary_Theme::register(__CLASS__, "admin", $template);
     }
     
-    private function registerHooks() {
+    public function initHooks() {
         Ediary_Hooks::setDebug(true);
         Ediary_Hooks::register("onUserLogin", array($this, "hook_onUserLogin"));
         Ediary_Hooks::register("onUserLogout", array($this, "hook_onUserLogout"));
     }
     
-    public function hook_OnUserLogin($user = null) {
+    public function hook_onUserLogin($user = null) {
         //die("login");
-        echo "login";
     }
     
-    public function hook_OnUserLogout($user = null) {
+    public function hook_onUserLogout($user = null) {
         self::$logger->info(print_r($user, true));
         if (null != $user && isset($user->email) 
             && $user->email === $this->_guest["email"]) {

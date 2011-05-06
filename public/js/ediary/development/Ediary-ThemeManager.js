@@ -9,15 +9,31 @@ $.fn.switchTheme = function( options ) {
         file: ''
     };
     
+    function loadCSS(id, href) {
+         $('<link />').attr('type', 'text/css')
+                      .attr('href', href)
+                      .attr('id', id)
+                      .attr('rel', 'stylesheet')
+                      .attr('media', 'all')
+                      .appendTo($("head"));
+    }
+    
     return this.each(function() {
         if (options) {
             $.extend(settings, options);
         }
-        var o = options;
+        var o = options,
+            nodeName = this.nodeName.toLowerCase();
         
-        this.disabled = true;
-        $(this).attr('href', o.file);
-        this.disabled = false;
+        if (nodeName == 'link') {
+            this.disabled = true;
+            $(this).attr('href', o.file);
+            this.disabled = false;
+        }
+        else if (nodeName == 'style') {
+            loadCSS($(this).attr('id'), o.file);
+            $(this).remove();
+        }
     });
     
 };
@@ -55,7 +71,6 @@ var ThemeManager = {
                 var themeName = $(this).attr('title'),
                     themeCSS = o.themeRoot + themeName + '/style.css';
                 
-                //self.switchTheme(themeCSS);
                 $(o.themeLinkElem).switchTheme({file: themeCSS});
                 self.select = themeName;
                 return false;

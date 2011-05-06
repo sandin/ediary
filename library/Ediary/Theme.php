@@ -1,7 +1,7 @@
 <?php
 class Ediary_Theme
 {
-   /**
+    /**
      * @var Array list of themes
      */
     private static $_themes = array();
