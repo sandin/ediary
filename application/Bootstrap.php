@@ -95,6 +95,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         //var_dump($dbCache);
     }
     
+    protected function _initHooks() {
+        //Ediary_Hooks::notify("onAppBoot");
+    }
+    
     protected function _initPlugins() {
         new Plugins_Guest_Plugin();
     }

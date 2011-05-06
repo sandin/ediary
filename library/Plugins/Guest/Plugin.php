@@ -67,11 +67,13 @@ class Plugins_Guest_Plugin extends Ediary_Plugin_Abstract
     }
     
     public function hook_onUserLogin($user = null) {
-        //die("login");
+        if (null != $user && isset($user->email) 
+            && $user->email === $this->_guest["email"]) {
+            $this->dumpGuest();
+        }
     }
     
     public function hook_onUserLogout($user = null) {
-        self::$logger->info(print_r($user, true));
         if (null != $user && isset($user->email) 
             && $user->email === $this->_guest["email"]) {
             $this->dumpGuest();
@@ -83,7 +85,7 @@ class Plugins_Guest_Plugin extends Ediary_Plugin_Abstract
      * 
      * @return Ediary_User
      */
-    private function createGuest() {
+    public function createGuest() {
         $guest = $this->_guest;
         if (! Ediary_User::isExists($guest['email'])) {
             $user = Ediary_User::create($guest);
@@ -95,7 +97,7 @@ class Plugins_Guest_Plugin extends Ediary_Plugin_Abstract
     /**
      * 清空游客
      */
-    private function dumpGuest() {
+    public function dumpGuest() {
         $user = Ediary_User::find($this->_guest["email"]);
         if (null != $user) {
             // 清空该用户所有额外数据
@@ -107,6 +109,7 @@ class Plugins_Guest_Plugin extends Ediary_Plugin_Abstract
             
             // 删除该用户
             //$user->delete();
+            $user->setPassword($this->_guest['password']);
             self::$logger->info("Dump Guest");
         }
     }
