@@ -108,37 +108,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     }
 
     protected function _initTranslate() {
-
-        // Support Languages
-        $i18n = array(
-            array( 'adapter' => 'gettext',
-			 	   'locale'  => 'zh',
-			 	   'content' => APPLICATION_PATH . '/data/languages/zh.mo' ),
-            array( 'adpater' => 'gettext',
-				   'locale'  => 'en',
-				   'content' => APPLICATION_PATH . '/data/languages/en.mo')
-        );
-
-        $translate = null;
-
-        // Load lanuage files
-        for ($i = 0, $l = count($i18n); $i < $l; $i++) {
-            $lang = $i18n[$i];
-            	
-            if (file_exists($lang['content'])) {
-                if (0 == $i) {
-                    $translate = new Zend_Translate($lang);
-                } else {
-                    $translate->addTranslation($lang);
-                }
-            } else {
-                Ediary_Logger::log2($lang['locale'] . ' translation file is missing : '. $lang['content']);
-            }
-        }
-
-        $translate->setLocale('zh'); // unsafe, zh would be null
+        $translate = Ediary_I18n::getTranslate(Ediary_I18n::ZH);
         Zend_Registry::set(Ediary_Application::TRANSLATE, $translate);
-
         Zend_Validate_Abstract::setDefaultTranslator($translate);
     }
 

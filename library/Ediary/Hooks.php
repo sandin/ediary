@@ -5,10 +5,12 @@
  * @author lds
  */
 class Ediary_Hooks {
+    const KEY_FN = 'function';
+    const KEY_ARGS = 'acceptedArgs';
     
-    private static $_hooks = array();
-    private static $_instance = null;
-    private static $_debug = false;
+    protected static $_hooks = array();
+    protected static $_instance = null;
+    protected static $_debug = false;
     
     private function __construct() {
     }
@@ -24,21 +26,27 @@ class Ediary_Hooks {
     
     /**
      * Register a callback function to some event
-     * 
-     * @param String $event
-     * @param mixed(String|Array) $fn The function to be called. 
+     *
+     * @param string $tag The name of the filter to hook the $fn to.
+     * @param callback $fn The function to be called. 
+     * @param int $priority optional. Used to specify the order in which the functions associated with a particular action are executed (default: 10). Lower numbers correspond with earlier execution, and functions with the same priority are executed in the order in which they were added to the action.
+     * @param int $accepted_args optional. The number of arguments the function accept (default 1).
      * 
      * @see call_user_func_array($fn, $param_arr)
      */
-    public static function register($event, $fn) {
-        self::getLogger()->info("[Hooks] Register " . $event);
-        self::$_hooks[$event][] = $fn; 
+    public static function register($tag, $fn, $priority = 10, $acceptedArgs = 1) {
+        self::getLogger()->info("[Hooks] Register " . $tag);
+        $idx = self::buildUniqueId($tag, $fn, $priority);
+        
+        self::$_hooks[$tag][$priority][$idx] = array(
+        	self::KEY_FN => $fn, self::KEY_ARGS => $acceptedArgs
+        ); 
     }
     
     /**
      * Notify All callback function of a particular event, if any
      * 
-     * @param String $event
+     * @param String $tag
      * @param mixed(Array|String|Object) $params
      * @param mixed $params...
      * @return int how many functions have been called
@@ -46,39 +54,43 @@ class Ediary_Hooks {
      * @see call_user_func($function)
      * @see call_user_func_array($fn, $params);
      */
-    public static function notify($event, $params = array()) {
-        self::getLogger()->info("[Hooks] Notify " . $event);
+    public static function notify($tag, $params = array()) {
+        self::getLogger()->info("[Hooks] Notify " . $tag);
         
         // 重载, 以适应 call_user_func() 风格参数
-        if (! is_array($params)) {
+        if (! is_array($params) && func_num_args() >= 2) {
             $params = func_get_args();
             array_shift($params); // strip arg 0
         }
         
         $count = 0;
-        if (self::hasRegister($event)) {
-            foreach (self::$_hooks[$event] as $fn) {
-                if (self::$_debug) {
-                    call_user_func_array($fn, $params);
-                } else {
-                    @call_user_func_array($fn, $params);
+        if (! self::hasRegister($tag)) {
+            return $count;
+        }
+        
+        ksort(self::$_hooks[$tag]); // by priority
+
+        foreach (self::$_hooks[$tag] as $priority => $hooks) {
+            foreach ( (array) $hooks as $hook) {
+                if ( !is_null($hook[self::KEY_FN]) ) {
+                    call_user_func_array($hook[self::KEY_FN],
+                        array_slice($params, 0, (int) $hook[self::KEY_ARGS]));
+                    $count++;
                 }
-                $count++;
             }
         }
+        
         return $count;
     }
     
     /**
      * Whether a event has callback
      * 
-     * @param String $event
+     * @param String $tag
      * @return boolean return ture when at last one callback
      */
-    public static function hasRegister($event) {
-        return ( isset(self::$_hooks[$event]) 
-                && is_array(self::$_hooks[$event]) 
-                && count(self::$_hooks[$event]) > 0 );
+    public static function hasRegister($tag) {
+        return ( isset(self::$_hooks[$tag]) ); 
     }
     
     /**
@@ -92,7 +104,7 @@ class Ediary_Hooks {
     /**
      * @return Zend_Log
      */
-    public static function getLogger() {
+    protected static function getLogger() {
         return Ediary_Logger::getLogger();
     }
     
@@ -101,9 +113,38 @@ class Ediary_Hooks {
      * <li>开启DEBUG模式下, 会抛出Hooks回调函数导致的错误/异常
      * <li>关闭DEBUG模式下, 会使用 @ 符号抑制它们.
      * 
-     * @param boolean $isAbleDebug
+     * @param boolean $debug able or not
      */
-    public static function setDebug($isAbleDebug) {
-        self::$_debug = $isAbleDebug;
+    public static function setDebug($debug) {
+        self::$_debug = $debug;
+    }
+    
+    public static function buildUniqueId($tag, $fn, $priority) {
+        $idx = '';
+        
+        if ( is_string($fn) ) {
+            $idx .= $fn;
+        } else if ( is_array($fn) && count($fn) == 2) { // array($this, 'method)
+            $obj = $fn[0];
+            $method = $fn[1];
+            if ( is_object($obj) ) { 
+                if ( function_exists('spl_object_hash') ) {
+                    $idx .= spl_object_hash($obj) . $method;
+                } else {
+                    $idx .= get_class($obj) . $method;
+                }
+            } else {
+                $idx .= $obj . $method;
+            }
+	    } else {
+	        $idx = microtime(true)*10000;
+	    }
+	    
+	    return $idx;
+    }
+    
+    /** for debug */
+    public static function getHooks() {
+        return self::$_hooks;
     }
 }

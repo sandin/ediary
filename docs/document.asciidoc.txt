@@ -329,6 +329,69 @@ Ediary_Hooks::notify("onUserLogin", array($result->user));
 
 当调用 `Ediary_Hooks::notify` 方法的时候, 所有注册在该事件上的回调函数都会被触发.
 
+NOTE: 注意一般情况下, 并不建议直接使用 `Ediary_Hook` , 而是使用其子类 `Ediary_Events` 和 `Ediary_Filters` .
+
+=== Ediary_Events ===
+
+其结构和其父类一直, 并且共享父类的 _hooks 列表, 使用方法为:
+
+[source]
+----------------------------------------
+<?php
+
+Ediary_Events::addListener(Ediary_Event::ON_APP_BOOT,
+                          array($this, 'functionToRegister'));
+----------------------------------------
+
+在 `Ediary_Event` 类中定义了系统常用的回调事件常量, 将自己的回调函数绑定在某一事件上后, 系统在运行到该事件时则会触发所以绑定在上面的回调函数.
+
+
+=== Ediary_Filters ===
+
+Filters 属于 Hooks 的一个变种, 其用途为修改输出内容, 例如在新建Node时, 修改node content内容.
+
+使用方法:
+[source]
+---------------------------------------------------
+<?php
+
+Ediary_Filters::addFilter(Ediary_Filter::NODE_CONTENT,
+                          array($this, 'nodeContentFilter'));
+---------------------------------------------------
+
+在 `Ediary_Filter` 类中定义了系统常用的filter名称常量, 在系统创建这种元素时, 会依次调用这些filter, 使其有能力去修改系统元素.
+
+
+.定义filter
+
+常见的filter回调函数, 接收的参数为系统原始值, 而返回的数据为修改过的值.
+[source]
+---------------------------------------------------
+<?php
+
+public function nodeContentFilter($content) {
+    return $content . "filter";
+}
+---------------------------------------------------
+
+NOTE: filter *必须* 有返回值, 且该值应该和传入的原始值的类型保持一致.
+
+系统内部的调用情况如:
+[source]
+---------------------------------------------------
+<?php
+
+// 原始值
+$nodeContent = '<div class="nodeContent">content</div>';
+
+// 调用所有绑定在该Hook上的过滤器去修改原始值 (按照优先顺序)
+$nodeContent = Ediary_Filters::applyFilters('nodeContentFilter', $content);
+
+return $nodeContent;
+---------------------------------------------------
+
+
+
 
 == 插件系统 ==
 

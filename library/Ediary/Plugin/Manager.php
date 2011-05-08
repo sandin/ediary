@@ -3,7 +3,7 @@ class Ediary_Plugin_Manager
 {
     const ACTIVATE_PLUGINS = 'PM_activate_plugins';
     public $_path;
-    
+      
     /**
      * @var Array list of activeted Plugins
      */
@@ -223,11 +223,10 @@ class Ediary_Plugin_Manager
      * @return boolean has been boot or not
      */
     public static function bootPlugin($plugin) {
-            var_dump($plugin);
         if (class_exists($plugin, false)) {
             $pluginObj = new $plugin();
             if ($pluginObj instanceof Ediary_Plugin_Abstract) {
-                @$pluginObj->bootPlugin(); // 抑制所有插件导致的错误或异常
+                $pluginObj->bootPlugin(); // 抑制所有插件导致的错误或异常
                 return true;
             }
         }

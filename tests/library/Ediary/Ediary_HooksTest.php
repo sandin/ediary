@@ -3,7 +3,9 @@ require_once 'PHPUnit/Framework.php';
 
 // 注册全局函数是否能被注册
 function functionToRegister() {
-    var_dump(__FUNCTION__);
+    return true;
+}
+function functionToRegister2() {
     return true;
 }
 
@@ -32,30 +34,28 @@ class Ediary_HooksTest extends ControllerTestCase
     
     // 用于注册HOOK用
     public function functionToRegister() {
-        var_dump(__CLASS__);
         return __CLASS__;
     }
     public function functionToRegister2() {
-        var_dump(__CLASS__);
         return __CLASS__;
     }
     public function functionToRegister3($param = null) {
         $this->assertNotNull($param);
-        var_dump(__CLASS__);
         return __CLASS__;
     }
     
-    public function testA() {
+    public function testHooks() {
         $event = "onNodeCreate";
         
         // register a hook (use Function)
         $this->assertFalse(Ediary_Hooks::hasRegister($event)); // preCheck
         Ediary_Hooks::register($event, 'functionToRegister');
+        Ediary_Hooks::register($event, 'functionToRegister2');
         $this->assertTrue(Ediary_Hooks::hasRegister($event)); // postCheck
         
         // notity
         $count = Ediary_Hooks::notify($event);
-        $this->assertEquals(1, $count);
+        $this->assertEquals(2, $count);
         
         ////////////////////////////////
         
@@ -78,6 +78,36 @@ class Ediary_HooksTest extends ControllerTestCase
         $event3 = "onUserLogin";
         Ediary_Hooks::register($event3, array($this, 'functionToRegister3'));
         Ediary_Hooks::notify($event3, array("arg1, arg2"));
+    }
+    
+    public function testEvents() {
+        Ediary_Events::addListener(Ediary_Event::ON_APP_BOOT,
+                                   array($this, 'functionToRegister'));
+        $c = Ediary_Events::callEvent(Ediary_Event::ON_APP_BOOT, array("arg1"));
+        $this->assertEquals(1, $c);
+        
+        // test magic call
+        $tag = 'onClick';
+        $method = 'add' . ucfirst($tag). 'Listener';
+        $tagToAdd = Ediary_Events::magicCall($method);
+        $this->assertEquals($tag, $tagToAdd);
+    }
+    
+    public function nodeContentFilter($content) {
+        return $content . "filter";
+    }
+    
+    public function testFilters() {
+        $tag = 'nodeContentFilter';
+        Ediary_Filters::addFilter($tag, array($this, 'nodeContentFilter'));
+        
+        $content = "content";
+        $filtedContent = Ediary_Filters::applyFilters($tag, $content);
+        $this->assertEquals($this->nodeContentFilter($content), $filtedContent);
+        
+        // 不存在的filter
+        $this->assertEquals($content, 
+            Ediary_Filters::applyFilters("unexistsFilter", $content));
     }
     
 }
