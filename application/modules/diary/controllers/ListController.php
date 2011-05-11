@@ -20,7 +20,6 @@ class Diary_ListController extends Zend_Controller_Action
         $paginator = Ediary_Diary::getDiarysPaginator($this->_user->id, $page);
         $this->view->totalDiary = $paginator->getTotalItemCount();
         $this->view->paginator = $paginator;
-        
     }
     
     /**

@@ -47,22 +47,27 @@ class Ediary_Metadata
      * @return boolean
      */
     public function isExists($key) {
-        return $this->_selectOrCount($key, true);
+        return $this->_selectOrCount($key, true); // count
     }
     
+    /**
+     * @param string $key
+     * @param boolean $justCount
+     * @return mixed(boolean|Ambigous <NULL, string>)
+     */
     private function _selectOrCount($key, $justCount = false) {
         $db = self::getDb();
         $select = $db->select();
         $select->where('meta_key = ?', $key)
                ->where($this->_objectField . ' = ?', $this->_objectId)
                ->limit(1);
-        if ($justCount) { // only count
+        if ($justCount) { // just count
             $select->from($this->_table, 'COUNT(*)');
-            $result = $db->fetchOne($select->__toString());
-            return ($result > 0) ? true : false;
+            $result = $db->fetchOne($select);
+            return ( $result > 0 );
         } else {
             $select->from($this->_table, 'meta_value');
-            $result = $db->fetchOne($select->__toString());
+            $result = $db->fetchOne($select);
             return ($result != false) ? $result : null;
         }
     }

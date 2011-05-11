@@ -1070,7 +1070,7 @@ var Editor = {
             this.rteSave();
             // 标题和内容都不能为空
             if ( this.isEmpty() ) {
-                E.Notice.showMessage("日记为空, 写点东西先吧.", 1000);
+                if (force) E.Notice.showMessage("日记为空, 写点东西先吧.", 1000);
                 return; // do nothing
             }
             if ( force || this.isChanged() ) {
@@ -1486,7 +1486,7 @@ var Pad = {
         $('#editor-btn-upload').click(function() {
             if (editor.getId() == '-1') {
                 //editor.doSave(true);
-                E.Notice.showDialog("日记尚未被创建, 请先点击保存!", "友情提示");
+                E.Notice.showMessage("日记尚未被创建, 请先保存!", 1000);
                 return false;
             }
         });

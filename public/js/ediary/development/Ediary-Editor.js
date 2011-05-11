@@ -423,7 +423,7 @@ var Editor = {
             // 标题和内容都不能为空
             if ( this.isEmpty() ) {
                 console.log(this.TAG, 'Content/Title is empty, Cann\'t Save');
-                E.Notice.showMessage("日记为空, 写点东西先吧.", 1000);
+                if (force) E.Notice.showMessage("日记为空, 写点东西先吧.", 1000);
                 return; // do nothing
             }
             if ( force || this.isChanged() ) {

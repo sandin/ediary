@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @deprecated use /public/install.php
+ */
 class Admin_InstallController extends Zend_Controller_Action
 {
     public function init()

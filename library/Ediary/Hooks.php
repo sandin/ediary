@@ -32,7 +32,7 @@ class Ediary_Hooks {
      * @param int $priority optional. Used to specify the order in which the functions associated with a particular action are executed (default: 10). Lower numbers correspond with earlier execution, and functions with the same priority are executed in the order in which they were added to the action.
      * @param int $accepted_args optional. The number of arguments the function accept (default 1).
      * 
-     * @see call_user_func_array($fn, $param_arr)
+     * @see call_user_func_array()
      */
     public static function register($tag, $fn, $priority = 10, $acceptedArgs = 1) {
         self::getLogger()->info("[Hooks] Register " . $tag);

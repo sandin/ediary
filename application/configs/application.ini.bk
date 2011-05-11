@@ -1,47 +1,37 @@
 [production]
-
-; PHP settings
 phpSettings.display_startup_errors = "0"
 phpSettings.display_errors = "0"
-
-; Application  
-includePaths.library = APPLICATION_PATH "/../library"
-bootstrap.path = APPLICATION_PATH  "/Bootstrap.php"
+includePaths.library = "/home/lds/workspace/php/yiriji/application/../library"
+bootstrap.path = "/home/lds/workspace/php/yiriji/application/Bootstrap.php"
 bootstrap.class = "Bootstrap"
 appnamespace = "Application"
-
-; Front controller
 resources.frontController.params.displayExceptions = "0"
-resources.frontController.moduleDirectory = APPLICATION_PATH "/modules"
-resources.modules[] =
-
-; Layout
-resources.layout.layoutPath = APPLICATION_PATH "/layouts/scripts"
-
-; Cache - database
-resources.cachemanager.database.frontend.name = Core
-resources.cachemanager.database.frontend.customFrontendNaming = false
-resources.cachemanager.database.frontend.options.lifetime = 7200
-resources.cachemanager.database.frontend.options.automatic_serialization = true
-resources.cachemanager.database.backend.name = File
-resources.cachemanager.database.backend.customBackendNaming = false
-resources.cachemanager.database.backend.options.cache_dir = APPLICATION_PATH "/data/cache"
-resources.cachemanager.database.frontendBackendAutoload = false
-
-; Cache - static
-resources.cachemanager.page.backend.options.public_dir = APPLICATION_PATH "/../public/static"
-resources.cachemanager.pagetag.backend.options.cache_dir = APPLICATION_PATH "/data/cache/tags"
-;resources.frontController.params.disableOutputBuffering = true
-
-; Database
+resources.frontController.moduleDirectory = "/home/lds/workspace/php/yiriji/application/modules"
+resources.modules.0 = ""
+resources.layout.layoutPath = "/home/lds/workspace/php/yiriji/application/layouts/scripts"
+resources.cachemanager.database.frontend.name = "Core"
+resources.cachemanager.database.frontend.customFrontendNaming = ""
+resources.cachemanager.database.frontend.options.lifetime = "7200"
+resources.cachemanager.database.frontend.options.automatic_serialization = "1"
+resources.cachemanager.database.backend.name = "File"
+resources.cachemanager.database.backend.customBackendNaming = ""
+resources.cachemanager.database.backend.options.cache_dir = "/home/lds/workspace/php/yiriji/application/data/cache"
+resources.cachemanager.database.frontendBackendAutoload = ""
+resources.cachemanager.page.backend.options.public_dir = "/home/lds/workspace/php/yiriji/application/../public/static"
+resources.cachemanager.pagetag.backend.options.cache_dir = "/home/lds/workspace/php/yiriji/application/data/cache/tags"
 resources.db.adapter = "pdo_mysql"
 resources.db.params.host = "localhost"
 resources.db.params.username = "lds"
 resources.db.params.password = "123"
 resources.db.params.dbname = "ediary"
-resources.db.params.prefix = ""
 resources.db.params.charset = "utf8"
 resources.db.isDefaultTableAdapter = "1"
+resources.db.prefix = "ediary_"
+
+ediary.debug = "1"
+ediary.logger.enable = "1"
+ediary.logger.path = "/home/lds/workspace/php/yiriji/application/data/log/log.txt"
+ediary.logger.type = "file"
 
 ; Routes
 routes.error.route = "error/:message"
@@ -90,17 +80,12 @@ routes.contactUs.defaults.module = node
 routes.contactUs.defaults.controller = page
 routes.contactUs.defaults.action = "contact.us"
 
-; Custom Settings
-ediary.debug = "1"
-ediary.logger.enable = "1"
-ediary.logger.path = APPLICATION_PATH "/data/log/log.txt"
-ediary.logger.type = "file"
-
 [staging : production]
 
 [testing : production]
 phpSettings.display_startup_errors = "1"
 phpSettings.display_errors = "1"
+resources.frontController.params.displayExceptions = "1"
 
 [development : production]
 phpSettings.display_startup_errors = "1"
@@ -111,3 +96,4 @@ resources.db.params.username = "lds"
 resources.db.params.password = "123"
 resources.db.params.dbname = "ediary"
 resources.db.params.prefix = ""
+

@@ -25,6 +25,7 @@ class Ediary_Crontab
      * @return int 此时触发运行的任务数(实际运行)
      */
     public function trigger($id = 'Unknown') {
+        $id = (null != $id) ? $id : 'Unknown';
         //$this->resetTasks();
         $count = $this->start();
         self::$logger->info("Crantab tringer from " . $id . ", run tasks: " .$count);

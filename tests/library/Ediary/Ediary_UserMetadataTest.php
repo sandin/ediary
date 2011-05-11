@@ -17,7 +17,7 @@ class Ediary_UserMetadataTest extends ControllerTestCase
     private static $key = 'noticeMeAt';
     
     public function dataProvider() {
-        $hour = date('H', time());
+        $hour = date('G', time());
         $r = substr(microtime(), 3, 7); // random string
         return array(
             array('email10@gmail.com'.$r, self::$key, $hour),
@@ -58,7 +58,7 @@ class Ediary_UserMetadataTest extends ControllerTestCase
         
         // 订阅提醒
         $row1 = $uMeta->set($key, $value);
-        $this->assertEquals($row1, 1); // only one row affected
+        $this->assertEquals(1, $row1); // only one row affected
         
         // 得到订阅用户列表
         $list = Ediary_Notification_Mail::getNoticeList($value);

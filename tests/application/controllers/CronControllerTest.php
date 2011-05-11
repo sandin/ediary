@@ -22,7 +22,8 @@ class CronControllerTest extends ControllerTestCase
         $delay = 6; //秒
         
         $crontab = new Ediary_Crontab();
-        $crontab->resetTasks()->schedule(new Ediary_Notification_Mail(), 0, $delay);
+        $crontab->resetTasks();
+        $crontab->schedule(new Ediary_Notification_Mail(), 0, $delay);
         //var_dump($crontab->getTasks());
         
         $response = $this->_trigger(); // 初始检查

@@ -52,8 +52,9 @@ class Ediary_Notification_Mail extends Ediary_Notification_Abstract
                                   self::FROM_NAME);
         
         foreach ($list as $uid => $email) {
-            if (! Zend_Validate::is($email, "EmailAddress") )
+            if (! Zend_Validate::is($email, "EmailAddress") ) {
                 continue; // 邮箱地址不合法
+            }
             
             $mail = new Zend_Mail("utf-8");
             $mail->addTo($email, $email)

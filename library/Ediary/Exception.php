@@ -30,9 +30,7 @@ class Ediary_Exception extends Exception {
      * IN OTHER MODE : Redirect to the error page, and show a message to user.
      */
     public static function handleException() {
-        if ("0" == Ediary_Config::getAppConfig()->debug) {
-            set_exception_handler(array('Ediary_Exception', 'exceptionHandler'));
-        }
+        set_exception_handler(array('Ediary_Exception', 'exceptionHandler'));
     }
 
     /**
@@ -43,11 +41,9 @@ class Ediary_Exception extends Exception {
      * @param Exception $exception
      */
     public static function exceptionHandler( $exception ) {
-        if ("1" == Ediary_Config::getAppConfig()->logger->enable) {
-            //$backtrace = print_r( $exception->getTrace(), true );
-            Ediary_Logger::log2($exception->getMessage() . ' in ' 
+        //$backtrace = print_r( $exception->getTrace(), true );
+        Ediary_Logger::log2($exception->getMessage() . ' in ' 
                 . $exception->file . ':' . $exception->line);
-        }
         
         $msg = '';
         if ($exception instanceof Ediary_Database_Connection_Exception) {

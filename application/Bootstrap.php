@@ -8,7 +8,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         Zend_Loader_Autoloader::getInstance()->setFallbackAutoloader(true);
 
         // Load all modules under moduleDirectory
-        $modulesDir = Ediary_Config::getModuleDirectory();
+        $config = $this->getOption('resources');
+        $modulesDir = $config['frontController']['moduleDirectory'];
         $modules = Ediary_Utility_File::getSubDir($modulesDir);
 
         foreach ($modules as $module) {
@@ -34,15 +35,22 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         if (!defined('DS')) { define('DS', DIRECTORY_SEPARATOR); }
     }
+    
+    protected function _initConfig() 
+    { 
+         $config = new Zend_Config($this->getOptions()); 
+         Zend_Registry::set('config', $config); 
+         return $config;
+    } 
+    
+    protected function _initLogger() {
+        $config = $this->getOption('ediary');
+        Ediary_Logger::setConfig($config['logger']);
+    }
 
     protected function _initInstallChecker() {
-        ///TODO: 有时误报?
-        if ( !Ediary_Config::isInstalled() ) {
-            Ediary_Logger::log2('The application is not installed, installing now.');
-            Ediary_Config::setInstalling(true);
-            Ediary_Config::setInstalled(true);
-            Ediary_Core::gotoUrl('/admin/install');
-            //exit;
+        if ( !Ediary_App::isInstalled()) {
+            Ediary_Core::gotoUrl("/install.php");
         }
     }
 
@@ -52,7 +60,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $config = $dbAdapter->getConfig();
         
         $db = Ediary_Db::getInstance()->setConnection($dbAdapter);
-        $db->setPrefix(Ediary_Config::getPerfix());
+        $db->setPrefix($config['prefix']);
         $db->setCharset($config['charset']);
 
         Zend_Db_Table::setDefaultAdapter($dbAdapter);
@@ -60,10 +68,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     
     protected function _initSession()
     {
-        /* TODO: 安装之前不存在seesions表, 所以会报错
-        if ( Ediary_Config::isInstalling() ) {
-            //return; // no install yet
-        } */
+        /* TODO: 安装之前不存在seesions表, 所以会报错 */
+        if ( Ediary_App::isInstalling() ) {
+            return; // no install yet
+        }
         $db = Ediary_Db::getInstance();
         Zend_Db_Table_Abstract::setDefaultAdapter($db->getConnection());
         
@@ -76,10 +84,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	  		'lifetimeColumn' => 'lifetime'
 	    );
 	    Zend_Session::setSaveHandler(new Zend_Session_SaveHandler_DbTable($config));
-	    
-	    //if (! Zend_Session::isStarted() ) {
-            //Zend_Session::start();
-	    //}
     }
     
     protected function _initAuth() {
@@ -142,9 +146,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     protected function _initRoute() {
         $front = $this->frontController;
         $router = $front->getRouter();
-        
-        $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/routes.ini', APPLICATION_ENV);
-        $router->addConfig($config, 'routes');
+        $router->addConfig(new Zend_Config($this->getOption('routes')));
         
 		// REST-API
         $restRoute = new Zend_Rest_Route($front, array(), array(
@@ -156,7 +158,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     }
 
     protected function _initExceptionHandler() {
-        Ediary_Exception::handleException();
+        $config = $this->getOption('ediary');
+        if (! $config['debug']) {
+            Ediary_Exception::handleException();
+        }
     }
 
     protected function _initView() {

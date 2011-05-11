@@ -50,8 +50,8 @@ abstract class Ediary_Notification_Abstract
         $select->from(array('m' => Ediary_Db::prefix("usermeta")), array())
                ->join(array('u' => Ediary_Db::prefix("users")),
                             'm.user_id = u.id', array('id', 'email'))
-               ->where('m.meta_key = ? ', Ediary_Metadata_User::NOTICE)
-               ->where('m.meta_value = ? ', $hour);
+               ->where('m.meta_key = ?', Ediary_Metadata_User::NOTICE)
+               ->where('m.meta_value = ?', intval($hour));
                 
         //var_dump($select->__toString());
         return $db->fetchPairs($select);

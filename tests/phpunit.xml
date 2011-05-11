@@ -2,9 +2,9 @@
 <phpunit bootstrap="./bootstrap.php" colors="true">
 	<testsuite name="MyApp">
 		<!-- <directory>./</directory> -->
-		<directory>./application/controllers</directory>
 		<!--<directory>./application/ONE</directory> -->
 		<!-- directory>./library/Ediary/Database</directory -->
+		<directory>./application/controllers</directory>
 		<directory>./library</directory>
 	</testsuite>
 	<filter>

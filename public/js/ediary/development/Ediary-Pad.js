@@ -51,7 +51,7 @@ var Pad = {
         $('#editor-btn-upload').click(function() {
             if (editor.getId() == '-1') {
                 //editor.doSave(true);
-                E.Notice.showDialog("日记尚未被创建, 请先点击保存!", "友情提示");
+                E.Notice.showMessage("日记尚未被创建, 请先保存!", 1000);
                 return false;
             }
         });
