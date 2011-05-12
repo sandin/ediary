@@ -1,4 +1,6 @@
 <?php
+require_once 'Ediary/Plugin/Abstract.php';
+
 /**
  * 游客试用 插件
  * TODO: 目前部分内容还遗留在 user/GuestController

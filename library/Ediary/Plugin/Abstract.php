@@ -1,4 +1,6 @@
 <?php
+require_once 'Ediary/Plugin/Interface.php';
+
 /**
  * Plugin Abstract 
  * 所有插件必须继承该抽象类

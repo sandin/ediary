@@ -79,7 +79,7 @@ class Ediary_Logger
     private static function getStreamWriter() {
         $writer = null;
         $logfile = self::$_config['path'];
-
+        
         if (! file_exists($logfile)) {
             // create the log file if has the premission
             @fclose(fopen($logfile, 'w'));

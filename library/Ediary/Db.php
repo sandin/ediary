@@ -29,7 +29,8 @@ class Ediary_Db
      * Tables name
      * @var Array<String>
      */
-    private $tables = array('users', 'usermeta', 'diarys', 'journals', 'themes', 'sessions', 'files'); 
+    private $tables = array('users', 'usermeta', 'diarys', 'journals',
+                            'themes', 'sessions', 'files'); 
 
     //Tables Name - has prefix
     public $users;

@@ -35,7 +35,7 @@ class Ediary_Debug
         //
         $run_id = $xhprof_runs->save_run($xhprof_data, "xhprof_foo");
 
-        echo '<a target="_about" href="'
+        echo '<a class="blueBtn" target="_about" href="'
      	     ."http://localhost/tools/xhprof/xhprof_html/index.php?run=$run_id&source=xhprof_foo"
      	     .'">profile</a>';
     }

@@ -5,8 +5,19 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     const INSTALLING = 'installing';
 
     protected function _initAutoload() {
-        Zend_Loader_Autoloader::getInstance()->setFallbackAutoloader(true);
+        // Plugin Loader Cache
+        $classFileIncCache = APPLICATION_PATH . '/data/cache/pluginLoaderCache.php';
+        if (file_exists($classFileIncCache)) {
+            include_once $classFileIncCache;
+        }
+        Zend_Loader_PluginLoader::setIncludeFileCache($classFileIncCache);
 
+        // AutoLoader
+        $autoloader = Zend_Loader_Autoloader::getInstance();
+        $autoloader->setFallbackAutoloader(true);
+        $autoloader->registerNamespace('Ediary_');
+
+        /*
         // Load all modules under moduleDirectory
         $config = $this->getOption('resources');
         $modulesDir = $config['frontController']['moduleDirectory'];
@@ -18,7 +29,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
       			'basePath'  => APPLICATION_PATH . '/modules/' . strtolower($module),
             ));
         }
-        
+        */
+    }
+    
+    protected function _initFunctions() {
         // load funtions
         include 'Ediary/Utility/functions.php';
     }
@@ -108,11 +122,13 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         new Plugins_Guest_Plugin();
     }
 
+    /*
     protected function _initTranslate() {
         $translate = Ediary_I18n::getTranslate(Ediary_I18n::ZH);
-        Zend_Registry::set(Ediary_Application::TRANSLATE, $translate);
+        Zend_Registry::set(Ediary_I18n::REGISTRY_KEY, $translate);
         Zend_Validate_Abstract::setDefaultTranslator($translate);
     }
+    */
 
     protected function _initControllers() {
         $this->bootstrap('FrontController');
@@ -123,6 +139,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $response->setHeader('Content-Type', 'text/html; charset=UTF-8', true);
         $front->setResponse($response);
         
+        //Zend_Controller_Action_HelperBroker::removeHelper('viewRenderer');
+        
         // Plugins
         $error_plugin = new Zend_Controller_Plugin_ErrorHandler();
         $error_plugin->setErrorHandlerModule('default')
@@ -130,10 +148,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                      ->setErrorHandlerAction('error');
         	
         $front->throwExceptions(true); // 人工捕捉异常
-        // ->registerPlugin($error_plugin);
-        //->registerPlugin(new Lds_Controller_Plugin_Smarty())
-        //->registerPlugin(new Lds_Controller_Plugin_Modules())
-        //->registerPlugin(new Lds_Controller_Plugin_Filter())
         
         // Helper 
         $jsonHelper = new Ediary_Helper_JsonHelper();
@@ -195,7 +209,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         return $view;
     }
-
+    
     protected function no_initZFDebug() {
         if ('development' !== APPLICATION_ENV) return;
         

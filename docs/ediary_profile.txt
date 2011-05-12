@@ -15,3 +15,9 @@ date_default_timezone_set( 'PRC' ); // 4711 microsec
 
 .最佳方法
 use php.ini to set `date.timezone`
+
+== Plugin Loader Cache ==
+
+== remove _initTranslate ==
+
+== cache application.ini ==

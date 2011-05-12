@@ -2,6 +2,7 @@
 class Ediary_Auth 
 {
     const KEY = 'user';
+    const KEY_SESSION_AUTH = 'session_auth';
     
     /**
      * Get Indentity from the auth strorage
@@ -10,7 +11,7 @@ class Ediary_Auth
      */
     public static function getIndentity() {
         $auth = Zend_Auth::getInstance();
-        $storage = new Zend_Auth_Storage_Session(Ediary_Application::SESSION_AUTH);
+        $storage = new Zend_Auth_Storage_Session(self::KEY_SESSION_AUTH);
         $auth->setStorage($storage);
         
         $user = $auth->getIdentity();

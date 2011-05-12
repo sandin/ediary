@@ -4,6 +4,8 @@ class Ediary_I18n
     const ZH = 'zh';
     const EN = 'en';
     
+    const REGISTRY_KEY = 'ediary_i18n';
+    
     public static function getTranslate($language) {
         // Support Languages
         $i18n = array(
