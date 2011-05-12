@@ -25,8 +25,11 @@ class IndexController extends Zend_Controller_Action
         // 首页独立布局/样式
         $this->_helper->layout->setLayout('frontpage');
         $this->_helper->viewRenderer->renderScript('frontpage.phtml');
-        
     } 
+    
+    public function postDispatch() {
+       Ediary_Debug::stopProfile();
+    }
 
 }
 

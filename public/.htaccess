@@ -1,6 +1,8 @@
 SetEnv APPLICATION_ENV development
 #SetEnv APPLICATION_ENV production
 
+php_value date.timezone PRC
+
 #RewriteEngine On
 #RewriteCond %{REQUEST_FILENAME} -s [OR]
 #RewriteCond %{REQUEST_FILENAME} -l [OR]

@@ -27,11 +27,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // 注意: 关闭魔法引号, 入库前一定注意数据安全性
         @set_magic_quotes_runtime( 0 );
         @ini_set('magic_quotes_runtime', 0);
-        @ini_set( 'magic_quotes_sybase', 0 );
-
-        if ( function_exists( 'date_default_timezone_set' ) ) {
-            date_default_timezone_set( 'PRC' );
-        }
+        @ini_set('magic_quotes_sybase', 0 );
+        ini_set("date.timezone", 'PRC');
         
         if (!defined('DS')) { define('DS', DIRECTORY_SEPARATOR); }
     }

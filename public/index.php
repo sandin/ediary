@@ -1,4 +1,8 @@
 <?php
+// DEBUG profile
+if (extension_loaded('xhprof')) {
+    xhprof_enable();
+}
 
 // Define path to application directory
 defined('APPLICATION_PATH')
