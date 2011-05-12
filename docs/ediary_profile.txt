@@ -1,0 +1,17 @@
+= 性能分析 =
+
+== date_default_timezone_set ==
+
+.profile
+date_default_timezone_set
+3,424
+3,771
+3,451
+IWall 2%
+
+.替代方案
+ini_set("date.timezone", 'PRC'); // 53 microsec
+date_default_timezone_set( 'PRC' ); // 4711 microsec
+
+.最佳方法
+use php.ini to set `date.timezone`
