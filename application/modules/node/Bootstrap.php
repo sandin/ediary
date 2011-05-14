@@ -1,8 +1,12 @@
 <?php
 
-class Node_Bootstrap extends Zend_Application_Module_Bootstrap
+class Node_Bootstrap /*extends Zend_Application_Module_Bootstrap*/
 {
     private $_path;
+    
+    public function __construct() {
+        $this->_initModule();
+    }
     
     protected function _initModule() { 
         $this->_path = Ediary_Core::getModulePath('node');

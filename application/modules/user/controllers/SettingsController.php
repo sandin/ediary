@@ -88,7 +88,7 @@ class User_SettingsController extends Zend_Controller_Action
             $this->view->messages = (count($errors) == 0) ? array(_t("保存成功.")) : $errors;
         }
         
-        return $this->view->form = $form;
+        return $this->view->form = $form->render();
     }
     
     /**
@@ -198,6 +198,20 @@ class User_SettingsController extends Zend_Controller_Action
      * @return Ediary_Form
      */
     private function getSettingsForm($user) {
+        $cache = $this->getCache();
+        $key = 'settingsForm';
+        
+        $form = $cache->load($key);
+        if( $form === false ) {
+            $form = $this->createSettingsForm();
+            $cache->save($form, $key);
+        }
+        
+        $form->username->setValue($user->username);
+        return $form;
+    }
+    
+    private function createSettingsForm() {
         $form = new Ediary_Form();
         $form->setAttrib('class', "labelForm sForm")
              ->setAttrib('id', 'form_settings')
@@ -209,8 +223,7 @@ class User_SettingsController extends Zend_Controller_Action
      	         ->setLabel(_t("用户名"))
      	         ->setAttrib('class', 'text')
      	         ->addValidator(Ediary_User::getUserNameValidate())
-     			 ->addFilter('StringTrim')
-     			 ->setValue($user->username);
+     			 ->addFilter('StringTrim');
      
      	$oldPassword = $form->createElement('password', 'oldPassword');
      	$oldPassword->setLabel(_t("当前密码"))
@@ -276,6 +289,15 @@ class User_SettingsController extends Zend_Controller_Action
              ->addButtons(array($submit));
       	
         return $form;
+    }
+    
+    /**
+     * @return Zend_Cache
+     */
+    private function getCache() {
+        return $this->getInvokeArg('bootstrap')
+                    ->getResource('cacheManager')
+                    ->getCache('database');
     }
     
 

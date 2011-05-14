@@ -1,12 +1,13 @@
 <?php
+require_once realpath(APPLICATION_PATH . '/modules/node/Bootstrap.php');
 
 class Help_IndexController extends Zend_Controller_Action
 {
 
     public function init()
     {
-        // HTML Cache
-        $this->_helper->cache(array('index'), array('allentries'));
+        //$this->_helper->cache(array('index'), array('allentries'));
+        new Node_Bootstrap();
     }
 
     public function indexAction()

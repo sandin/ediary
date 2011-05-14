@@ -1,9 +1,20 @@
 <?php
 
+
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
-    const INSTALLING = 'installing';
-
+    protected function _initCacheManager() {
+        $manager = $this->getPluginResource('cachemanager')
+                        ->getCacheManager();
+        return $manager;
+    }
+    
+    protected function _initConfig() {
+        $config = $this->getOptions();
+        Ediary_Config::cacheConfig($config);
+        return $config;
+    }
+    
     protected function _initAutoload() {
         // Plugin Loader Cache
         $classFileIncCache = APPLICATION_PATH . '/data/cache/pluginLoaderCache.php';
@@ -19,10 +30,18 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         /*
         // Load all modules under moduleDirectory
-        $config = $this->getOption('resources');
-        $modulesDir = $config['frontController']['moduleDirectory'];
-        $modules = Ediary_Utility_File::getSubDir($modulesDir);
-
+        $cache = $this->getResource('cacheManager')->getCache('database');
+        $cacheKey = 'modulesCache';
+        $modules = $cache->load($cacheKey);
+        if ( $modules === false ) {
+            $config = $this->getOption('resources');
+            $modulesDir = $config['frontController']['moduleDirectory'];
+            $modules = Ediary_Utility_File::getSubDir($modulesDir);
+            $cache->save($modules, $cacheKey);
+        }
+        if (!is_array($modules)) {
+            $modules = array(); // 容错
+        }
         foreach ($modules as $module) {
             new Zend_Application_Module_Autoloader(array(
       			'namespace' => ucfirst($module),
@@ -30,6 +49,12 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             ));
         }
         */
+    }
+    
+    protected function _initInstallChecker() {
+        if ( !Ediary_App::isInstalled()) {
+            Ediary_Core::gotoUrl("/install.php");
+        }
     }
     
     protected function _initFunctions() {
@@ -42,27 +67,14 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         @set_magic_quotes_runtime( 0 );
         @ini_set('magic_quotes_runtime', 0);
         @ini_set('magic_quotes_sybase', 0 );
-        ini_set("date.timezone", 'PRC');
+        //@ini_set("date.timezone", 'PRC');
         
         if (!defined('DS')) { define('DS', DIRECTORY_SEPARATOR); }
     }
     
-    protected function _initConfig() 
-    { 
-         $config = new Zend_Config($this->getOptions()); 
-         Zend_Registry::set('config', $config); 
-         return $config;
-    } 
-    
     protected function _initLogger() {
         $config = $this->getOption('ediary');
         Ediary_Logger::setConfig($config['logger']);
-    }
-
-    protected function _initInstallChecker() {
-        if ( !Ediary_App::isInstalled()) {
-            Ediary_Core::gotoUrl("/install.php");
-        }
     }
 
     protected function _initDatebase() {
@@ -79,10 +91,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     
     protected function _initSession()
     {
-        /* TODO: 安装之前不存在seesions表, 所以会报错 */
-        if ( Ediary_App::isInstalling() ) {
-            return; // no install yet
-        }
         $db = Ediary_Db::getInstance();
         Zend_Db_Table_Abstract::setDefaultAdapter($db->getConnection());
         
@@ -99,15 +107,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     
     protected function _initAuth() {
         $user = Ediary_Auth::getIndentity();
-        //var_dump($user);
         Zend_Registry::set(Ediary_Auth::KEY, $user);
-    }
-    
-    protected function _initCache() {
-        $manager = $this->getPluginResource('cachemanager')
-                        ->getCacheManager();
-        $dbCache = $manager->getCache('database');
-        //var_dump($dbCache);
+        //var_dump($user);
+        return $user;
     }
     
     protected function _initHooks() {
@@ -133,21 +135,12 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     protected function _initControllers() {
         $this->bootstrap('FrontController');
         $front = $this->frontController;
+        $front->throwExceptions(true); // 人工捕捉异常
 
         // Response header
         $response = new Zend_Controller_Response_Http;
         $response->setHeader('Content-Type', 'text/html; charset=UTF-8', true);
         $front->setResponse($response);
-        
-        //Zend_Controller_Action_HelperBroker::removeHelper('viewRenderer');
-        
-        // Plugins
-        $error_plugin = new Zend_Controller_Plugin_ErrorHandler();
-        $error_plugin->setErrorHandlerModule('default')
-                     ->setErrorHandlerController('error')
-                     ->setErrorHandlerAction('error');
-        	
-        $front->throwExceptions(true); // 人工捕捉异常
         
         // Helper 
         $jsonHelper = new Ediary_Helper_JsonHelper();
@@ -190,7 +183,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $view->addBasePath(APPLICATION_PATH . '/views');
         
         // Register Helpers
-        $view->addHelperPath(APPLICATION_PATH. '/../library/Ediary/View/Helper', 'Ediary_View_Helper');
+        $view->addHelperPath(APPLICATION_PATH. '/../library/Ediary/View/Helper',
+        		'Ediary_View_Helper');
         
         // vars in view
         $view->user = Zend_Registry::get('user');

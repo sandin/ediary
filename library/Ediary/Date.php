@@ -44,7 +44,7 @@ class Ediary_Date
     /**
      * 0000年00月00日 星期几
      * 
-     * @deprecated use Ediary_Fomater::dayAndWeek instead
+     * @deprecated use Ediary_Fomater::dayAndWeek instead, faster
      * @param long $date null表示今天
      * @return string
      */

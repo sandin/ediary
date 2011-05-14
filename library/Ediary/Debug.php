@@ -1,11 +1,13 @@
 <?php
 class Ediary_Debug
 {
+    private static $_enable = true;
+    
     public static function startProfile() {
-        if (! extension_loaded('xhprof')) {
-            return;
+        if (self::$_enable && extension_loaded('xhprof')) {
+            xhprof_enable();
+            register_shutdown_function(array('Ediary_Debug', 'stopProfile'));
         }
-        xhprof_enable();
     }
 
     public static function stopProfile() {
@@ -38,5 +40,9 @@ class Ediary_Debug
         echo '<a class="blueBtn" target="_about" href="'
      	     ."http://localhost/tools/xhprof/xhprof_html/index.php?run=$run_id&source=xhprof_foo"
      	     .'">profile</a>';
+    }
+    
+    public static function setEnable($isEnbaled) {
+        self::$_enable = $isEnbaled;
     }
 }

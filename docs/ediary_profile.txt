@@ -21,3 +21,9 @@ use php.ini to set `date.timezone`
 == remove _initTranslate ==
 
 == cache application.ini ==
+
+== 取消 module_autoloader ==
+5 ms ~ 6 ms
+
+== 取消 module_bootstrap ==
+5 ms ~ 8 ms

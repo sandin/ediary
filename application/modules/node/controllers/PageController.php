@@ -1,11 +1,14 @@
 <?php 
+require_once realpath(dirname(__FILE__) . '/../Bootstrap.php');
+
 class Node_PageController extends Zend_Controller_Action
 {
     private $cache;
 
     public function init()
     {
-        $this->_helper->cache(array('index', 'about', 'contact.us'), array('allentries'));
+        new Node_Bootstrap();
+        //$this->_helper->cache(array('index', 'about', 'contact.us'), array('allentries'));
     }
     
     public function indexAction()

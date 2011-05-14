@@ -54,7 +54,7 @@ class Ediary_Diary extends Ediary_Query_Record
     public static function newDiary() {
         return new Ediary_Diary(array(
         	'id' => '-1',
-            'title' => Ediary_Date::getDateAndWeek(),
+            'title' => Ediary_Date::dayAndWeek(),
             'content' => '',
             'saved_at' => _t("未保存")
         )); 
